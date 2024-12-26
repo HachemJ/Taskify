@@ -32,11 +32,13 @@ android {
 }
 
 dependencies {
+    // If you're using version catalogs, use the alias from the catalog
+    implementation(libs.constraintlayout) // This assumes you have the version catalog set up properly
 
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
-    implementation(libs.constraintlayout)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
