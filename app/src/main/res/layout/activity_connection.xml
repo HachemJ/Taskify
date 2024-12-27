@@ -8,6 +8,19 @@
     android:background="@color/dark_grey"
     tools:context=".ConnectionActivity">
 
+    <TextView
+        android:id="@+id/welcomeTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to La Secte !"
+        android:layout_marginBottom="30dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/cardContainer"
+         />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardContainer"
         android:layout_width="match_parent"
@@ -24,15 +37,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="269dp">
+            android:layout_height="230dp">
 
             <TextView
                 android:id="@+id/registerTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="44dp"
                 android:text="Already Registered ?"
-                android:textAlignment="center"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -43,12 +55,13 @@
                 android:id="@+id/loginButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/black"
                 android:text="Login"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@+id/registerTv"
-                app:layout_constraintHorizontal_bias="0.317"
                 app:layout_constraintStart_toStartOf="@+id/registerTv"
                 app:layout_constraintTop_toBottomOf="@+id/registerTv" />
 
@@ -56,19 +69,15 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="New to La Secte ? Register Now!"
+                android:text="New to La Secte ? Register Now >"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.264"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/loginButton"
-                app:layout_constraintVertical_bias="0.758" />
+                app:layout_constraintEnd_toEndOf="@+id/loginButton"
+                app:layout_constraintStart_toStartOf="@+id/loginButton"
+                app:layout_constraintTop_toBottomOf="@+id/loginButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
