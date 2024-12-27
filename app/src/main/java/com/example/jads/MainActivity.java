@@ -3,11 +3,12 @@ package com.example.jads;
 import android.os.Bundle;
 import android.view.View;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -50,20 +51,49 @@ public class MainActivity extends AppCompatActivity {
         // Bottom Navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            // Clear all fragments before replacing
+            clearAllFragments();
+
             if (item.getItemId() == R.id.nav_home) {
+                // Show Home with TabLayout
                 tabLayout.setVisibility(View.VISIBLE);
                 viewPager.setVisibility(View.VISIBLE);
-                return true;
             } else {
+                // Hide Home-specific views
                 tabLayout.setVisibility(View.GONE);
                 viewPager.setVisibility(View.GONE);
-                return true;
+
+                // Load respective fragment
+                Fragment selectedFragment = null;
+                if (item.getItemId() == R.id.nav_account) {
+                    selectedFragment = new AccountFragment();
+                } else if (item.getItemId() == R.id.nav_search) {
+                    selectedFragment = new SearchFragment();
+                }
+
+                if (selectedFragment != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.content_frame, selectedFragment);
+                    transaction.commit();
+                }
             }
+            return true;
         });
+
+        // Set Default Tab (Home)
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             WindowInsetsCompat.Type.systemBars();
             return insets;
         });
+    }
+
+    // Helper method to clear all fragments
+    private void clearAllFragments() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            fragmentManager.beginTransaction().remove(fragment).commit();
+        }
     }
 }
