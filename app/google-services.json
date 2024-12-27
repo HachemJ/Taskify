@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "654986938533",
+    "firebase_url": "https://jads-4eb19-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "jads-4eb19",
+    "storage_bucket": "jads-4eb19.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654986938533:android:22111cb1e2d0eae732654c",
+        "android_client_info": {
+          "package_name": "com.example.jads"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw-twCpHEj1OF3QV6hqfcIl1bmYFaB2cA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -174,7 +174,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/phonenumberTv" />
 
             <Button
-                android:id="@+id/loginButton"
+                android:id="@+id/signupButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
