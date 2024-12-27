@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey"
+    tools:context=".SignupActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/custom_edittext_v1"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="500dp">
+
+            <TextView
+                android:id="@+id/signupText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Sign Up"
+                android:textAlignment="center"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/firstnameTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:text="First Name"
+                android:textSize="18sp"
+                android:textStyle="bold"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signupText" />
+
+
+            <EditText
+                android:id="@+id/firstnameEt"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/custom_edittext_v2"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/firstnameTv"
+                app:layout_constraintTop_toBottomOf="@+id/firstnameTv" />
+
+            <TextView
+                android:id="@+id/lastnameTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:text="Last Name"
+                android:textSize="18sp"
+                android:textStyle="bold"
+
+                app:layout_constraintStart_toEndOf="@+id/firstnameTv"
+                app:layout_constraintTop_toBottomOf="@+id/signupText" />
+
+            <EditText
+                android:id="@+id/lastnameEt"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/custom_edittext_v2"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                app:layout_constraintStart_toEndOf="@+id/firstnameEt"
+                app:layout_constraintTop_toBottomOf="@+id/lastnameTv" />
+
+            <TextView
+                android:id="@+id/usernameTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="60dp"
+                android:text="Username"
+                android:textSize="18sp"
+                android:textStyle="bold"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/firstnameTv" />
+
+            <EditText
+                android:id="@+id/usernameEt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/custom_edittext_v2"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                app:layout_constraintStart_toStartOf="@+id/usernameTv"
+                app:layout_constraintTop_toBottomOf="@+id/usernameTv" />
+
+            <TextView
+                android:id="@+id/emailaddressTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="60dp"
+                android:text="Email address"
+                android:textSize="18sp"
+                android:textStyle="bold"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/usernameTv" />
+
+            <EditText
+                android:id="@+id/emailaddressEt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:padding="10dp"
+                android:hint="you@gmail.com"
+                android:background="@drawable/custom_edittext_v2"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                app:layout_constraintStart_toStartOf="@+id/emailaddressTv"
+                app:layout_constraintTop_toBottomOf="@+id/emailaddressTv" />
+
+            <TextView
+                android:id="@+id/phonenumberTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="60dp"
+                android:text="Phone number"
+                android:textSize="18sp"
+                android:textStyle="bold"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/emailaddressTv" />
+
+            <EditText
+                android:id="@+id/phonenumberEt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:padding="10dp"
+                android:hint="+961- 8digits"
+                android:background="@drawable/custom_edittext_v2"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                app:layout_constraintStart_toStartOf="@+id/phonenumberTv"
+                app:layout_constraintTop_toBottomOf="@+id/phonenumberTv" />
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="348dp"
+                android:layout_marginEnd="32dp"
+                android:backgroundTint="@color/black"
+                android:text="Join now"
+                android:textSize="18sp"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signupText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
