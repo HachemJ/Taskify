@@ -24,7 +24,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp">
+            android:layout_height="450dp">
 
             <TextView
                 android:id="@+id/signupText"
@@ -96,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="50dp"
                 android:text="Username"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -122,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="50dp"
                 android:text="Email address"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -150,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="50dp"
                 android:text="Phone number"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -178,13 +178,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="348dp"
+                android:layout_marginTop="316dp"
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/black"
                 android:text="Join now"
                 android:textSize="18sp"
                 app:cornerRadius="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/signupText" />
 

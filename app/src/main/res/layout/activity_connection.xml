@@ -71,7 +71,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:clickable="true"
-                android:focusable="true"
                 android:text="New to La Secte ? Register Now >"
                 android:textColor="@color/black"
                 android:textSize="16sp"
