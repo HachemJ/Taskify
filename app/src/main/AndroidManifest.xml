@@ -13,15 +13,10 @@
         android:theme="@style/Theme.Jads"
         tools:targetApi="31">
 
-        <!-- ConnectionActivity should be exported as true -->
+        <!-- ConnectionActivity -->
         <activity
             android:name=".ConnectionActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
 
         <!-- Other activities -->
         <activity
@@ -30,6 +25,8 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
+
+        <!-- MainActivity should now be the launcher -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
