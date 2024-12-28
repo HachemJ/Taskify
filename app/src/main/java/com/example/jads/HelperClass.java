@@ -4,6 +4,7 @@ public class HelperClass {
 
     String firstName, lastName, email, username, phoneNumber;
 
+    // Getters and Setters
     public String getFirstName() {
         return firstName;
     }
@@ -44,6 +45,7 @@ public class HelperClass {
         this.phoneNumber = phoneNumber;
     }
 
+    // Constructor for creating a user object
     public HelperClass(String firstName, String lastName, String email, String username, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,6 +54,7 @@ public class HelperClass {
         this.phoneNumber = phoneNumber;
     }
 
+    // Default constructor required for Firebase
     public HelperClass() {
     }
 }
