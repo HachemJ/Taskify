@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
-    EditText signupFirstName, signupLastName, signupEmail, signupPhoneNumber, signupPassword;
+    EditText signupFirstName, signupLastName, signupEmail, signupPhoneNumber, signupPassword, signupUsername;
     Button signupButton;
     FirebaseAuth auth;
     FirebaseDatabase database;
@@ -43,6 +43,7 @@ public class SignupActivity extends AppCompatActivity {
         signupEmail = findViewById(R.id.emailaddressEt);
         signupPhoneNumber = findViewById(R.id.phonenumberEt);
         signupPassword = findViewById(R.id.passwordEt);
+        signupUsername = findViewById(R.id.usernameEt);
         signupButton = findViewById(R.id.signupButton);
 
         // Initialize Firebase instances
@@ -57,6 +58,7 @@ public class SignupActivity extends AppCompatActivity {
             String email = signupEmail.getText().toString().trim();
             String phoneNumber = signupPhoneNumber.getText().toString().trim();
             String password = signupPassword.getText().toString().trim();
+            String username = signupUsername.getText().toString().trim();
 
             // Validate inputs
             if (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName) || TextUtils.isEmpty(email)
@@ -76,7 +78,7 @@ public class SignupActivity extends AppCompatActivity {
                                         .addOnCompleteListener(verificationTask -> {
                                             if (verificationTask.isSuccessful()) {
                                                 // Save user details to Firebase Database
-                                                HelperClass helperClass = new HelperClass(firstName, lastName, email, "", phoneNumber, password); // Username not needed
+                                                HelperClass helperClass = new HelperClass(firstName, lastName, email, username, phoneNumber, password); // Username not needed
                                                 reference.child(firebaseUser.getUid()).setValue(helperClass) // Save using UID as key
                                                         .addOnCompleteListener(databaseTask -> {
                                                             if (databaseTask.isSuccessful()) {
