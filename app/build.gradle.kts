@@ -33,16 +33,15 @@ android {
 }
 
 dependencies {
-    // If you're using version catalogs, use the alias from the catalog
-    implementation(libs.constraintlayout) // This assumes you have the version catalog set up properly
-
+    implementation(libs.constraintlayout)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
+
     // Firebase SDKs
-    implementation("com.google.firebase:firebase-analytics")
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-auth")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
