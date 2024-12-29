@@ -48,8 +48,7 @@
                 android:textStyle="bold"
                 android:layout_marginStart="20dp"
                 app:layout_constraintTop_toBottomOf="@+id/signupText"
-                app:layout_constraintStart_toStartOf="parent"
-                 />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <EditText
                 android:id="@+id/firstnameEt"
@@ -72,8 +71,7 @@
                 android:layout_marginStart="95dp"
                 android:padding="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/signupText"
-                app:layout_constraintStart_toEndOf="@id/firstnameTv"
-                />
+                app:layout_constraintStart_toEndOf="@id/firstnameTv" />
 
             <EditText
                 android:id="@+id/lastnameEt"
@@ -95,8 +93,7 @@
                 android:textStyle="bold"
                 android:layout_marginTop="60dp"
                 app:layout_constraintTop_toBottomOf="@+id/firstnameTv"
-                app:layout_constraintStart_toStartOf="@+id/firstnameTv"
-                 />
+                app:layout_constraintStart_toStartOf="@+id/firstnameTv" />
 
             <EditText
                 android:id="@+id/usernameEt"
@@ -107,8 +104,7 @@
                 android:textColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@+id/usernameTv"
                 app:layout_constraintStart_toStartOf="@+id/firstnameEt"
-                app:layout_constraintEnd_toEndOf="@+id/lastnameEt"
-                 />
+                app:layout_constraintEnd_toEndOf="@+id/lastnameEt" />
 
             <TextView
                 android:id="@+id/passwordTv"
@@ -130,8 +126,7 @@
                 android:textColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@+id/passwordTv"
                 app:layout_constraintStart_toStartOf="@+id/firstnameEt"
-                app:layout_constraintEnd_toEndOf="@+id/lastnameEt"
-                />
+                app:layout_constraintEnd_toEndOf="@+id/lastnameEt" />
 
             <TextView
                 android:id="@+id/emailaddressTv"
@@ -154,47 +149,23 @@
                 app:layout_constraintTop_toBottomOf="@+id/emailaddressTv"
                 app:layout_constraintStart_toStartOf="@+id/firstnameEt"
                 app:layout_constraintEnd_toEndOf="@+id/lastnameEt"
-                />
-
-            <TextView
-                android:id="@+id/phonenumberTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phone Number"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="60dp"
-                android:hint="+961 - 8 digits"
-                app:layout_constraintTop_toBottomOf="@+id/emailaddressTv"
-                app:layout_constraintStart_toStartOf="@+id/emailaddressTv" />
-
-            <EditText
-                android:id="@+id/phonenumberEt"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:padding="8dp"
-                android:background="@drawable/rounded_et"
-                android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@+id/phonenumberTv"
-                app:layout_constraintStart_toStartOf="@+id/firstnameEt"
-                app:layout_constraintEnd_toEndOf="@+id/lastnameEt"
-                />
+                app:layout_constraintBottom_toTopOf="@+id/signupButton" />
 
             <Button
                 android:id="@+id/signupButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
                 android:backgroundTint="@color/black"
                 android:text="Join now"
                 android:textSize="18sp"
                 app:cornerRadius="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/phonenumberEt" />
+                app:layout_constraintTop_toBottomOf="@+id/emailaddressEt" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
