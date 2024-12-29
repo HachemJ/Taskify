@@ -10,7 +10,6 @@
     <color name="dark_blue">#16325B</color>
 
     <!-- New Colors for BottomNavigationView -->
-    <color name="bottom_nav_active">#FF000000</color> <!-- Green for active items -->
-    <color name="bottom_nav_inactive">#B0BEC5</color> <!-- Light Gray for inactive items -->
-    <color name="bottom_nav_background">#622C2929</color> <!-- White background for taskbar -->
+    <color name="bottom_nav_active">#B0BEC5</color>
+    <color name="bottom_nav_inactive">#B0BEC5</color>
 </resources>

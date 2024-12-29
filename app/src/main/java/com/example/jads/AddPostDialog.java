@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
 import androidx.fragment.app.DialogFragment;
 
 public class AddPostDialog extends DialogFragment {
@@ -21,20 +20,19 @@ public class AddPostDialog extends DialogFragment {
         // Inflate the layout for the dialog
         View view = inflater.inflate(R.layout.activity_add_post_dialog, container, false);
 
-        // Initialize the views
+        // Initialize views
         titleEditText = view.findViewById(R.id.titleEditText);
         bioEditText = view.findViewById(R.id.bioEditText);
         priceEditText = view.findViewById(R.id.priceEditText);
         saveButton = view.findViewById(R.id.saveButton);
 
-        // Set up the save button action
+        // Button click to save post
         saveButton.setOnClickListener(v -> {
-            // Handle saving the post
             String title = titleEditText.getText().toString();
             String bio = bioEditText.getText().toString();
             String price = priceEditText.getText().toString();
 
-            // Here you can handle the logic to save the data (e.g., database or API call)
+            // Handle saving the post (e.g., to a database or API)
             dismiss();  // Close the dialog
         });
 
@@ -44,10 +42,22 @@ public class AddPostDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        // Ensure the dialog has the correct width and is centered
-        if (getDialog() != null) {
-            getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            getDialog().getWindow().setGravity(Gravity.CENTER);  // Center the dialog
+
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            // Get dialog's window and set custom layout parameters
+            ViewGroup.LayoutParams layoutParams = getDialog().getWindow().getAttributes();
+
+            // Set width to MATCH_PARENT
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+
+            // Set height to a custom value (e.g., 80% of the screen height)
+            layoutParams.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.9);
+
+            // Apply top and bottom margins, for example, 20% of screen height
+            getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) layoutParams);
+
+            // Set dialog gravity to center
+            getDialog().getWindow().setGravity(Gravity.CENTER);
         }
     }
 }
