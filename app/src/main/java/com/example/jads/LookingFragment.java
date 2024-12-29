@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import android.util.Log;
 
 public class LookingFragment extends Fragment {
 
@@ -25,7 +26,6 @@ public class LookingFragment extends Fragment {
 
         // Find the button in the layout
         Button openAddPostDialogButton = view.findViewById(R.id.openAddPostDialogButton);
-
         TextView descriptionTextView = view.findViewById(R.id.textView2);
 
         // Make both parts of the text bold, the first larger, and aligned to the left
@@ -33,11 +33,17 @@ public class LookingFragment extends Fragment {
 
         // Set a click listener on the button to open the AddPostDialog
         openAddPostDialogButton.setOnClickListener(v -> {
-            // Create an instance of the AddPostDialog
-            AddPostDialog addPostDialog = new AddPostDialog();
+            // Check if the fragment is attached to an activity
+            if (isAdded()) {
+                // Create an instance of the AddPostDialog
+                AddPostDialog addPostDialog = new AddPostDialog();
 
-            // Show the dialog
-            addPostDialog.show(getParentFragmentManager(), "AddPostDialog");
+                // Show the dialog using the parent fragment manager
+                addPostDialog.show(getParentFragmentManager(), "AddPostDialog");
+            } else {
+                // Log the error if the fragment is not attached
+                Log.e("LookingFragment", "Fragment not attached to Activity.");
+            }
         });
 
         return view;
