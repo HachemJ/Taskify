@@ -48,7 +48,7 @@ public class ConnectionActivity extends AppCompatActivity {
 
         // Check if the user is already logged in
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
+        if (currentUser != null && currentUser.isEmailVerified()) {
             // User is already signed in, redirect to MainActivity
             startActivity(new Intent(ConnectionActivity.this, MainActivity.class));
             finish();

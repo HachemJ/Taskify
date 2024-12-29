@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
+    implementation(libs.work.runtime)
 
     // Firebase SDKs
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
