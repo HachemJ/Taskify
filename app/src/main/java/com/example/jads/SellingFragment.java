@@ -48,7 +48,7 @@ public class SellingFragment extends Fragment {
 
         // Define the parts you want to make bold
         String part1 = "Looking to sell your services?";
-        String part2 = "Get paid for your work and make meaningful connections today!";
+        String part2 = "Start earning and building connections today!";
 
         // Find the start and end indices for both parts
         int startIndex1 = fullText.indexOf(part1);

@@ -56,7 +56,7 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Looking to sell your services?\nShare your expertise with the Lebanese community. Whether you're offering a unique skill or service, you can easily post what you're selling and connect with others who need it.\nGet paid for your work and make meaningful connections today!"
+                android:text="Looking to sell your services?\nShare your expertise with the Lebanese community. Whether you're offering a unique skill or service, you can easily post what you're selling and connect with others who need it.\nStart earning and building connections today!"
                 android:layout_marginBottom="220dp"
                 android:lineSpacingExtra="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
