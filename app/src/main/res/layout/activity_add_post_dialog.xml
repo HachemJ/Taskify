@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:id="@+id/cardContainer"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginEnd="32dp"
+    android:layout_marginTop="60dp"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- Sign Up Text -->
+
+        <!-- Title EditText -->
+        <TextView
+            android:id="@+id/signupText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD"
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/titleEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Title"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/signupText" />
+
+        <!-- Bio EditText -->
+        <EditText
+            android:id="@+id/bioEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Bio"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleEditText" />
+
+        <!-- Price EditText -->
+        <EditText
+            android:id="@+id/priceEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Price"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bioEditText" />
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="240dp"
+            android:text="Save Post"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/priceEditText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
