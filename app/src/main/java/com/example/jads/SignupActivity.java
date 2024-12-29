@@ -23,7 +23,7 @@ public class SignupActivity extends AppCompatActivity {
     Button signupButton;
     FirebaseAuth auth;
     FirebaseDatabase database;
-    DatabaseReference reference;
+    DatabaseReference unverifiedUsersReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +46,11 @@ public class SignupActivity extends AppCompatActivity {
         signupUsername = findViewById(R.id.usernameEt);
         signupButton = findViewById(R.id.signupButton);
 
-        // Initialize Firebase instances
+        // Initialize Firebase Auth and Realtime Database references
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("users");
+        unverifiedUsersReference = database.getReference("unverified_users");
 
-        // Handle signup button click
         signupButton.setOnClickListener(v -> {
             String firstName = signupFirstName.getText().toString().trim();
             String lastName = signupLastName.getText().toString().trim();
@@ -67,22 +66,29 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // Create user with email and password
+            // Create user in Firebase Authentication
             auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
                             if (firebaseUser != null) {
+                                String userId = firebaseUser.getUid();
+
                                 // Send email verification
                                 firebaseUser.sendEmailVerification()
                                         .addOnCompleteListener(verificationTask -> {
                                             if (verificationTask.isSuccessful()) {
-                                                // Save user details to Firebase Database
-                                                HelperClass helperClass = new HelperClass(firstName, lastName, email, username, phoneNumber, password); // Username not needed
-                                                reference.child(firebaseUser.getUid()).setValue(helperClass) // Save using UID as key
+                                                Toast.makeText(SignupActivity.this, "Verification email sent. Please verify your email.", Toast.LENGTH_SHORT).show();
+
+                                                // Save user data to "unverified_users" node
+                                                HelperClass helperClass = new HelperClass(firstName, lastName, email, username, phoneNumber, null);
+                                                unverifiedUsersReference.child(userId).setValue(helperClass)
                                                         .addOnCompleteListener(databaseTask -> {
                                                             if (databaseTask.isSuccessful()) {
-                                                                Toast.makeText(SignupActivity.this, "Sign-up successful! Please verify your email.", Toast.LENGTH_SHORT).show();
+                                                                // Schedule deletion for unverified users
+                                                                scheduleAccountDeletion(firebaseUser);
+
+                                                                // Redirect to login screen
                                                                 startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                                                                 finish();
                                                             } else {
@@ -99,5 +105,33 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    private void scheduleAccountDeletion(FirebaseUser user) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(24 * 60 * 60 * 1000); // 24 heure ?? ou moin
+                user.reload(); // Reload the user to check verification status
+                if (!user.isEmailVerified()) {
+                    // Delete the unverified account
+                    unverifiedUsersReference.child(user.getUid()).removeValue()
+                            .addOnCompleteListener(removeTask -> {
+                                if (removeTask.isSuccessful()) {
+                                    user.delete().addOnCompleteListener(deleteTask -> {
+                                        if (deleteTask.isSuccessful()) {
+                                            runOnUiThread(() -> Toast.makeText(SignupActivity.this, "Unverified account deleted.", Toast.LENGTH_SHORT).show());
+                                        } else {
+                                            runOnUiThread(() -> Toast.makeText(SignupActivity.this, "Failed to delete FirebaseAuth account: " + deleteTask.getException().getMessage(), Toast.LENGTH_SHORT).show());
+                                        }
+                                    });
+                                } else {
+                                    runOnUiThread(() -> Toast.makeText(SignupActivity.this, "Failed to delete unverified user entry: " + removeTask.getException().getMessage(), Toast.LENGTH_SHORT).show());
+                                }
+                            });
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

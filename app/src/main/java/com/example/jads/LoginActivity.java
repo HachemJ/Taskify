@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,8 +23,12 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -31,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     FirebaseAuth auth;
     FirebaseDatabase database;
-    DatabaseReference reference;
+    DatabaseReference usersReference, passwordResetRequests, unverifiedUsersReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,40 +50,54 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         TextView registerNowText = findViewById(R.id.textView);
+        TextView forgotPasswordText = findViewById(R.id.forgotPasswordText);
 
-        // Text to display
+        // Set up "Don't have an account? Sign up >"
         String fullText = "Don't have an account? Sign up >";
-
-        // Create a SpannableString to modify part of the text
         SpannableString spannableString = new SpannableString(fullText);
 
-        // Apply color to the clickable part
         int start = fullText.indexOf("Sign up >");
         int end = start + "Sign up >".length();
         spannableString.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Make the clickable part clickable
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
             }
         }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Set the text to the TextView
         registerNowText.setText(spannableString);
-
-        // Enable clicking
         registerNowText.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
 
+        // Set up "Forgot your password? Click here"
+        String forgotPasswordTextFull = "Forgot your password? Click here";
+        SpannableString forgotPasswordSpannable = new SpannableString(forgotPasswordTextFull);
+
+        int forgotStart = forgotPasswordTextFull.indexOf("Click here");
+        int forgotEnd = forgotStart + "Click here".length();
+        forgotPasswordSpannable.setSpan(new ForegroundColorSpan(Color.BLUE), forgotStart, forgotEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        forgotPasswordSpannable.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                handlePasswordReset();
+            }
+        }, forgotStart, forgotEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        forgotPasswordText.setText(forgotPasswordSpannable);
+        forgotPasswordText.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+
+        // Initialize fields and buttons
         usernameField = findViewById(R.id.username);
-        passwordField = findViewById(R.id.passwordEt); // Ensure this ID exists in your XML
+        passwordField = findViewById(R.id.passwordEt);
         loginButton = findViewById(R.id.loginButton);
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("users");
+        usersReference = database.getReference("users");
+        unverifiedUsersReference = database.getReference("unverified_users");
+        passwordResetRequests = database.getReference("password_reset_requests");
 
         loginButton.setOnClickListener(v -> {
             String email = usernameField.getText().toString().trim();
@@ -89,30 +108,111 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
+            // Handle login
             auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
                             if (firebaseUser != null && firebaseUser.isEmailVerified()) {
-                                String userId = firebaseUser.getUid();
-                                reference.child(userId).get().addOnCompleteListener(databaseTask -> {
-                                    if (databaseTask.isSuccessful() && databaseTask.getResult().exists()) {
-                                        DataSnapshot snapshot = databaseTask.getResult();
-                                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                        finish();
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, "User data not found in database", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            } else if (firebaseUser != null && !firebaseUser.isEmailVerified()) {
-                                Toast.makeText(LoginActivity.this, "Please verify your email before logging in", Toast.LENGTH_SHORT).show();
+                                // Move verified user from unverified_users to users if necessary
+                                moveUserToVerified(firebaseUser.getUid());
+
+                                Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Please verify your email before logging in.", Toast.LENGTH_SHORT).show();
                                 auth.signOut();
                             }
                         } else {
                             Toast.makeText(LoginActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+        });
+    }
+
+    private void handlePasswordReset() {
+        String email = usernameField.getText().toString().trim();
+
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Please enter your email to reset password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Query the "users" node to match the email
+        usersReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Email exists, retrieve userId
+                    DataSnapshot userSnapshot = snapshot.getChildren().iterator().next();
+                    String userId = userSnapshot.getKey();
+
+                    if (userId != null) {
+                        // Check if a reset request already exists for the user
+                        passwordResetRequests.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot resetSnapshot) {
+                                if (resetSnapshot.exists()) {
+                                    long lastResetTimestamp = resetSnapshot.child("timestamp").getValue(Long.class);
+                                    if (System.currentTimeMillis() - lastResetTimestamp < 24 * 60 * 60 * 1000) {
+                                        Toast.makeText(LoginActivity.this, "You can only reset your password once a day.", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
+
+                                // Send the password reset email
+                                auth.sendPasswordResetEmail(email).addOnCompleteListener(emailTask -> {
+                                    if (emailTask.isSuccessful()) {
+                                        Toast.makeText(LoginActivity.this, "Password reset email sent.", Toast.LENGTH_SHORT).show();
+
+                                        // Log the reset request with a timestamp
+                                        HashMap<String, Object> resetLog = new HashMap<>();
+                                        resetLog.put("email", email);
+                                        resetLog.put("timestamp", System.currentTimeMillis());
+                                        passwordResetRequests.child(userId).setValue(resetLog);
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, "Failed to send reset email: " + emailTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(LoginActivity.this, "Error checking reset requests: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "Email is not registered.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LoginActivity.this, "Error checking email: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void moveUserToVerified(String userId) {
+        unverifiedUsersReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    usersReference.child(userId).setValue(snapshot.getValue()).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            unverifiedUsersReference.child(userId).removeValue();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LoginActivity.this, "Error moving user to verified: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
