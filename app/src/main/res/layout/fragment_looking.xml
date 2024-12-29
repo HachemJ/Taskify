@@ -25,17 +25,17 @@
         android:id="@+id/titletv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/farro_medium"
+        android:fontFamily="@font/sourgummy_extralight"
         android:text="    Create A \n New Post"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="38dp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.45" />  <!-- 0.4 shifts it slightly left -->
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardContainer"
