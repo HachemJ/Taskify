@@ -2,7 +2,7 @@ package com.example.jads;
 
 public class HelperClass {
 
-    String firstName, lastName, email, username, phoneNumber, password;
+    String firstName, lastName, email, username, password;
 
     public String getFirstName() {
         return firstName;
@@ -36,24 +36,19 @@ public class HelperClass {
         this.username = username;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getPassword() { return password;}
-
-    public void setPassword(String password) { this.password = password; }
-
-    public HelperClass(String firstName, String lastName, String email, String username, String phoneNumber, String password) {
+    public HelperClass(String firstName, String lastName, String email, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
-        this.phoneNumber = phoneNumber;
         this.password = password;
     }
 
