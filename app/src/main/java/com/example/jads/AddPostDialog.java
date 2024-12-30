@@ -84,6 +84,8 @@ public class AddPostDialog extends DialogFragment {
         addTagButton = view.findViewById(R.id.addTagButton);
         tagContainer = view.findViewById(R.id.tagContainer);
 
+        descriptionEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(273)});
+
         // Add initial tags
         predefinedTags.add("test1");
         predefinedTags.add("test2");
