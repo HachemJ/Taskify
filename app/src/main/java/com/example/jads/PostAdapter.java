@@ -37,7 +37,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = postList.get(position);
+        Post post = filteredPostList.get(position); // Use the filtered list for display
 
         // Safely handle null values
         String title = post.getTitle() != null ? post.getTitle() : "No Title";
