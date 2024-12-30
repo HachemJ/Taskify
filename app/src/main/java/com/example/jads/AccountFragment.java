@@ -1,9 +1,13 @@
 package com.example.jads;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,7 @@ public class AccountFragment extends Fragment {
 
         // Initialize views
         userNameTextView = view.findViewById(R.id.user_name);
+        LinearLayout logoutButton = view.findViewById(R.id.logoutButton); // Reference to the Log Out button layout
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
@@ -74,6 +79,28 @@ public class AccountFragment extends Fragment {
             Toast.makeText(getContext(), "No user is logged in", Toast.LENGTH_SHORT).show();
         }
 
+        // Set up the logout button
+        logoutButton.setOnClickListener(v -> showLogoutDialog());
+
         return view;
+    }
+
+    private void showLogoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Log Out")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Perform logout
+                    auth.signOut();
+                    Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+                    // Redirect to login screen
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
     }
 }
