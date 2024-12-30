@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,10 +27,18 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.slider.Slider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddPostDialog extends DialogFragment {
 
@@ -42,9 +51,26 @@ public class AddPostDialog extends DialogFragment {
 
     private final List<String> predefinedTags = new ArrayList<>();
 
+    private FirebaseAuth auth;
+    private DatabaseReference postsReference;
+    private String postCategory; // Variable to store post category
+    private StorageReference storageReference;
+    private Uri selectedImageUri;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_add_post_dialog, container, false);
+
+        // Initialize Firebase Auth and Database Reference
+        auth = FirebaseAuth.getInstance();
+        postsReference = FirebaseDatabase.getInstance().getReference("posts");
+        storageReference = FirebaseStorage.getInstance().getReference("post_images");
+
+        // Retrieve post category from arguments
+        if (getArguments() != null) {
+            postCategory = getArguments().getString("postCategory", "Unknown");
+        }
 
         // Initialize UI components
         titleEditText = view.findViewById(R.id.postTitleEditText);
@@ -120,10 +146,7 @@ public class AddPostDialog extends DialogFragment {
             }
         });
 
-        saveButton.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Post saved successfully", Toast.LENGTH_SHORT).show();
-            dismiss();
-        });
+        saveButton.setOnClickListener(v -> savePost());
 
         addImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -137,9 +160,9 @@ public class AddPostDialog extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_PICK_CODE && resultCode == getActivity().RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
+            selectedImageUri = data.getData();
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
                 postImageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -147,6 +170,7 @@ public class AddPostDialog extends DialogFragment {
             }
         }
     }
+
 
     @Override
     public void onStart() {
@@ -192,6 +216,75 @@ public class AddPostDialog extends DialogFragment {
         tagLayout.addView(closeButton);
         tagContainer.addView(tagLayout);
     }
+
+    private void savePost() {
+        FirebaseUser currentUser = auth.getCurrentUser();
+
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "You must be logged in to save a post", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = currentUser.getUid();
+        String title = titleEditText.getText().toString().trim();
+        String description = descriptionEditText.getText().toString().trim();
+        String price = priceEditText.getText().toString().trim();
+        List<String> tags = new ArrayList<>(predefinedTags);
+
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(price)) {
+            Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String postId = postsReference.push().getKey();
+
+        if (postId != null) {
+            if (selectedImageUri != null) {
+                // Reference to store the image
+                StorageReference imageRef = storageReference.child("post_images/" + postId + ".jpg");
+
+                // Upload the image to Storage
+                imageRef.putFile(selectedImageUri)
+                        .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            // Call savePostDetails with the image URL
+                            savePostDetails(postId, userId, title, description, price, tags, uri.toString());
+                        }))
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
+                        });
+            } else {
+                // Save without an image URL
+                savePostDetails(postId, userId, title, description, price, tags, null);
+            }
+        }
+    }
+
+
+    private void savePostDetails(String postId, String userId, String title, String description, String price, List<String> tags, String imageUrl) {
+        Map<String, Object> postDetails = new HashMap<>();
+        postDetails.put("userId", userId);
+        postDetails.put("title", title);
+        postDetails.put("description", description);
+        postDetails.put("price", price);
+        postDetails.put("tags", tags);
+        postDetails.put("category", postCategory); // Add the post category
+        if (imageUrl != null) {
+            postDetails.put("imageUrl", imageUrl); // Save the image URL
+        }
+
+        postsReference.child(postId).setValue(postDetails)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getContext(), "Post saved successfully", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    } else {
+                        Toast.makeText(getContext(), "Failed to save post", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+
 
     private static class InputFilterMinMax implements InputFilter {
         private final int min;

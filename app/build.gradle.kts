@@ -33,10 +33,11 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation(libs.constraintlayout)
     implementation(libs.appcompat)
     implementation("com.google.android.material:material:1.6.1")
-    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
 
     implementation(libs.material)
     implementation(libs.activity)
@@ -46,6 +47,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-auth")
+    implementation(libs.firebase.storage)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
