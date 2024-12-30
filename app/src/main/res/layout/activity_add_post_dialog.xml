@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:padding="16dp">
 
+            <!-- Title -->
             <TextView
                 android:id="@+id/CreatePostText"
                 android:layout_width="wrap_content"
@@ -33,6 +34,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Image Container -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/imageContainer"
                 android:layout_width="0dp"
@@ -62,6 +64,7 @@
                     android:tint="@color/white" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Post Title Section -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/postTitleContainer"
                 android:layout_width="0dp"
@@ -116,6 +119,7 @@
                     android:layout_marginTop="16dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Price Section -->
             <LinearLayout
                 android:id="@+id/priceSection"
                 android:layout_width="match_parent"
@@ -156,15 +160,13 @@
                     android:inputType="number" />
             </LinearLayout>
 
-            <!-- Tag -->
+            <!-- Tag Section -->
             <LinearLayout
                 android:id="@+id/tagInputLayout"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/priceSection">
 
                 <EditText
@@ -189,6 +191,19 @@
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
+            <!-- Tag Display Section -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/tagContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                android:padding="4dp"
+                app:layout_constraintBottom_toTopOf="@id/saveButton"
+                />
+
+            <!-- Save Button -->
             <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"

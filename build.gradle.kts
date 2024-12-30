@@ -3,3 +3,14 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.google.gms.google.services) apply false
 }
+
+allprojects {
+
+    dependencies {
+        modules {
+            module("com.google.android:flexbox") {
+                replacedBy("com.google.android.flexbox:flexbox")
+            }
+        }
+    }
+}

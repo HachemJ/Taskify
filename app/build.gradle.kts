@@ -36,6 +36,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.appcompat)
     implementation("com.google.android.material:material:1.6.1")
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.work.runtime)
