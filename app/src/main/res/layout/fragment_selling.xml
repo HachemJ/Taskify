@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:contentDescription="Test Image"
         android:scaleType="fitStart"
-        android:src="@drawable/plane"
+        android:src="@drawable/freelance_character"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +53,7 @@
 
             <TextView
                 android:padding="8dp"
-                android:id="@+id/textView2"
+                android:id="@+id/sellingDescriptionTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Looking to sell your services?\nShare your expertise with the Lebanese community. Whether you're offering a unique skill or service, you can easily post what you're selling and connect with others who need it.\nStart earning and building connections today!"
@@ -74,7 +74,7 @@
                 android:backgroundTint="@color/dark_blue"
                 android:text="Add Post"
                 android:textColor="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sellingDescriptionTv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 

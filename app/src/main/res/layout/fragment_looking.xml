@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:contentDescription="Test Image"
         android:scaleType="fitStart"
-        android:src="@drawable/plane"
+        android:src="@drawable/freelance_character"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +53,7 @@
 
             <TextView
                 android:padding="8dp"
-                android:id="@+id/textView2"
+                android:id="@+id/lookingDescriptionTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Looking for a service or task?\nPost a request for what you need, and someone from the Lebanese community will reach out to help. Can’t find what you're looking for? Leave a post and others will assist you!\nPost now and connect with others to get what you need!"
@@ -70,11 +70,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="4dp"
                 android:backgroundTint="@color/black"
                 android:text="Add Post"
                 android:textColor="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lookingDescriptionTv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 

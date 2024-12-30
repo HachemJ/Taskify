@@ -26,7 +26,7 @@ public class LookingFragment extends Fragment {
 
         // Find the button in the layout
         Button openAddPostDialogButton = view.findViewById(R.id.openAddPostDialogButton);
-        TextView descriptionTextView = view.findViewById(R.id.textView2);
+        TextView descriptionTextView = view.findViewById(R.id.lookingDescriptionTv);
 
         // Make both parts of the text bold, the first larger, and aligned to the left
         makeBothPartsBoldAndSize(descriptionTextView);
