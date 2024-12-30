@@ -33,7 +33,12 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".PostDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
         <!-- MainActivity no longer the launcher -->
         <activity
             android:name=".MainActivity"

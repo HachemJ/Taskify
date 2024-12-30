@@ -1,5 +1,6 @@
 package com.example.jads;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String description = post.getDescription() != null ? post.getDescription() : "No description available";
         Long timestamp = post.getTimestamp();
         String imageUrl = post.getImageUrl();
+        String posterUserId = post.getUserId(); // Retrieve the poster's user ID
 
         holder.titleTextView.setText(title);
         holder.usernameTextView.setText(username);
@@ -74,10 +76,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Click listener for "Learn More"
         holder.learnMoreButton.setOnClickListener(v -> {
-            // Implement the action to view more details
-            Toast.makeText(v.getContext(), "Learn more clicked!", Toast.LENGTH_SHORT).show();
+            // Open the PostDetailActivity and pass the post ID and posterUserId
+            Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
+            intent.putExtra("postId", post.getPostId()); // Pass the post ID
+            intent.putExtra("posterUserId", posterUserId); // Pass the poster's user ID
+            v.getContext().startActivity(intent);
         });
     }
+
+
 
 
     @Override

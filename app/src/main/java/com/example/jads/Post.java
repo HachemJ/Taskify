@@ -2,6 +2,7 @@ package com.example.jads;
 
 public class Post {
     private String title;
+    private String postId;
     private String description;
     private String userId;
     private String username;
@@ -56,5 +57,14 @@ public class Post {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    // Add getters and setters for postId
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }
