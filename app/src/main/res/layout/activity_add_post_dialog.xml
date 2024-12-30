@@ -59,7 +59,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_margin="8dp"
-                    android:tint="@color/white"/>
+                    android:tint="@color/white" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -126,20 +126,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
+                <!-- Slider -->
                 <com.google.android.material.slider.Slider
                     android:id="@+id/settingsMission_changeShakeDif_slider"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:stepSize="1"
+                    android:layout_weight="1"
                     android:theme="@style/AppTheme"
+                    android:stepSize="1"
                     android:valueFrom="0"
                     android:valueTo="100"
-                    app:labelBehavior="gone"
+                    app:labelBehavior="floating"
                     app:thumbColor="#238ae6"
-                    app:tickColor="#13161d"
                     app:trackColorActive="#238ae6"
-                    app:trackColorInactive="#a7bada" />
+                    app:trackColorInactive="#a7bada"
+                    app:tickVisible="false" />
 
+                <!-- EditText -->
+                <EditText
+                    android:id="@+id/editTextNumber"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/rounded_et"
+                    android:backgroundTint="@color/white"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:gravity="center"
+                    android:selectAllOnFocus="true"
+                    android:hint="0"
+                    android:inputType="number"
+                    android:imeOptions="actionDone" />
             </LinearLayout>
             <Button
                 android:id="@+id/saveButton"
