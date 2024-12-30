@@ -6,4 +6,5 @@
     </style>
 
     <style name="Theme.Jads" parent="Base.Theme.Jads" />
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar"/>
 </resources>

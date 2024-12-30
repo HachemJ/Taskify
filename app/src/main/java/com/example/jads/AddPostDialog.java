@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputFilter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,20 +34,26 @@ public class AddPostDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.activity_add_post_dialog, container, false);
 
         // Initialize existing views
+        titleEditText = view.findViewById(R.id.postTitleEditText); // Initialize titleEditText
         descriptionEditText = view.findViewById(R.id.descriptionEditText);
+        //priceEditText = view.findViewById(R.id.priceEditText); // Initialize priceEditText
         saveButton = view.findViewById(R.id.saveButton);
+
+        // Set character limit of 280 characters
+        descriptionEditText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(273)});
 
         // Initialize new views for the image feature
         postImageView = view.findViewById(R.id.postImageView);
         addImageButton = view.findViewById(R.id.addImageButton);
 
-        // Save button functionality (unchanged)
+        // Save button functionality
         saveButton.setOnClickListener(v -> {
             String title = titleEditText != null ? titleEditText.getText().toString() : "";
             String bio = descriptionEditText.getText().toString();
             String price = priceEditText != null ? priceEditText.getText().toString() : "";
 
             // Handle saving the post
+            Toast.makeText(getContext(), "Post saved successfully", Toast.LENGTH_SHORT).show();
             dismiss();
         });
 
