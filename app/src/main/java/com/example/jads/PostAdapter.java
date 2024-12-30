@@ -13,6 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,16 +43,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = filteredPostList.get(position); // Use the filtered list for display
 
-        // Safely handle null values
+        // Safely handle null values for post fields
         String title = post.getTitle() != null ? post.getTitle() : "No Title";
-        String username = post.getUsername() != null ? post.getUsername() : "Unknown User";
         String description = post.getDescription() != null ? post.getDescription() : "No description available";
         Long timestamp = post.getTimestamp();
         String imageUrl = post.getImageUrl();
         String posterUserId = post.getUserId(); // Retrieve the poster's user ID
 
         holder.titleTextView.setText(title);
-        holder.usernameTextView.setText(username);
 
         // Limit description to 100 characters
         String truncatedDescription = description.length() > 100 ? description.substring(0, 100) + "..." : description;
@@ -73,6 +76,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.imageView.setImageResource(R.drawable.placeholder_image); // Fallback image if no URL is provided
         }
 
+        // Fetch and set the username
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(posterUserId);
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String username = snapshot.child("username").getValue(String.class);
+                holder.usernameTextView.setText(username != null ? username : "Unknown User");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                holder.usernameTextView.setText("Unknown User"); // Fallback if there's an error
+            }
+        });
+
         // Click listener for "Learn More"
         holder.learnMoreButton.setOnClickListener(v -> {
             // Open the PostDetailActivity and pass the post ID and posterUserId
@@ -82,6 +100,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             v.getContext().startActivity(intent);
         });
     }
+
 
 
 
