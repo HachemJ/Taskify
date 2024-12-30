@@ -1,5 +1,6 @@
 package com.example.jads;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = filteredPostList.get(position); // Use the filtered list
+        Post post = filteredPostList.get(position); // Use the filtered list for display
 
         // Safely handle null values
         String title = post.getTitle() != null ? post.getTitle() : "No Title";
@@ -43,6 +44,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String description = post.getDescription() != null ? post.getDescription() : "No description available";
         Long timestamp = post.getTimestamp();
         String imageUrl = post.getImageUrl();
+        String posterUserId = post.getUserId(); // Retrieve the poster's user ID
 
         holder.titleTextView.setText(title);
         holder.usernameTextView.setText(username);
@@ -57,25 +59,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .format(new java.util.Date(timestamp));
             holder.timeTextView.setText(formattedDate);
         } else {
-            holder.timeTextView.setText("Unknown time");
+            holder.timeTextView.setText("Unknown time"); // Default text if timestamp is missing
         }
 
         // Load image using Glide
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(R.drawable.placeholder_image)
-                    .error(R.drawable.error_image)
-                    .into(holder.imageView);
+                    .placeholder(R.drawable.placeholder_image) // Placeholder while loading
+                    .error(R.drawable.error_image) // Error image if the URL is invalid
+                    .into(holder.imageView); // Bind the imageView
         } else {
-            holder.imageView.setImageResource(R.drawable.placeholder_image);
+            holder.imageView.setImageResource(R.drawable.placeholder_image); // Fallback image if no URL is provided
         }
 
         // Click listener for "Learn More"
-        holder.learnMoreButton.setOnClickListener(v ->
-                Toast.makeText(v.getContext(), "Learn more clicked!", Toast.LENGTH_SHORT).show()
-        );
+        holder.learnMoreButton.setOnClickListener(v -> {
+            // Open the PostDetailActivity and pass the post ID and posterUserId
+            Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
+            intent.putExtra("postId", post.getPostId()); // Pass the post ID
+            intent.putExtra("posterUserId", posterUserId); // Pass the poster's user ID
+            v.getContext().startActivity(intent);
+        });
     }
+
 
     @Override
     public int getItemCount() {
