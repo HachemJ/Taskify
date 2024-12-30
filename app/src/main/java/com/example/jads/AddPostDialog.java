@@ -268,6 +268,7 @@ public class AddPostDialog extends DialogFragment {
         postDetails.put("price", price);
         postDetails.put("tags", tags);
         postDetails.put("category", postCategory); // Add the post category
+        postDetails.put("timestamp", System.currentTimeMillis()); // Add the timestamp
         if (imageUrl != null) {
             postDetails.put("imageUrl", imageUrl); // Save the image URL
         }
@@ -282,6 +283,7 @@ public class AddPostDialog extends DialogFragment {
                     }
                 });
     }
+
 
 
 

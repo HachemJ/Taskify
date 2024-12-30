@@ -4,7 +4,9 @@ public class Post {
     private String title;
     private String description;
     private String userId;
-    private String username; // Add this field
+    private String username;
+    private Long timestamp;// Add this field
+    private String imageUrl;
 
     public Post() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
@@ -40,5 +42,19 @@ public class Post {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
