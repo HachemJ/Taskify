@@ -38,6 +38,7 @@ public class AddPostDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_add_post_dialog, container, false);
 
+        // Initialize UI components
         titleEditText = view.findViewById(R.id.postTitleEditText);
         descriptionEditText = view.findViewById(R.id.descriptionEditText);
         saveButton = view.findViewById(R.id.saveButton);
@@ -55,7 +56,9 @@ public class AddPostDialog extends DialogFragment {
         // Sync Slider -> EditText
         priceSlider.addOnChangeListener((slider, value, fromUser) -> {
             int intValue = (int) value;
-            priceEditText.setText(String.valueOf(intValue));
+            if (!priceEditText.getText().toString().equals(String.valueOf(intValue))) {
+                priceEditText.setText(String.valueOf(intValue));
+            }
         });
 
         // Sync EditText -> Slider with Leading Zeros Trimmed
@@ -73,6 +76,8 @@ public class AddPostDialog extends DialogFragment {
                 try {
                     // Remove leading zeros
                     String text = s.toString().replaceFirst("^0+(?!$)", "");
+                    if (text.isEmpty()) text = "0"; // Ensure valid input
+
                     int value = Integer.parseInt(text);
 
                     // Clamp the value between 0 and 100
@@ -80,12 +85,12 @@ public class AddPostDialog extends DialogFragment {
 
                     // Update EditText and Slider
                     priceEditText.setText(String.valueOf(value));
-                    priceEditText.setSelection(priceEditText.getText().length());
+                    priceEditText.setSelection(priceEditText.getText().length()); // Set cursor at the end
                     priceSlider.setValue(value);
                 } catch (NumberFormatException e) {
                     // Handle invalid input gracefully (e.g., empty string)
                     priceEditText.setText("0");
-                    priceEditText.setSelection(priceEditText.getText().length());
+                    priceEditText.setSelection(priceEditText.getText().length()); // Set cursor at the end
                     priceSlider.setValue(0);
                 }
 

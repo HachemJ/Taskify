@@ -114,10 +114,10 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/postTitleUnderline"
                     android:layout_marginTop="16dp" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/priceSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -126,7 +126,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <!-- Slider -->
                 <com.google.android.material.slider.Slider
                     android:id="@+id/settingsMission_changeShakeDif_slider"
                     android:layout_width="0dp"
@@ -142,10 +141,9 @@
                     app:trackColorInactive="#a7bada"
                     app:tickVisible="false" />
 
-                <!-- EditText -->
                 <EditText
                     android:id="@+id/editTextNumber"
-                    android:layout_width="60dp"
+                    android:layout_width="55dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/rounded_et"
@@ -155,9 +153,42 @@
                     android:gravity="center"
                     android:selectAllOnFocus="true"
                     android:hint="0"
-                    android:inputType="number"
-                    android:imeOptions="actionDone" />
+                    android:inputType="number" />
             </LinearLayout>
+
+            <!-- Tag -->
+            <LinearLayout
+                android:id="@+id/tagInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/priceSection">
+
+                <EditText
+                    android:id="@+id/newTagEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white"
+                    android:hint="Add a tag"
+                    android:inputType="text"
+                    android:padding="8dp"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/gray" />
+
+                <Button
+                    android:id="@+id/addTagButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Add"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
@@ -169,9 +200,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
