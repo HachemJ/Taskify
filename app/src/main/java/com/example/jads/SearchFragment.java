@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ import java.util.List;
 public class SearchFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private SearchView searchView;
     private PostAdapter postAdapter;
     private List<Post> postList;
     private DatabaseReference postsReference;
@@ -43,6 +45,8 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        searchView = view.findViewById(R.id.searchView);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postList = new ArrayList<>();
@@ -52,6 +56,7 @@ public class SearchFragment extends Fragment {
         postsReference = FirebaseDatabase.getInstance().getReference("posts");
 
         fetchPosts();
+        setupSearchView();
 
         return view;
     }
@@ -64,30 +69,13 @@ public class SearchFragment extends Fragment {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Post post = postSnapshot.getValue(Post.class);
                     if (post != null) {
-                        String userId = post.getUserId();
-                        // Fetch username from the "users" node
-                        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
-                        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                                String username = userSnapshot.child("username").getValue(String.class);
-                                post.setUsername(username != null ? username : "Unknown User");
-
-                                // Debugging Log
-                                System.out.println("Post Title: " + post.getTitle() + ", Username: " + post.getUsername());
-
-                                // Add the post to the list and notify the adapter
-                                postList.add(post);
-                                postAdapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                System.err.println("Error fetching username: " + error.getMessage());
-                            }
-                        });
+                        postList.add(post);
                     }
                 }
+                // Update adapter to reflect the complete post list
+                postAdapter = new PostAdapter(postList);
+                recyclerView.setAdapter(postAdapter);
+                postAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -97,4 +85,19 @@ public class SearchFragment extends Fragment {
         });
     }
 
+    private void setupSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                postAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                postAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
 }

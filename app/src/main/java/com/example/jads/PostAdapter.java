@@ -13,18 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements android.widget.Filterable {
 
-    private final List<Post> postList;
+    private final List<Post> postList; // Original list
+    private List<Post> filteredPostList; // Filtered list for dynamic searching
 
     public PostAdapter(List<Post> postList) {
         this.postList = postList;
+        this.filteredPostList = new ArrayList<>(postList); // Initialize with all posts
     }
 
     @NonNull
@@ -36,7 +35,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = postList.get(position);
+        Post post = filteredPostList.get(position); // Use the filtered list
 
         // Safely handle null values
         String title = post.getTitle() != null ? post.getTitle() : "No Title";
@@ -58,31 +57,60 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .format(new java.util.Date(timestamp));
             holder.timeTextView.setText(formattedDate);
         } else {
-            holder.timeTextView.setText("Unknown time"); // Default text if timestamp is missing
+            holder.timeTextView.setText("Unknown time");
         }
 
         // Load image using Glide
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(R.drawable.placeholder_image) // Placeholder while loading
-                    .error(R.drawable.error_image) // Error image if the URL is invalid
-                    .into(holder.imageView); // Bind the imageView
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.error_image)
+                    .into(holder.imageView);
         } else {
-            holder.imageView.setImageResource(R.drawable.placeholder_image); // Fallback image if no URL is provided
+            holder.imageView.setImageResource(R.drawable.placeholder_image);
         }
 
         // Click listener for "Learn More"
-        holder.learnMoreButton.setOnClickListener(v -> {
-            // Implement the action to view more details
-            Toast.makeText(v.getContext(), "Learn more clicked!", Toast.LENGTH_SHORT).show();
-        });
+        holder.learnMoreButton.setOnClickListener(v ->
+                Toast.makeText(v.getContext(), "Learn more clicked!", Toast.LENGTH_SHORT).show()
+        );
     }
-
 
     @Override
     public int getItemCount() {
-        return postList.size(); // Return the correct size of postList
+        return filteredPostList != null ? filteredPostList.size() : 0; // Return the size of the filtered list
+    }
+
+    @Override
+    public android.widget.Filter getFilter() {
+        return new android.widget.Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String query = constraint != null ? constraint.toString().toLowerCase() : "";
+                List<Post> filtered = new ArrayList<>();
+
+                if (query.isEmpty()) {
+                    filtered = postList; // Show all posts if query is empty
+                } else {
+                    for (Post post : postList) {
+                        if (post.getTitle() != null && post.getTitle().toLowerCase().contains(query)) {
+                            filtered.add(post); // Add posts matching the title
+                        }
+                    }
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filtered;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredPostList = (List<Post>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
@@ -96,13 +124,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             titleTextView = itemView.findViewById(R.id.titleTextView);
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
-            descriptionTextView = itemView.findViewById(R.id.descriptionTextView); // Link to description TextView in XML
-            timeTextView = itemView.findViewById(R.id.timeTextView); // Link to time TextView in XML
-            imageView = itemView.findViewById(R.id.imageView); // Add this
+            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
+            timeTextView = itemView.findViewById(R.id.timeTextView);
+            imageView = itemView.findViewById(R.id.imageView);
             learnMoreButton = itemView.findViewById(R.id.learnMoreButton);
         }
     }
-
-
-
 }
