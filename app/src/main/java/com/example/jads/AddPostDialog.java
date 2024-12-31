@@ -98,16 +98,18 @@ public class AddPostDialog extends DialogFragment {
             dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.dark_blue));
             saveButton.setBackgroundColor(getResources().getColor(R.color.black));
             saveButton.setTextColor(getResources().getColor(R.color.white));
-            addImageButton.setBackgroundColor(getResources().getColor(R.color.black));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.black));
+            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black))); // Change button color
+            descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
             priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
         } else { // Default to "Looking"
             dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.black));
             saveButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
             saveButton.setTextColor(getResources().getColor(R.color.white));
-            addImageButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue))); // Change button color
+            descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
         }
@@ -158,16 +160,19 @@ public class AddPostDialog extends DialogFragment {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Add Tag Button Click Listener
         addTagButton.setOnClickListener(v -> {
             String tagText = newTagEditText.getText().toString().trim();
+
             if (!tagText.isEmpty() && !predefinedTags.contains(tagText)) {
-                predefinedTags.add(tagText);
-                addTagToContainer(tagText);
-                newTagEditText.setText("");
+                if (predefinedTags.size() < 2) { // Allow only up to 2 tags
+                    predefinedTags.add(tagText);
+                    addTagToContainer(tagText);
+                    newTagEditText.setText("");
+                } else {
+                    Toast.makeText(getContext(), "You can only add up to 2 tags.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
         saveButton.setOnClickListener(v -> savePost());
 
         addImageButton.setOnClickListener(v -> {

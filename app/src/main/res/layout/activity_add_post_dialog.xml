@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/CardView"
         android:layout_width="match_parent"
-        android:layout_height="665dp"
+        android:layout_height="725dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:cardCornerRadius="30dp"
@@ -57,12 +57,12 @@
                     android:id="@+id/addImageButton"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/baseline_add_to_photos_24"
+                    android:background="@drawable/baseline_add_photo_alternate_24"
                     android:contentDescription="Add Image"
+                    android:padding="20dp"
+                    android:backgroundTint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_margin="8dp"
-                    android:tint="@color/white" />
+                    app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Post Title Section -->
@@ -82,7 +82,7 @@
                     android:hint="Post Title"
                     android:background="@android:color/transparent"
                     android:textColor="@android:color/white"
-                    android:textColorHint="@android:color/white"
+                    android:textColorHint="@color/gray"
                     android:textSize="16sp"
                     android:padding="0dp"
                     android:inputType="text"
@@ -107,9 +107,10 @@
                     android:layout_height="wrap_content"
                     android:hint="Description"
                     android:background="@drawable/rounded_edittext_background"
+                    android:backgroundTint="@color/blue"
                     android:padding="10dp"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@android:color/black"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/gray"
                     android:textSize="16sp"
                     android:gravity="top"
                     android:minLines="7"
@@ -122,86 +123,103 @@
 
             <!-- Price Section -->
             <LinearLayout
-                android:id="@+id/priceSection"
+                android:id="@+id/priceSectionContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="125dp"
+                android:orientation="vertical"
+                android:layout_marginBottom="90dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/slider"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:theme="@style/AppTheme"
-                    android:stepSize="1"
-                    android:valueFrom="0"
-                    android:valueTo="100"
-                    app:labelBehavior="floating"
-                    app:thumbColor="#238ae6"
-                    app:trackColor="@color/white"
-                    app:tickVisible="false" />
-
-                <EditText
-                    android:id="@+id/editTextNumber"
-                    android:layout_width="55dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/rounded_et"
-                    android:backgroundTint="@color/white"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    android:gravity="center"
-                    android:selectAllOnFocus="true"
-                    android:hint="0"
-                    android:inputType="number" />
-            </LinearLayout>
-
-            <!-- Tag Section -->
-            <LinearLayout
-                android:id="@+id/tagInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                app:layout_constraintTop_toBottomOf="@id/priceSection">
-
-                <EditText
-                    android:id="@+id/newTagEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/white"
-                    android:hint="Add a tag"
-                    android:inputType="text"
-                    android:padding="8dp"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/gray" />
-
-                <Button
-                    android:id="@+id/addTagButton"
+                <TextView
+                    android:id="@+id/priceTitleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:backgroundTint="@color/blue"
-                    android:text="Add"
-                    android:textColor="@android:color/white" />
+                    android:text="Price:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_gravity="start" />
+
+                <!-- Horizontal Layout for Slider and EditText -->
+                <LinearLayout
+                    android:id="@+id/priceSection"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/thin_border"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/slider"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:theme="@style/AppTheme"
+                        android:stepSize="1"
+                        android:valueFrom="0"
+                        android:valueTo="100"
+                        app:labelBehavior="floating"
+                        app:thumbColor="#238ae6"
+                        app:trackColor="@color/white"
+                        app:tickVisible="false" />
+
+                    <EditText
+                        android:id="@+id/editTextNumber"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/thin_border"
+                        android:gravity="center"
+                        android:hint="$0"
+                        android:inputType="number"
+                        android:selectAllOnFocus="true"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/light_gray" />
+                </LinearLayout>
+                <!-- Tag Section -->
+                <LinearLayout
+                    android:id="@+id/tagInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/priceSection">
+
+                    <EditText
+                        android:id="@+id/newTagEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:hint="Add a tag"
+                        android:inputType="text"
+                        android:padding="8dp"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@color/gray" />
+
+                    <Button
+                        android:id="@+id/addTagButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:backgroundTint="@color/blue"
+                        android:text="Add"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <!-- Tag Display Section -->
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/tagContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    android:padding="4dp"
+                    app:layout_constraintBottom_toTopOf="@id/saveButton"
+                    />
             </LinearLayout>
 
-            <!-- Tag Display Section -->
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/tagContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:flexWrap="wrap"
-                app:justifyContent="flex_start"
-                android:padding="4dp"
-                app:layout_constraintBottom_toTopOf="@id/saveButton"
-                />
 
             <!-- Save Button -->
             <Button
