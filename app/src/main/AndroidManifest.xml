@@ -34,6 +34,9 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".ChatsActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostDetailActivity"
             android:exported="false" />
         <activity

@@ -1,9 +1,11 @@
 package com.example.jads;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -58,8 +60,16 @@ public class SearchFragment extends Fragment {
         fetchPosts();
         setupSearchView();
 
+        // Initialize and set up the "Open Chats" button
+        Button openChatsButton = view.findViewById(R.id.openChatsButton);
+        openChatsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ChatsActivity.class);
+            startActivity(intent);
+        });
+
         return view;
     }
+
 
     private void fetchPosts() {
         postsReference.addValueEventListener(new ValueEventListener() {

@@ -89,9 +89,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             public void onCancelled(@NonNull DatabaseError error) {
                 holder.usernameTextView.setText("Unknown User"); // Fallback if there's an error
             }
+
         });
-
-
+        // Add Learn More button functionality
+        holder.learnMoreButton.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
+            intent.putExtra("postId", post.getPostId()); // Pass the post ID
+            intent.putExtra("posterUserId", posterUserId); // Pass the poster's user ID
+            v.getContext().startActivity(intent);
+        });
     }
 
 
