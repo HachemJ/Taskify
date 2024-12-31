@@ -91,6 +91,9 @@ public class AddPostDialog extends DialogFragment {
 
         titleEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(44)});
         descriptionEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(273)});
+        newTagEditText.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(15) // Limit input to 15 characters
+        });
 
         // Apply dynamic styling based on tab context
         if ("Selling".equals(tabContext)) {
