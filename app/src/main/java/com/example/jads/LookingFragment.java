@@ -31,7 +31,7 @@ public class LookingFragment extends Fragment {
             if (isAdded()) {
                 AddPostDialog addPostDialog = new AddPostDialog();
                 Bundle args = new Bundle();
-                args.putString("postCategory", "Looking"); // Pass the category as "Looking"
+                args.putString("tabContext", "Looking"); // Pass "Looking" context
                 addPostDialog.setArguments(args);
                 addPostDialog.show(getParentFragmentManager(), "AddPostDialog");
             }

@@ -30,7 +30,7 @@ public class SellingFragment extends Fragment {
         openAddPostDialogButton.setOnClickListener(v -> {
             AddPostDialog addPostDialog = new AddPostDialog();
             Bundle args = new Bundle();
-            args.putString("postCategory", "Selling"); // Pass the category as "Selling"
+            args.putString("tabContext", "Selling"); // Pass "Selling" context
             addPostDialog.setArguments(args);
             addPostDialog.show(getParentFragmentManager(), "AddPostDialog");
         });

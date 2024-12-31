@@ -1,6 +1,7 @@
 package com.example.jads;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.flexbox.FlexboxLayout;
@@ -55,8 +57,10 @@ public class AddPostDialog extends DialogFragment {
     private DatabaseReference postsReference;
     private String postCategory; // Variable to store post category
     private StorageReference storageReference;
-    private Uri selectedImageUri;
 
+    private CardView dialogCardView; // CardView for styling
+    private String tabContext;
+    private Uri selectedImageUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,18 +71,20 @@ public class AddPostDialog extends DialogFragment {
         postsReference = FirebaseDatabase.getInstance().getReference("posts");
         storageReference = FirebaseStorage.getInstance().getReference("post_images");
 
-        // Retrieve post category from arguments
+        // Retrieve post category and tab context from arguments
         if (getArguments() != null) {
             postCategory = getArguments().getString("postCategory", "Unknown");
+            tabContext = getArguments().getString("tabContext", "Unknown");
         }
 
         // Initialize UI components
+        dialogCardView = view.findViewById(R.id.CardView); // Ensure ID exists in XML
         titleEditText = view.findViewById(R.id.postTitleEditText);
         descriptionEditText = view.findViewById(R.id.descriptionEditText);
         saveButton = view.findViewById(R.id.saveButton);
         postImageView = view.findViewById(R.id.postImageView);
         addImageButton = view.findViewById(R.id.addImageButton);
-        priceSlider = view.findViewById(R.id.settingsMission_changeShakeDif_slider);
+        priceSlider = view.findViewById(R.id.slider);
         priceEditText = view.findViewById(R.id.editTextNumber);
         newTagEditText = view.findViewById(R.id.newTagEditText);
         addTagButton = view.findViewById(R.id.addTagButton);
@@ -87,11 +93,24 @@ public class AddPostDialog extends DialogFragment {
         titleEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(44)});
         descriptionEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(273)});
 
-        // Add initial tags
-        predefinedTags.add("test1");
-        predefinedTags.add("test2");
-        populatePredefinedTags(); // Add the initial tags to the UI
-
+        // Apply dynamic styling based on tab context
+        if ("Selling".equals(tabContext)) {
+            dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.dark_blue));
+            saveButton.setBackgroundColor(getResources().getColor(R.color.black));
+            saveButton.setTextColor(getResources().getColor(R.color.white));
+            addImageButton.setBackgroundColor(getResources().getColor(R.color.black));
+            addTagButton.setBackgroundColor(getResources().getColor(R.color.black));
+            priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
+            priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
+        } else { // Default to "Looking"
+            dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.black));
+            saveButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            saveButton.setTextColor(getResources().getColor(R.color.white));
+            addImageButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            addTagButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
+            priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
+        }
         // Slider Label Formatter with Dollar Sign
         priceSlider.setLabelFormatter(value -> "$" + (int) value);
 
@@ -173,7 +192,6 @@ public class AddPostDialog extends DialogFragment {
             }
         }
     }
-
 
     @Override
     public void onStart() {
@@ -262,7 +280,6 @@ public class AddPostDialog extends DialogFragment {
         }
     }
 
-
     private void savePostDetails(String postId, String userId, String title, String description, String price, List<String> tags, String imageUrl) {
         Map<String, Object> postDetails = new HashMap<>();
         postDetails.put("userId", userId);
@@ -286,10 +303,6 @@ public class AddPostDialog extends DialogFragment {
                     }
                 });
     }
-
-
-
-
 
     private static class InputFilterMinMax implements InputFilter {
         private final int min;

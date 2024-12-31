@@ -2,6 +2,7 @@ package com.example.jads;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(this, fragments);
         viewPager.setAdapter(adapter);
 
-        // Bind TabLayout and ViewPager2 with dynamic colors for tabs
+        // Bind TabLayout and ViewPager2 with dynamic colors for tabs and status bar
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("Looking");
@@ -48,14 +49,30 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attach();
 
-        // Change Tab Indicator Color Dynamically
+        // Dynamic Indicator and Status Bar Color Change
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
-                    tabLayout.setSelectedTabIndicatorColor(getColor(R.color.black)); // Green for "Looking"
+                    // Blue for "Looking"
+                    tabLayout.setSelectedTabIndicatorColor(getColor(R.color.black));
+                    getWindow().setStatusBarColor(getColor(R.color.black));
                 } else if (tab.getPosition() == 1) {
-                    tabLayout.setSelectedTabIndicatorColor(getColor(R.color.dark_blue)); // Dark blue for "Selling"
+                    // Dark blue for "Selling"
+                    tabLayout.setSelectedTabIndicatorColor(getColor(R.color.dark_blue));
+                    getWindow().setStatusBarColor(getColor(R.color.dark_blue));
+
+                    // Modify "Add Post" button in SellingFragment
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    SellingFragment sellingFragment = (SellingFragment) fragmentManager.findFragmentByTag("f1"); // Ensure this matches the SellingFragment tag
+
+                    if (sellingFragment != null && sellingFragment.getView() != null) {
+                        Button addPostButton = sellingFragment.getView().findViewById(R.id.openAddPostDialogButton);
+                        if (addPostButton != null) {
+                            addPostButton.setBackgroundColor(getColor(R.color.dark_blue)); // Change background to dark blue
+                            addPostButton.setTextColor(getColor(R.color.black)); // Change text to black
+                        }
+                    }
                 }
             }
 
