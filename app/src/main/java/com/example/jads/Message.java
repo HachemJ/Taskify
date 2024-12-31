@@ -1,35 +1,54 @@
 package com.example.jads;
-
 public class Message {
+    private String messageId;
     private String senderId;
-    private String receiverId;
-    private String message;
+    private String text;
     private long timestamp;
 
-    public Message() {
-        // Default constructor required for Firebase
-    }
+    // Default constructor (required for Firebase)
+    public Message() {}
 
-    public Message(String senderId, String receiverId, String message, long timestamp) {
+    // Constructor with parameters (optional, for convenience)
+    public Message(String messageId, String senderId, String text, long timestamp) {
+        this.messageId = messageId;
         this.senderId = senderId;
-        this.receiverId = receiverId;
-        this.message = message;
+        this.text = text;
         this.timestamp = timestamp;
     }
 
+    // Getter and setter for messageId
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
+    // Getter and setter for senderId
     public String getSenderId() {
         return senderId;
     }
 
-    public String getReceiverId() {
-        return receiverId;
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 
-    public String getMessage() {
-        return message;
+    // Getter and setter for text
+    public String getText() {
+        return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    // Getter and setter for timestamp
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

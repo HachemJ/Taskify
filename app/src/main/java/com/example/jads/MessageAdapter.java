@@ -32,11 +32,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (message.getSenderId().equals(currentUserId)) {
             holder.senderMessage.setVisibility(View.VISIBLE);
             holder.receiverMessage.setVisibility(View.GONE);
-            holder.senderMessage.setText(message.getMessage());
+            holder.senderMessage.setText(message.getText());
         } else {
             holder.receiverMessage.setVisibility(View.VISIBLE);
             holder.senderMessage.setVisibility(View.GONE);
-            holder.receiverMessage.setText(message.getMessage());
+            holder.receiverMessage.setText(message.getText());
         }
     }
 

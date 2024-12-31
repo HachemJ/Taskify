@@ -82,7 +82,9 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void loadMessages() {
-        chatReference.child("messages").addValueEventListener(new ValueEventListener() {
+        if (chatReference == null) return;
+
+        chatReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messageList.clear();
@@ -93,28 +95,41 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
                 messageAdapter.notifyDataSetChanged();
-                messagesRecyclerView.scrollToPosition(messageList.size() - 1); // Scroll to the latest message
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
+                Toast.makeText(ChatActivity.this, "Failed to load messages: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void sendMessage(String messageText) {
-        String messageId = chatReference.child("messages").push().getKey();
-        if (messageId != null) {
-            HashMap<String, Object> messageData = new HashMap<>();
-            messageData.put("senderId", currentUserId);
-            messageData.put("receiverId", posterUserId);
-            messageData.put("message", messageText);
-            messageData.put("timestamp", System.currentTimeMillis());
 
-            chatReference.child("messages").child(messageId).setValue(messageData);
+    private void sendMessage(String messageText) {
+        if (chatReference == null || currentUserId == null || posterUserId == null) {
+            Toast.makeText(this, "Chat is not properly initialized.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        String messageId = chatReference.push().getKey(); // Generate unique key for the message
+        if (messageId == null) return;
+
+        Message message = new Message();
+        message.setMessageId(messageId);
+        message.setSenderId(currentUserId);
+        message.setText(messageText);
+        message.setTimestamp(System.currentTimeMillis());
+
+        chatReference.child(messageId).setValue(message)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to send message", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 
     private String generateChatId(String userId1, String userId2) {
         if (userId1 == null || userId2 == null) {
