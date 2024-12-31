@@ -91,14 +91,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
-        // Click listener for "Learn More"
-        holder.learnMoreButton.setOnClickListener(v -> {
-            // Open the PostDetailActivity and pass the post ID and posterUserId
-            Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
-            intent.putExtra("postId", post.getPostId()); // Pass the post ID
-            intent.putExtra("posterUserId", posterUserId); // Pass the poster's user ID
-            v.getContext().startActivity(intent);
-        });
+
     }
 
 
