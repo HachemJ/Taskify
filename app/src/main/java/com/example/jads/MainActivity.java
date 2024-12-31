@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(this, fragments);
         viewPager.setAdapter(adapter);
 
-        // Bind TabLayout and ViewPager2
+        // Bind TabLayout and ViewPager2 with dynamic colors for tabs
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("Looking");
@@ -47,6 +47,28 @@ public class MainActivity extends AppCompatActivity {
                 tab.setText("Selling");
             }
         }).attach();
+
+        // Change Tab Indicator Color Dynamically
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    tabLayout.setSelectedTabIndicatorColor(getColor(R.color.black)); // Green for "Looking"
+                } else if (tab.getPosition() == 1) {
+                    tabLayout.setSelectedTabIndicatorColor(getColor(R.color.dark_blue)); // Dark blue for "Selling"
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // No action needed
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // No action needed
+            }
+        });
 
         // Bottom Navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -83,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         // Set Default Tab (Home)
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
+        // Handle Window Insets for Edge-to-Edge UI
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             WindowInsetsCompat.Type.systemBars();
             return insets;
