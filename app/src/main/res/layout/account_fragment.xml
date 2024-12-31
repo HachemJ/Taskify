@@ -29,6 +29,7 @@
             android:paddingBottom="8dp" />
 
         <LinearLayout
+            android:id="@+id/viewProfileLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -40,7 +41,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_profile"
+                android:src="@drawable/baseline_person_24"
                 android:contentDescription="Profile Icon"
                 app:tint="@color/black" />
 
@@ -48,7 +49,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Edit Profile"
+                android:text="View Profile"
                 android:textSize="16sp"
                 android:paddingStart="16dp"
                 android:gravity="center_vertical" />
