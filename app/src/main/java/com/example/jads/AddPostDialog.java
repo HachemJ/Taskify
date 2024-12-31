@@ -27,7 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
-import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,7 +47,7 @@ public class AddPostDialog extends DialogFragment {
     private Button saveButton, addImageButton, addTagButton;
     private ImageView postImageView;
     private Slider priceSlider;
-    private FlexboxLayout tagContainer;
+    private LinearLayout tagContainer;
     private static final int IMAGE_PICK_CODE = 100;
 
     private final List<String> predefinedTags = new ArrayList<>();
@@ -226,13 +225,21 @@ public class AddPostDialog extends DialogFragment {
 
         TextView tagName = new TextView(getContext());
         tagName.setText(tagText);
-        tagName.setTextColor(getResources().getColor(android.R.color.white));
+        tagName.setTextColor(getResources().getColor(R.color.medium_gray));
         tagName.setPadding(8, 0, 8, 0);
         tagName.setTextSize(14);
 
         ImageView closeButton = new ImageView(getContext());
         closeButton.setImageResource(android.R.drawable.ic_delete);
         closeButton.setPadding(8, 8, 8, 8);
+
+        // Set the tint color based on tabContext
+        if ("Selling".equals(tabContext)) {
+            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.black))); // Black for Selling
+        } else if ("Looking".equals(tabContext)) {
+            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue))); // Dark Blue for Looking
+        }
+
         closeButton.setOnClickListener(v -> {
             predefinedTags.remove(tagText);
             tagContainer.removeView(tagLayout);
