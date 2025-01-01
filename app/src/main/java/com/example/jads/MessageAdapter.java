@@ -123,6 +123,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 sentMessageTextView.setText(message.getText());
                 timeTextView.setText(time);
             } else {
+
                 sentMessageTextView.setVisibility(View.GONE);
                 receivedMessageTextView.setVisibility(View.VISIBLE);
                 timeTextView.setVisibility(View.VISIBLE);
