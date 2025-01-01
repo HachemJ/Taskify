@@ -41,16 +41,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = filteredPostList.get(position); // Use the filtered list for display
+        Post post = filteredPostList.get(position);
 
-        // Safely handle null values for post fields
+        // Safely handle null values
         String title = post.getTitle() != null ? post.getTitle() : "No Title";
         String description = post.getDescription() != null ? post.getDescription() : "No description available";
         Long timestamp = post.getTimestamp();
         String imageUrl = post.getImageUrl();
-        String posterUserId = post.getUserId(); // Retrieve the poster's user ID
+        String posterUserId = post.getUserId();
+        List<String> tags = post.getTags();
+        String category = post.getCategory() != null ? post.getCategory() : "Uncategorized";
+        String price = post.getPrice(); // Price remains a string
 
         holder.titleTextView.setText(title);
+
+        // Display tags
+        if (tags != null && !tags.isEmpty()) {
+            holder.tagsTextView.setText(String.join(", ", tags)); // Join tags with commas
+        } else {
+            holder.tagsTextView.setText("No tags available");
+        }
+
+        // Display price
+        if (price != null && !price.isEmpty()) {
+            holder.priceTextView.setText("$" + price); // Format as a string
+        } else {
+            holder.priceTextView.setText("Price not specified");
+        }
+
+        // Display category
+        holder.categoryTextView.setText(category);
 
         // Limit description to 100 characters
         String truncatedDescription = description.length() > 100 ? description.substring(0, 100) + "..." : description;
@@ -62,18 +82,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .format(new java.util.Date(timestamp));
             holder.timeTextView.setText(formattedDate);
         } else {
-            holder.timeTextView.setText("Unknown time"); // Default text if timestamp is missing
+            holder.timeTextView.setText("Unknown time");
         }
 
         // Load image using Glide
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
-                    .placeholder(R.drawable.placeholder_image) // Placeholder while loading
-                    .error(R.drawable.error_image) // Error image if the URL is invalid
-                    .into(holder.imageView); // Bind the imageView
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.error_image)
+                    .into(holder.imageView);
         } else {
-            holder.imageView.setImageResource(R.drawable.placeholder_image); // Fallback image if no URL is provided
+            holder.imageView.setImageResource(R.drawable.placeholder_image);
         }
 
         // Fetch and set the username
@@ -87,21 +107,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                holder.usernameTextView.setText("Unknown User"); // Fallback if there's an error
+                holder.usernameTextView.setText("Unknown User");
             }
-
         });
-        // Add Learn More button functionality
+
+        // Learn More button functionality
         holder.learnMoreButton.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
-            intent.putExtra("postId", post.getPostId()); // Pass the post ID
-            intent.putExtra("posterUserId", posterUserId); // Pass the poster's user ID
+            intent.putExtra("postId", post.getPostId());
+            intent.putExtra("posterUserId", posterUserId);
             v.getContext().startActivity(intent);
         });
     }
-
-
-
 
 
     @Override
@@ -142,9 +159,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
 
-        TextView titleTextView, usernameTextView, descriptionTextView, timeTextView;
+        TextView titleTextView, usernameTextView, descriptionTextView, timeTextView, tagsTextView, priceTextView, categoryTextView;
         Button learnMoreButton;
-        public ImageView imageView;
+        ImageView imageView;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -153,8 +170,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             timeTextView = itemView.findViewById(R.id.timeTextView);
+            tagsTextView = itemView.findViewById(R.id.tagsTextView); // New
+            priceTextView = itemView.findViewById(R.id.priceTextView); // New
+            categoryTextView = itemView.findViewById(R.id.categoryTextView); // New
             imageView = itemView.findViewById(R.id.imageView);
             learnMoreButton = itemView.findViewById(R.id.learnMoreButton);
         }
     }
+
 }
