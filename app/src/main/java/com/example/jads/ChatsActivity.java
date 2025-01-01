@@ -170,5 +170,21 @@ public class ChatsActivity extends AppCompatActivity {
             }
         });
     }
+    private ValueEventListener chatsListener;
+    private DatabaseReference chatsRef;
 
+    private void attachChatsListener() {
+        chatsRef = FirebaseDatabase.getInstance().getReference("chats");
+        chatsListener = chatsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Handle chat data
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error querying chats: " + error.getMessage());
+            }
+        });
+    }
 }
