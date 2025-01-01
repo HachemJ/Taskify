@@ -12,6 +12,7 @@
     <color name="medium_gray">#636363</color>
     <color name="darkest_gray">#141414</color>
     <color name="purple_500">#6200EE</color>
+    <color name="gold">#FFD700</color>
 
     <!-- New Colors for BottomNavigationView -->
     <color name="bottom_nav_active">#B0BEC5</color>
