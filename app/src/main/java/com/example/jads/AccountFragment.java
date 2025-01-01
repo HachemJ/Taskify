@@ -1,7 +1,5 @@
 package com.example.jads;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,6 +35,7 @@ public class AccountFragment extends Fragment {
         // Initialize views
         userNameTextView = view.findViewById(R.id.user_name);
         LinearLayout logoutButton = view.findViewById(R.id.logoutButton); // Reference to the Log Out button layout
+        LinearLayout viewProfileLayout = view.findViewById(R.id.viewProfileLayout); // Reference to the clickable LinearLayout
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
@@ -82,12 +81,18 @@ public class AccountFragment extends Fragment {
         // Set up the logout button
         logoutButton.setOnClickListener(v -> showLogoutDialog());
 
+        // Set up the View Profile button (clickable LinearLayout)
+        viewProfileLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ViewProfileActivity.class);
+            startActivity(intent);
+        });
+
         return view;
     }
 
     private void showLogoutDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Log Out")
+        new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     // Perform logout
