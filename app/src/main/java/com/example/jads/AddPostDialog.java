@@ -87,6 +87,12 @@ public class AddPostDialog extends DialogFragment {
         addTagButton = view.findViewById(R.id.addTagButton);
         tagContainer = view.findViewById(R.id.tagContainer);
 
+        titleEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(44)});
+        descriptionEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(192)});
+        newTagEditText.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(15) // Limit input to 15 characters
+        });
+
         // Apply dynamic styling based on tab context
         if ("Selling".equalsIgnoreCase(tabContext)) {
             dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.dark_blue));
