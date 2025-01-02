@@ -54,7 +54,6 @@ public class AddPostDialog extends DialogFragment {
 
     private FirebaseAuth auth;
     private DatabaseReference postsReference;
-    private String postCategory; // Variable to store post category
     private StorageReference storageReference;
 
     private CardView dialogCardView; // CardView for styling
@@ -72,16 +71,11 @@ public class AddPostDialog extends DialogFragment {
 
         // Retrieve post category and tab context from arguments
         if (getArguments() != null) {
-            postCategory = getArguments().getString("postCategory", "Unknown");
             tabContext = getArguments().getString("tabContext", "Unknown");
         }
 
         // Initialize UI components
-        dialogCardView = view.findViewById(R.id.CardView); // Ensure ID exists in XML
-        titleEditText = view.findViewById(R.id.postTitleEditText);
-        descriptionEditText = view.findViewById(R.id.descriptionEditText);
         saveButton = view.findViewById(R.id.saveButton);
-        postImageView = view.findViewById(R.id.postImageView);
         addImageButton = view.findViewById(R.id.addImageButton);
         priceSlider = view.findViewById(R.id.slider);
         priceEditText = view.findViewById(R.id.editTextNumber);
@@ -89,19 +83,13 @@ public class AddPostDialog extends DialogFragment {
         addTagButton = view.findViewById(R.id.addTagButton);
         tagContainer = view.findViewById(R.id.tagContainer);
 
-        titleEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(44)});
-        descriptionEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(192)});
-        newTagEditText.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(15) // Limit input to 15 characters
-        });
-
         // Apply dynamic styling based on tab context
-        if ("Selling".equals(tabContext)) {
+        if ("Selling".equalsIgnoreCase(tabContext)) {
             dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.dark_blue));
             saveButton.setBackgroundColor(getResources().getColor(R.color.black));
             saveButton.setTextColor(getResources().getColor(R.color.white));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.black));
-            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black))); // Change button color
+            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
             descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
             priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
@@ -110,11 +98,12 @@ public class AddPostDialog extends DialogFragment {
             saveButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
             saveButton.setTextColor(getResources().getColor(R.color.white));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
-            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue))); // Change button color
+            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
         }
+
         // Slider Label Formatter with Dollar Sign
         priceSlider.setLabelFormatter(value -> "$" + (int) value);
 
@@ -302,7 +291,7 @@ public class AddPostDialog extends DialogFragment {
         postDetails.put("description", description);
         postDetails.put("price", price);
         postDetails.put("tags", tags);
-        postDetails.put("category", postCategory); // Add the post category
+        postDetails.put("category", tabContext); // Add the post category
         postDetails.put("timestamp", System.currentTimeMillis()); // Add the timestamp
         if (imageUrl != null) {
             postDetails.put("imageUrl", imageUrl); // Save the image URL

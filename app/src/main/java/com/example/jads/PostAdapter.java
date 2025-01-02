@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,12 +54,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         holder.titleTextView.setText(title);
 
-        // Display tags
+        // Dynamically display tags
         if (tags != null && !tags.isEmpty()) {
-            holder.tagsTextView.setText(String.join(", ", tags)); // Join tags with commas
+            holder.tagTest1.setVisibility(View.VISIBLE);
+            holder.tagTest1.setText(tags.get(0)); // Set first tag
+
+            if (tags.size() >= 2) {
+                holder.tagTest2.setVisibility(View.VISIBLE);
+                holder.tagTest2.setText(tags.get(1)); // Set second tag
+            } else {
+                holder.tagTest2.setVisibility(View.GONE);
+            }
         } else {
-            holder.tagsTextView.setText("No tags available");
+            holder.tagTest1.setVisibility(View.GONE);
+            holder.tagTest2.setVisibility(View.GONE);
         }
+
+        // Set the card color based on category
+        if ("selling".equalsIgnoreCase(category)) {
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black)); // Black button for selling
+        } else if ("looking".equalsIgnoreCase(category)) {
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue)); // Blue button for looking
+        } else {
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray)); // Default button color
+        }
+
+        // Display category
+        holder.categoryTextView.setText(category);
 
         // Display price
         if (price != null && !price.isEmpty()) {
@@ -68,9 +91,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             holder.priceTextView.setText("Price not specified");
         }
-
-        // Display category
-        holder.categoryTextView.setText(category);
 
         // Limit description to 100 characters
         String truncatedDescription = description.length() > 100 ? description.substring(0, 100) + "..." : description;
@@ -120,7 +140,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
     }
 
-
     @Override
     public int getItemCount() {
         return filteredPostList != null ? filteredPostList.size() : 0; // Return the size of the filtered list
@@ -159,9 +178,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
 
-        TextView titleTextView, usernameTextView, descriptionTextView, timeTextView, tagsTextView, priceTextView, categoryTextView;
+        TextView titleTextView, usernameTextView, descriptionTextView, timeTextView, tagTest1, tagTest2, priceTextView, categoryTextView;
         Button learnMoreButton;
         ImageView imageView;
+        androidx.cardview.widget.CardView cardView;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -170,12 +190,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             timeTextView = itemView.findViewById(R.id.timeTextView);
-            tagsTextView = itemView.findViewById(R.id.tagsTextView); // New
-            priceTextView = itemView.findViewById(R.id.priceTv); // New
-            categoryTextView = itemView.findViewById(R.id.categoryTextView); // New
+            tagTest1 = itemView.findViewById(R.id.tagTest1);
+            tagTest2 = itemView.findViewById(R.id.tagTest2);
+            priceTextView = itemView.findViewById(R.id.priceTv);
+            categoryTextView = itemView.findViewById(R.id.categoryTextView);
             imageView = itemView.findViewById(R.id.imageView);
             learnMoreButton = itemView.findViewById(R.id.learnMoreButton);
+            cardView = itemView.findViewById(R.id.cardView);
         }
     }
-
 }
