@@ -171,7 +171,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             timeTextView = itemView.findViewById(R.id.timeTextView);
             tagsTextView = itemView.findViewById(R.id.tagsTextView); // New
-            priceTextView = itemView.findViewById(R.id.priceTextView); // New
+            priceTextView = itemView.findViewById(R.id.priceTv); // New
             categoryTextView = itemView.findViewById(R.id.categoryTextView); // New
             imageView = itemView.findViewById(R.id.imageView);
             learnMoreButton = itemView.findViewById(R.id.learnMoreButton);

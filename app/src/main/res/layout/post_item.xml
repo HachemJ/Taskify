@@ -13,7 +13,6 @@
         android:layout_height="240dp"
         android:background="@android:color/transparent"
         app:cardCornerRadius="30dp"
-        app:cardElevation="20dp"
         app:cardBackgroundColor="@color/darkest_gray">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -129,12 +128,29 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="5"
+                android:maxLines="4"
                 android:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textColor="@android:color/darker_gray"
                 app:layout_constraintStart_toStartOf="@id/titleTextView"
                 app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+
+            <!-- Price -->
+            <TextView
+                android:id="@+id/priceTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="32sp"
+                android:textColor="@android:color/white"
+                android:text="36$"
+                android:padding="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="@id/descriptionTextView"
+                app:layout_constraintEnd_toEndOf="@id/descriptionTextView"
+                app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+                app:layout_constraintBottom_toBottomOf="@id/learnMoreButton"/>
 
             <!-- Learn More Button -->
             <Button
@@ -160,15 +176,6 @@
                 android:layout_marginTop="8dp"
                 android:gravity="start"
                 android:layout_marginBottom="8dp">
-                <TextView
-                    android:id="@+id/priceTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white"
-                    android:padding="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/categoryTextView"

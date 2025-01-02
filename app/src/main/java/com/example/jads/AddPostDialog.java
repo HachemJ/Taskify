@@ -90,7 +90,7 @@ public class AddPostDialog extends DialogFragment {
         tagContainer = view.findViewById(R.id.tagContainer);
 
         titleEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(44)});
-        descriptionEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(273)});
+        descriptionEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(192)});
         newTagEditText.setFilters(new InputFilter[]{
                 new InputFilter.LengthFilter(15) // Limit input to 15 characters
         });
