@@ -75,7 +75,11 @@ public class AddPostDialog extends DialogFragment {
         }
 
         // Initialize UI components
+        dialogCardView = view.findViewById(R.id.CardView);
+        titleEditText = view.findViewById(R.id.postTitleEditText);
+        descriptionEditText = view.findViewById(R.id.descriptionEditText);
         saveButton = view.findViewById(R.id.saveButton);
+        postImageView = view.findViewById(R.id.postImageView);
         addImageButton = view.findViewById(R.id.addImageButton);
         priceSlider = view.findViewById(R.id.slider);
         priceEditText = view.findViewById(R.id.editTextNumber);
@@ -118,7 +122,7 @@ public class AddPostDialog extends DialogFragment {
             }
         });
 
-        // Sync EditText -> Slider with Leading Zeros Trimmed
+        // Sync EditText -> Slider
         priceEditText.addTextChangedListener(new TextWatcher() {
             boolean editing = false;
 
@@ -132,15 +136,12 @@ public class AddPostDialog extends DialogFragment {
 
                 try {
                     String text = s.toString().replaceFirst("^0+(?!$)", "");
-                    if (text.isEmpty()) text = "0";
-                    int value = Integer.parseInt(text);
-                    if (value > 100) value = 100;
+                    int value = text.isEmpty() ? 0 : Integer.parseInt(text);
+                    value = Math.min(value, 100);
                     priceEditText.setText(String.valueOf(value));
-                    priceEditText.setSelection(priceEditText.getText().length());
                     priceSlider.setValue(value);
                 } catch (NumberFormatException e) {
                     priceEditText.setText("0");
-                    priceEditText.setSelection(priceEditText.getText().length());
                     priceSlider.setValue(0);
                 }
 
@@ -164,8 +165,8 @@ public class AddPostDialog extends DialogFragment {
                 }
             }
         });
-        saveButton.setOnClickListener(v -> savePost());
 
+        saveButton.setOnClickListener(v -> savePost());
         addImageButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, IMAGE_PICK_CODE);
@@ -202,12 +203,6 @@ public class AddPostDialog extends DialogFragment {
         }
     }
 
-    private void populatePredefinedTags() {
-        for (String tag : predefinedTags) {
-            addTagToContainer(tag);
-        }
-    }
-
     private void addTagToContainer(String tagText) {
         LinearLayout tagLayout = new LinearLayout(getContext());
         tagLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -225,11 +220,10 @@ public class AddPostDialog extends DialogFragment {
         closeButton.setImageResource(android.R.drawable.ic_delete);
         closeButton.setPadding(8, 8, 8, 8);
 
-        // Set the tint color based on tabContext
-        if ("Selling".equals(tabContext)) {
-            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.black))); // Black for Selling
-        } else if ("Looking".equals(tabContext)) {
-            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue))); // Dark Blue for Looking
+        if ("Selling".equalsIgnoreCase(tabContext)) {
+            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
+        } else if ("Looking".equalsIgnoreCase(tabContext)) {
+            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
         }
 
         closeButton.setOnClickListener(v -> {
@@ -265,20 +259,16 @@ public class AddPostDialog extends DialogFragment {
 
         if (postId != null) {
             if (selectedImageUri != null) {
-                // Reference to store the image
                 StorageReference imageRef = storageReference.child("post_images/" + postId + ".jpg");
 
-                // Upload the image to Storage
                 imageRef.putFile(selectedImageUri)
                         .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            // Call savePostDetails with the image URL
                             savePostDetails(postId, userId, title, description, price, tags, uri.toString());
                         }))
                         .addOnFailureListener(e -> {
                             Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
                         });
             } else {
-                // Save without an image URL
                 savePostDetails(postId, userId, title, description, price, tags, null);
             }
         }
@@ -291,10 +281,10 @@ public class AddPostDialog extends DialogFragment {
         postDetails.put("description", description);
         postDetails.put("price", price);
         postDetails.put("tags", tags);
-        postDetails.put("category", tabContext); // Add the post category
-        postDetails.put("timestamp", System.currentTimeMillis()); // Add the timestamp
+        postDetails.put("category", tabContext);
+        postDetails.put("timestamp", System.currentTimeMillis());
         if (imageUrl != null) {
-            postDetails.put("imageUrl", imageUrl); // Save the image URL
+            postDetails.put("imageUrl", imageUrl);
         }
 
         postsReference.child(postId).setValue(postDetails)
