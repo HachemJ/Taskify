@@ -56,7 +56,7 @@ public class AddPostDialog extends DialogFragment {
     private DatabaseReference postsReference;
     private StorageReference storageReference;
 
-    private CardView dialogCardView; // CardView for styling
+    private CardView dialogCardView;
     private String tabContext;
     private Uri selectedImageUri;
 
@@ -172,10 +172,21 @@ public class AddPostDialog extends DialogFragment {
             }
         });
 
-        saveButton.setOnClickListener(v -> savePost());
+        saveButton.setOnClickListener(v -> {
+            if (isAdded()) { // Ensure the fragment is attached to the activity
+                savePost();
+            } else {
+                Toast.makeText(getContext(), "Fragment not attached. Try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         addImageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, IMAGE_PICK_CODE);
+            if (isAdded()) { // Ensure the fragment is attached to the activity
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, IMAGE_PICK_CODE);
+            } else {
+                Toast.makeText(getContext(), "Fragment not attached. Try again later.", Toast.LENGTH_SHORT).show();
+            }
         });
 
         return view;

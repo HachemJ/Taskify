@@ -75,12 +75,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         if ("selling".equalsIgnoreCase(category)) {
             holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
             holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black)); // Black button for selling
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
         } else if ("looking".equalsIgnoreCase(category)) {
             holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
             holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue)); // Blue button for looking
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
         } else {
             holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
             holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray)); // Default button color
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
         }
 
         // Display category

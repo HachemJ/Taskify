@@ -80,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="3.5"
+                    android:text="0"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -91,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="(97 reviews)"
+                    android:text="0"
                     android:textColor="@color/gray"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -258,6 +258,9 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
+                android:enabled="false"
+                android:textColor="@color/dark_gray"
+                android:backgroundTint="@color/light_gray"
                 android:background="@drawable/rounded_et"
                 android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"

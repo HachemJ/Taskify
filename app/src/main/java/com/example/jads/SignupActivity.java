@@ -17,7 +17,6 @@ import androidx.work.WorkManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -104,8 +103,8 @@ public class SignupActivity extends AppCompatActivity {
                                             Toast.makeText(SignupActivity.this, "Verification email sent. Please verify your email.", Toast.LENGTH_SHORT).show();
 
                                             // Save user data to "unverified_users" node
-                                            HelperClass helperClass = new HelperClass(firstName, lastName, email, username, null); // Removed phone number
-                                            unverifiedUsersReference.child(userId).setValue(helperClass)
+                                            User user = new User(firstName, lastName, email, username, null, null, null, null, null);
+                                            unverifiedUsersReference.child(userId).setValue(user)
                                                     .addOnCompleteListener(databaseTask -> {
                                                         if (databaseTask.isSuccessful()) {
                                                             // Schedule deletion for unverified users

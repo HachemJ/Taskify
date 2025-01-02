@@ -140,12 +140,8 @@
                 android:textColor="@color/white"
                 android:text="36$"
                 android:padding="8dp"
-
                 android:gravity="center"
-                app:layout_constraintStart_toEndOf="@id/categoryTextView"
-                app:layout_constraintEnd_toStartOf="@id/learnMoreButton"
-                app:layout_constraintTop_toTopOf="@id/learnMoreButton"
-                app:layout_constraintBottom_toBottomOf="@id/learnMoreButton" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <Button
                 android:id="@+id/learnMoreButton"
@@ -157,21 +153,23 @@
                 android:textColor="@color/white"
                 android:backgroundTint="@color/dark_blue"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/categoryTextView"
-                app:layout_constraintTop_toTopOf="@id/categoryTextView" />
+                app:layout_constraintBottom_toBottomOf="@id/priceTv"
+                app:layout_constraintTop_toTopOf="@id/priceTv" />
 
                 <TextView
                     android:id="@+id/categoryTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/white"
                     android:text="Category"
-                    android:layout_marginBottom="8dp"
+                    android:textStyle="bold"
                     android:padding="8dp"
                     android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/descriptionTextView"/>
+                    app:layout_constraintBottom_toBottomOf="@id/timeTextView"
+                    app:layout_constraintTop_toTopOf="@id/timeTextView"
+                    app:layout_constraintStart_toEndOf="@id/usernameTextView"
+                    app:layout_constraintEnd_toStartOf="@id/timeTextView"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
