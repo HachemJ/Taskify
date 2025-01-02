@@ -74,15 +74,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         // Set the card color based on category
         if ("selling".equalsIgnoreCase(category)) {
             holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black)); // Black button for selling
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
             holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
         } else if ("looking".equalsIgnoreCase(category)) {
             holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue)); // Blue button for looking
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
             holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
         } else {
             holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray)); // Default button color
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
             holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
         }
 
@@ -91,7 +91,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Display price
         if (price != null && !price.isEmpty()) {
-            holder.priceTextView.setText("$" + price); // Format as a string
+            holder.priceTextView.setText("$" + price);
         } else {
             holder.priceTextView.setText("Price not specified");
         }
@@ -149,7 +149,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public int getItemCount() {
-        return filteredPostList != null ? filteredPostList.size() : 0; // Return the size of the filtered list
+        return filteredPostList != null ? filteredPostList.size() : 0;
     }
 
     @Override
@@ -161,11 +161,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 List<Post> filtered = new ArrayList<>();
 
                 if (query.isEmpty()) {
-                    filtered = postList; // Show all posts if query is empty
+                    filtered = postList;
                 } else {
                     for (Post post : postList) {
                         if (post.getTitle() != null && post.getTitle().toLowerCase().contains(query)) {
-                            filtered.add(post); // Add posts matching the title
+                            filtered.add(post);
                         }
                     }
                 }
@@ -181,6 +181,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 notifyDataSetChanged();
             }
         };
+    }
+
+    // Method to update the list of posts dynamically
+    public void updatePosts(List<Post> newPostList) {
+        this.postList.clear();
+        this.postList.addAll(newPostList);
+        this.filteredPostList = new ArrayList<>(newPostList);
+        notifyDataSetChanged();
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {

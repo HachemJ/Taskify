@@ -34,7 +34,7 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
-            android:background="@drawable/chaticon"
+            android:background="@drawable/chat_icon"
             app:backgroundTint="@null"
             android:textColor="@android:color/white" />
     </LinearLayout>

@@ -32,7 +32,7 @@ public class PostDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_detail);
 
         // Initialize views
-        postTitle = findViewById(R.id.postTitle);
+        postTitle = findViewById(R.id.titleTextView);
         chatButton = findViewById(R.id.chatButton);
         deletePostButton = findViewById(R.id.deletePostButton); // Initialize delete button
 

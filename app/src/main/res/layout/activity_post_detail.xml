@@ -1,60 +1,209 @@
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/dark_blue"
+    android:padding="0dp">
 
+    <!-- Profile, Full Name, and Rating Section -->
+    <LinearLayout
+        android:id="@+id/profileSection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/imageView">
+
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_account" />
+
+        <!-- Full Name -->
+        <TextView
+            android:id="@+id/FullNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Name"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="center_vertical" />
+
+        <!-- Rating and Review Section -->
+        <LinearLayout
+            android:id="@+id/main_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical">
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:progressTint="@color/gold" />
+
+            <TextView
+                android:id="@+id/reviewScoreTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/reviewCountTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="0"
+                android:textColor="@color/gray"
+                android:textSize="16sp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Main Image -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="216dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profileSection" />
+
+    <!-- Title -->
     <TextView
         android:id="@+id/titleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp" />
-
-    <TextView
-        android:id="@+id/usernameTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Posted by"
-        android:textSize="18sp"
-        android:paddingBottom="8dp" />
-
-    <TextView
-        android:id="@+id/descriptionTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Description"
-        android:textSize="16sp"
-        android:paddingBottom="16dp" />
-
-    <!-- Chat Button -->
-    <!-- Post Title -->
-    <Button
-        android:id="@+id/chatButton"
-        android:layout_width="371dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Chat with Poster" />
-
-    <TextView
-        android:id="@+id/postTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Post Title"
-        android:textSize="18sp"
+        android:layout_marginTop="8dp"
+        android:text="Title"
+        android:textColor="@color/black"
+        android:textSize="42sp"
         android:textStyle="bold"
-        android:paddingBottom="16dp" />
+        app:layout_constraintStart_toStartOf="@id/imageView"
+        app:layout_constraintTop_toBottomOf="@id/imageView" />
+
+    <!-- Underline -->
+    <View
+        android:id="@+id/postTitleUnderline"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@android:color/black"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="10"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco aaaaaaa.."
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postTitleUnderline" />
+
+    <!-- First Tag -->
+    <TextView
+        android:id="@+id/tagTest1"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@drawable/tag_background"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:text="Tag 1"
+        android:gravity="center"
+        android:textColor="@color/medium_gray"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/priceTv"
+        app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+
+
+    <!-- Second Tag -->
+    <TextView
+        android:id="@+id/tagTest2"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@drawable/tag_background"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:layout_marginTop="10dp"
+        android:text="Tag 2"
+        android:gravity="center"
+        android:textColor="@color/medium_gray"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@id/tagTest1"
+        app:layout_constraintEnd_toEndOf="@id/tagTest1"
+        app:layout_constraintBottom_toBottomOf="@id/priceTv" />
+
+    <!-- Price -->
+    <TextView
+        android:id="@+id/priceTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="76sp"
+        android:textColor="@color/black"
+        android:text="$20"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        app:layout_constraintTop_toTopOf="@id/tagTest1"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Chat Button -->
+    <Button
+        android:id="@+id/chatButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:text="Chat with Poster"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Delete Post Button -->
     <Button
         android:id="@+id/deletePostButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Delete Post"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/dark_red"
         android:layout_marginTop="16dp"
-        android:visibility="gone" /> <!-- Initially hidden -->
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chatButton" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

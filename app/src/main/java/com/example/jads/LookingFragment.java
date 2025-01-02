@@ -33,7 +33,6 @@ public class LookingFragment extends Fragment {
     private PostAdapter postAdapter;
     private List<Post> postList;
     private DatabaseReference postsReference;
-    private String currentUserId;
 
     @Nullable
     @Override
@@ -47,11 +46,15 @@ public class LookingFragment extends Fragment {
         makeBothPartsBoldAndSize(descriptionTextView);
 
         openAddPostDialogButton.setOnClickListener(v -> {
-            AddPostDialog addPostDialog = new AddPostDialog();
-            Bundle args = new Bundle();
-            args.putString("tabContext", "Looking"); // Pass "Looking" context
-            addPostDialog.setArguments(args);
-            addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog"); // Fix crash here
+            if (isAdded()) { // Ensure the fragment is attached
+                AddPostDialog addPostDialog = new AddPostDialog();
+                Bundle args = new Bundle();
+                args.putString("tabContext", "Looking"); // Pass "Looking" context
+                addPostDialog.setArguments(args);
+                addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
+            } else {
+                android.util.Log.w("LookingFragment", "Fragment not attached. Cannot open AddPostDialog.");
+            }
         });
 
         // RecyclerView setup
@@ -75,18 +78,17 @@ public class LookingFragment extends Fragment {
         postsReference.orderByChild("userId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Post> userSellingPosts = new ArrayList<>();
+                List<Post> userLookingPosts = new ArrayList<>();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Post post = postSnapshot.getValue(Post.class);
                     if (post != null && "looking".equalsIgnoreCase(post.getCategory())) {
                         post.setPostId(postSnapshot.getKey()); // Set the postId from the key
-                        userSellingPosts.add(post);
+                        userLookingPosts.add(post);
                     }
                 }
 
                 // Update RecyclerView with the filtered posts
-                PostAdapter adapter = new PostAdapter(userSellingPosts);
-                recyclerView.setAdapter(adapter);
+                postAdapter.updatePosts(userLookingPosts);
             }
 
             @Override
