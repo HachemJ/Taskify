@@ -99,7 +99,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Username"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:layout_marginStart="4dp"
                 android:textColor="@android:color/darker_gray"
                 app:layout_constraintStart_toEndOf="@id/profileImageView"
@@ -113,7 +113,7 @@
                 android:maxLines="2"
                 android:text="Title"
                 android:paddingEnd="12dp"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/profileImageView"
@@ -125,9 +125,9 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="4"
                 android:text="Description"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textColor="@android:color/darker_gray"
                 app:layout_constraintStart_toStartOf="@id/titleTextView"
                 app:layout_constraintTop_toBottomOf="@id/titleTextView" />
@@ -142,9 +142,9 @@
                 android:padding="8dp"
 
                 android:gravity="center"
-                app:layout_constraintStart_toStartOf="@id/descriptionTextView"
-                app:layout_constraintEnd_toEndOf="@id/descriptionTextView"
-                app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+                app:layout_constraintStart_toEndOf="@id/categoryTextView"
+                app:layout_constraintEnd_toStartOf="@id/learnMoreButton"
+                app:layout_constraintTop_toTopOf="@id/learnMoreButton"
                 app:layout_constraintBottom_toBottomOf="@id/learnMoreButton" />
 
             <Button
@@ -157,16 +157,17 @@
                 android:textColor="@color/white"
                 android:backgroundTint="@color/dark_blue"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tagTest2" />
+                app:layout_constraintBottom_toBottomOf="@id/categoryTextView"
+                app:layout_constraintTop_toTopOf="@id/categoryTextView" />
 
                 <TextView
                     android:id="@+id/categoryTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textColor="@android:color/white"
                     android:text="Category"
+                    android:layout_marginBottom="8dp"
                     android:padding="8dp"
                     android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
