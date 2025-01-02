@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:background="@drawable/chaticon"
-            android:backgroundTint="@null"
+            app:backgroundTint="@null"
             android:textColor="@android:color/white" />
     </LinearLayout>
 

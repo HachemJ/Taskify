@@ -1,16 +1,13 @@
 package com.example.jads;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,14 +30,27 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_view_profile);
 
+        // Initialize views
+        TextView reviewScoreTv = findViewById(R.id.reviewScoreTv);
+        RatingBar ratingBar = findViewById(R.id.ratingBar);
         emailField = findViewById(R.id.emailaddressEt);
-        auth = FirebaseAuth.getInstance(); // Ensure auth is initialized
+
+        // Firebase initialization
+        auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         usersReference = database.getReference("users");
         passwordResetRequests = database.getReference("password_reset_requests");
+
+        // Set RatingBar value based on reviewScoreTv
+        try {
+            float rating = Float.parseFloat(reviewScoreTv.getText().toString());
+            ratingBar.setRating(rating); // Set the rating dynamically
+        } catch (NumberFormatException e) {
+            ratingBar.setRating(0); // Default to 0 if parsing fails
+            e.printStackTrace();
+        }
 
         findViewById(R.id.resetPasswordButton).setOnClickListener(v -> handlePasswordReset());
     }
@@ -52,7 +62,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // Null check for usersReference and auth
         if (usersReference == null || auth == null) {
             Toast.makeText(this, "Firebase services are not initialized. Please try again later.", Toast.LENGTH_SHORT).show();
             return;

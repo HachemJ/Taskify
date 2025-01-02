@@ -13,7 +13,7 @@
         android:id="@+id/profileImageView"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="125dp"
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_account"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jad El Hachem"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="65dp"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textSize="32dp"
@@ -52,53 +52,50 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- RatingBar -->
-            <RatingBar
-                android:id="@+id/ratingBar"
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/main_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="0.5"
-                android:rating="4.3"
-                android:scaleX="0.6"
-                android:scaleY="0.6"
-                android:padding="0dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:theme="@style/Widget.AppCompat.RatingBar.Indicator"
-                android:progressTint="@color/gold"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="56dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/FullNameTv"/>
+                android:orientation="horizontal"
 
-            <!-- Review Count -->
-            <TextView
-                android:id="@+id/reviewScoreTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="5"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/ratingBar"
-                app:layout_constraintStart_toEndOf="@id/ratingBar"
-                app:layout_constraintTop_toTopOf="@id/ratingBar"
-                app:layout_constraintVertical_bias="0.586" />
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@id/FullNameTv"
+                app:layout_constraintStart_toStartOf="@id/FullNameTv"
+                app:layout_constraintEnd_toEndOf="@id/FullNameTv">
 
-            <!-- Orders -->
-            <TextView
-                android:id="@+id/reviewCountTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="(97 reviews)"
-                android:textColor="@color/gray"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@id/reviewScoreTv"
-                app:layout_constraintStart_toEndOf="@id/reviewScoreTv"
-                app:layout_constraintTop_toTopOf="@id/reviewScoreTv" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:progressTint="@color/gold"
+                    />
+
+
+                <!-- Review Score -->
+                <TextView
+                    android:id="@+id/reviewScoreTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="3.5"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Review Count -->
+                <TextView
+                    android:id="@+id/reviewCountTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="(97 reviews)"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/orderTitleTv"
