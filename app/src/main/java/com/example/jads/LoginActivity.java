@@ -1,5 +1,7 @@
 package com.example.jads;
 
+import static com.google.firebase.database.ServerValue.TIMESTAMP;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,12 +22,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -169,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
                                         // Log the reset request with a timestamp
                                         HashMap<String, Object> resetLog = new HashMap<>();
                                         resetLog.put("email", email);
-                                        resetLog.put("timestamp", System.currentTimeMillis());
+                                        resetLog.put("timestamp", ServerValue.TIMESTAMP);
                                         passwordResetRequests.child(userId).setValue(resetLog);
                                     } else {
                                         Toast.makeText(LoginActivity.this, "Failed to send reset email: " + emailTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
