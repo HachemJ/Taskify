@@ -14,8 +14,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SellingFragment extends Fragment {
+    private RecyclerView recyclerView;
+    private PostAdapter postAdapter;
+    private List<Post> postList;
+    private DatabaseReference postsReference;
+    private String currentUserId;
+
 
     @Nullable
     @Override
@@ -28,12 +45,33 @@ public class SellingFragment extends Fragment {
         makeBothPartsBoldAndSize(descriptionTextView);
 
         openAddPostDialogButton.setOnClickListener(v -> {
-            AddPostDialog addPostDialog = new AddPostDialog();
-            Bundle args = new Bundle();
-            args.putString("tabContext", "Selling"); // Pass "Selling" context
-            addPostDialog.setArguments(args);
-            addPostDialog.show(getParentFragmentManager(), "AddPostDialog");
+            if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+                AddPostDialog addPostDialog = new AddPostDialog();
+                Bundle args = new Bundle();
+                args.putString("tabContext", "Selling"); // Pass "Selling" context
+                addPostDialog.setArguments(args);
+                addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
+            } else {
+                // Log or handle cases where the fragment is not properly attached
+                android.util.Log.e("SellingFragment", "Fragment not attached to an activity");
+            }
         });
+
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Initialize Firebase references
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        postsReference = FirebaseDatabase.getInstance().getReference("posts");
+
+        // Initialize PostAdapter
+        postList = new ArrayList<>();
+        postAdapter = new PostAdapter(postList);
+        recyclerView.setAdapter(postAdapter);
+
+        // Fetch posts created by the user in the "Selling" category
+        fetchUserSellingPosts();
 
         return view;
     }
@@ -62,4 +100,32 @@ public class SellingFragment extends Fragment {
         textView.setText(spannableString);
         textView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
     }
+    private void fetchUserSellingPosts() {
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference postsReference = FirebaseDatabase.getInstance().getReference("posts");
+        postsReference.orderByChild("userId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Post> userSellingPosts = new ArrayList<>();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Post post = postSnapshot.getValue(Post.class);
+                    if (post != null && "selling".equalsIgnoreCase(post.getCategory())) {
+                        post.setPostId(postSnapshot.getKey()); // Set the postId from the key
+                        userSellingPosts.add(post);
+                    }
+                }
+
+                // Update RecyclerView with the filtered posts
+                PostAdapter adapter = new PostAdapter(userSellingPosts);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("SellingFragment", "Failed to load posts: " + error.getMessage());
+            }
+        });
+    }
+
 }

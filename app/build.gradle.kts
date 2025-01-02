@@ -48,6 +48,7 @@ dependencies {
 
     // Firebase SDKs
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-auth")
     implementation(libs.firebase.storage)

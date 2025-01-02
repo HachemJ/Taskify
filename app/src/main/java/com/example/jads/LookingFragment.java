@@ -14,30 +14,86 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LookingFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private PostAdapter postAdapter;
+    private List<Post> postList;
+    private DatabaseReference postsReference;
+    private String currentUserId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_looking, container, false);
 
+        // Existing UI elements
         Button openAddPostDialogButton = view.findViewById(R.id.openAddPostDialogButton);
         TextView descriptionTextView = view.findViewById(R.id.lookingDescriptionTv);
 
         makeBothPartsBoldAndSize(descriptionTextView);
 
         openAddPostDialogButton.setOnClickListener(v -> {
-            if (isAdded()) {
-                AddPostDialog addPostDialog = new AddPostDialog();
-                Bundle args = new Bundle();
-                args.putString("tabContext", "Looking"); // Pass "Looking" context
-                addPostDialog.setArguments(args);
-                addPostDialog.show(getParentFragmentManager(), "AddPostDialog");
-            }
+            AddPostDialog addPostDialog = new AddPostDialog();
+            Bundle args = new Bundle();
+            args.putString("tabContext", "Looking"); // Pass "Looking" context
+            addPostDialog.setArguments(args);
+            addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog"); // Fix crash here
         });
 
+        // RecyclerView setup
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        postList = new ArrayList<>();
+        postAdapter = new PostAdapter(postList);
+        recyclerView.setAdapter(postAdapter);
+
+        // Fetch posts
+        fetchLookingPosts();
+
         return view;
+    }
+
+    private void fetchLookingPosts() {
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference postsReference = FirebaseDatabase.getInstance().getReference("posts");
+        postsReference.orderByChild("userId").equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Post> userSellingPosts = new ArrayList<>();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Post post = postSnapshot.getValue(Post.class);
+                    if (post != null && "looking".equalsIgnoreCase(post.getCategory())) {
+                        post.setPostId(postSnapshot.getKey()); // Set the postId from the key
+                        userSellingPosts.add(post);
+                    }
+                }
+
+                // Update RecyclerView with the filtered posts
+                PostAdapter adapter = new PostAdapter(userSellingPosts);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("LookingFragment", "Failed to load posts: " + error.getMessage());
+            }
+        });
     }
 
     private void makeBothPartsBoldAndSize(TextView textView) {
