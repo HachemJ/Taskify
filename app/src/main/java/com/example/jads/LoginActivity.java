@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 
@@ -120,6 +121,17 @@ public class LoginActivity extends AppCompatActivity {
                             if (firebaseUser != null && firebaseUser.isEmailVerified()) {
                                 // Move verified user from unverified_users to users if necessary
                                 moveUserToVerified(firebaseUser.getUid());
+
+                                // Fetch and store the FCM token
+                                FirebaseMessaging.getInstance().getToken()
+                                        .addOnCompleteListener(tokenTask -> {
+                                            if (tokenTask.isSuccessful()) {
+                                                String fcmToken = tokenTask.getResult();
+                                                storeFcmToken(firebaseUser.getUid(), fcmToken);
+                                            } else {
+                                                Toast.makeText(LoginActivity.this, "Failed to fetch FCM token", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
 
                                 Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -219,4 +231,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    private void storeFcmToken(String userId, String token) {
+        DatabaseReference userRef = database.getReference("users").child(userId);
+        userRef.child("fcmToken").setValue(token)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Token stored successfully
+                        Toast.makeText(this, "FCM token updated successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Failed to store token
+                        Toast.makeText(this, "Failed to update FCM token", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

@@ -51,6 +51,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         List<String> tags = post.getTags();
         String category = post.getCategory() != null ? post.getCategory() : "Uncategorized";
         String price = post.getPrice(); // Price remains a string
+        String postId = post.getPostId(); // Ensure postId is retrieved here
 
         holder.titleTextView.setText(title);
 
@@ -134,6 +135,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         // Learn More button functionality
         holder.learnMoreButton.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
+            if (postId == null || postId.isEmpty()) {
+                return; // Skip further processing for this item
+            }
             intent.putExtra("postId", post.getPostId());
             intent.putExtra("posterUserId", posterUserId);
             v.getContext().startActivity(intent);

@@ -79,6 +79,8 @@ public class SearchFragment extends Fragment {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Post post = postSnapshot.getValue(Post.class);
                     if (post != null) {
+                        // Set the postId using the Firebase key
+                        post.setPostId(postSnapshot.getKey());
                         postList.add(post);
                     }
                 }
@@ -94,6 +96,7 @@ public class SearchFragment extends Fragment {
             }
         });
     }
+
 
     private void setupSearchView() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

@@ -37,11 +37,14 @@ public class ViewProfileActivity extends AppCompatActivity {
         RatingBar ratingBar = findViewById(R.id.ratingBar);
         emailField = findViewById(R.id.emailaddressEt);
 
+        EditText firstNameField = findViewById(R.id.firstnameEt);
+        EditText lastNameField = findViewById(R.id.lastnameEt);
+        EditText usernameField = findViewById(R.id.usernameEt);
+
         // Firebase initialization
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         usersReference = database.getReference("users");
-        passwordResetRequests = database.getReference("password_reset_requests");
 
         // Set RatingBar value based on reviewScoreTv
         try {
@@ -52,8 +55,47 @@ public class ViewProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // Fetch user data from Firebase
+        fetchUserData(firstNameField, lastNameField, usernameField);
+
         findViewById(R.id.resetPasswordButton).setOnClickListener(v -> handlePasswordReset());
     }
+
+    private void fetchUserData(EditText firstNameField, EditText lastNameField, EditText usernameField) {
+        String currentUserId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
+
+        if (currentUserId == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        usersReference.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Fetch the data from Firebase
+                    String firstName = snapshot.child("firstName").getValue(String.class);
+                    String lastName = snapshot.child("lastName").getValue(String.class);
+                    String username = snapshot.child("username").getValue(String.class);
+                    String email = snapshot.child("email").getValue(String.class);
+
+                    // Populate the fields
+                    firstNameField.setText(firstName != null ? firstName : "N/A");
+                    lastNameField.setText(lastName != null ? lastName : "N/A");
+                    usernameField.setText(username != null ? username : "N/A");
+                    emailField.setText(email != null ? email : "N/A");
+                } else {
+                    Toast.makeText(ViewProfileActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ViewProfileActivity.this, "Failed to fetch data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void handlePasswordReset() {
         String email = emailField.getText().toString().trim();

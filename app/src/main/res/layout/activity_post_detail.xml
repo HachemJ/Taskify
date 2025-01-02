@@ -47,4 +47,14 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingBottom="16dp" />
+    <Button
+        android:id="@+id/deletePostButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Post"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/dark_red"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" /> <!-- Initially hidden -->
+
 </LinearLayout>
