@@ -60,8 +60,7 @@
                     android:id="@+id/sellingDescriptionTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Looking for a service or task?\nPost a request for what you need, and someone from the Lebanese community will reach out to help. Can’t find what you're looking for? Leave a post and others will assist you!\nPost now and connect with others to get what you need!"
-                    android:lineSpacingExtra="8dp"
+                    android:text="Looking to sell your services?\nShare your expertise with the Lebanese community. Whether you're offering a unique skill or service, you can easily post what you're selling and connect with others who need it.\nStart earning and building connections today!"                    android:lineSpacingExtra="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
