@@ -1,23 +1,26 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_blue">
+    android:background="@android:color/white"
+    android:fillViewport="true">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <!-- Image Background -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="360dp"
         android:contentDescription="Test Image"
-        android:scaleType="fitStart"
+        android:scaleType="fitCenter"
         android:src="@drawable/freelance_character"
+        android:background="@color/dark_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,6 +46,7 @@
         android:id="@+id/cardContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:layout_marginTop="360dp"
         android:backgroundTint="@color/test"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,12 +55,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@android:color/white">
 
             <TextView
                 android:id="@+id/sellingDescriptionTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/white"
                 android:text="Looking to sell your services?\nShare your expertise with the Lebanese community. Whether you're offering a unique skill or service, you can easily post what you're selling and connect with others who need it.\nStart earning and building connections today!"
                 android:padding="8dp"
                 android:lineSpacingExtra="8dp"
@@ -70,11 +76,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/dark_blue"
                 android:text="Add Post"
                 android:textColor="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/sellingDescriptionTv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -88,6 +94,7 @@
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:scrollbars="vertical"
+        android:background="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/cardContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
