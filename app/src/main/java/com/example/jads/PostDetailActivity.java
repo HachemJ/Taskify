@@ -183,8 +183,9 @@ public class PostDetailActivity extends AppCompatActivity {
             payButton.setVisibility(Button.VISIBLE);
             payButton.setText("Select Payment Method(s)");
             payButton.setOnClickListener(v -> {
-                // Redirect to Account Fragment (currently not implemented, use a placeholder)
-                Intent intent = new Intent(PostDetailActivity.this, AccountFragment.class); // Replace with actual target later
+                // Redirect to PaymentMethodsActivity with "isSameUser" flag as true
+                Intent intent = new Intent(PostDetailActivity.this, PaymentMethodsActivity.class);
+                intent.putExtra("isSameUser", true); // Post belongs to current user
                 startActivity(intent);
             });
         } else {
@@ -195,14 +196,17 @@ public class PostDetailActivity extends AppCompatActivity {
             payButton.setVisibility(Button.VISIBLE);
             payButton.setText("Pay Now");
             payButton.setOnClickListener(v -> {
-                // Redirect to ViewProfile (currently a placeholder)
-                Intent intent = new Intent(PostDetailActivity.this, ViewProfileActivity.class); // Replace with actual target later
+                // Redirect to PaymentMethodsActivity with "isSameUser" flag as false
+                Intent intent = new Intent(PostDetailActivity.this, PaymentMethodsActivity.class);
+                intent.putExtra("isSameUser", false); // Post belongs to another user
                 startActivity(intent);
             });
 
             chatButton.setOnClickListener(v -> startChat());
         }
     }
+
+
 
     private void showDeleteConfirmationDialog() {
         new AlertDialog.Builder(this)
