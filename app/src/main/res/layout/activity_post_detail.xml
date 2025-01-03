@@ -185,12 +185,13 @@
     <!-- Chat Button -->
     <Button
         android:id="@+id/chatButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
         android:layout_marginTop="75dp"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Chat with Poster"
+        app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -198,11 +199,23 @@
     <!-- Delete Post Button -->
     <Button
         android:id="@+id/deletePostButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Delete post"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Delete Post Button -->
+    <Button
+        android:id="@+id/payButton"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:text="Pay now"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
