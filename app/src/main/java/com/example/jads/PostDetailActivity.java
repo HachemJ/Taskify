@@ -1,5 +1,4 @@
 package com.example.jads;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class PostDetailActivity extends AppCompatActivity {
     private String postDescription;
     private String tag1;
     private String tag2;
+    private static final int PAYMENT_METHODS_REQUEST_CODE = 102; // Define a new request code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,10 +185,11 @@ public class PostDetailActivity extends AppCompatActivity {
             payButton.setVisibility(Button.VISIBLE);
             payButton.setText("Select Payment Method(s)");
             payButton.setOnClickListener(v -> {
-                // Redirect to PaymentMethodsActivity with "isSameUser" flag as true
+                // Redirect to PaymentMethodsActivity with postId and "isSameUser" flag as true
                 Intent intent = new Intent(PostDetailActivity.this, PaymentMethodsActivity.class);
-                intent.putExtra("isSameUser", true); // Post belongs to current user
-                startActivity(intent);
+                intent.putExtra("isSameUser", true);
+                intent.putExtra("postId", postId); // Pass postId to update payment methods
+                startActivityForResult(intent, PAYMENT_METHODS_REQUEST_CODE);
             });
         } else {
             // Another user's post
@@ -196,13 +199,39 @@ public class PostDetailActivity extends AppCompatActivity {
             payButton.setVisibility(Button.VISIBLE);
             payButton.setText("Pay Now");
             payButton.setOnClickListener(v -> {
-                // Redirect to PaymentMethodsActivity with "isSameUser" flag as false
-                Intent intent = new Intent(PostDetailActivity.this, PaymentMethodsActivity.class);
-                intent.putExtra("isSameUser", false); // Post belongs to another user
+                // Redirect to PaymentsAvailable activity for non-owners
+                Intent intent = new Intent(PostDetailActivity.this, PaymentsAvailable.class);
+                intent.putExtra("postId", postId); // Pass the postId to retrieve payment methods
                 startActivity(intent);
             });
 
             chatButton.setOnClickListener(v -> startChat());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PAYMENT_METHODS_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            ArrayList<String> selectedMethods = data.getStringArrayListExtra("selectedPaymentMethods");
+
+            if (selectedMethods != null) {
+                Map<String, Object> updatedPaymentMethods = new HashMap<>();
+                updatedPaymentMethods.put("cash", selectedMethods.contains("cash"));
+                updatedPaymentMethods.put("whish", selectedMethods.contains("whish"));
+
+                // Update the payment methods in the Firebase database
+                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("posts").child(postId).child("paymentMethods");
+                postRef.setValue(updatedPaymentMethods)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(this, "Payment methods updated successfully.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this, "Failed to update payment methods.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         }
     }
 

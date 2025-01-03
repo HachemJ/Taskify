@@ -61,6 +61,7 @@ public class AddPostDialog extends DialogFragment {
     private CardView dialogCardView;
     private String tabContext;
     private Uri selectedImageUri;
+    private Map<String, Boolean> paymentMethods = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -142,7 +143,6 @@ public class AddPostDialog extends DialogFragment {
             }
         });
 
-        // Payment method functionality
         paymentMethodButton.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), PaymentMethodsActivity.class);
             startActivityForResult(intent, PAYMENT_METHODS_REQUEST_CODE);
@@ -154,6 +154,7 @@ public class AddPostDialog extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == IMAGE_PICK_CODE && resultCode == getActivity().RESULT_OK && data != null) {
             selectedImageUri = data.getData();
             try {
@@ -164,10 +165,23 @@ public class AddPostDialog extends DialogFragment {
                 Toast.makeText(getContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == PAYMENT_METHODS_REQUEST_CODE && resultCode == getActivity().RESULT_OK && data != null) {
-            selectedPaymentMethods.clear();
-            selectedPaymentMethods.addAll(data.getStringArrayListExtra("selectedPaymentMethods"));
+            paymentMethods.clear();
+
+            List<String> selectedMethods = data.getStringArrayListExtra("selectedPaymentMethods");
+            if (selectedMethods != null) {
+                // Update the payment methods map based on user selections
+                paymentMethods.put("cash", selectedMethods.contains("cash"));
+                paymentMethods.put("whish", selectedMethods.contains("whish"));
+
+                // Show a Toast message to confirm selection
+                Toast.makeText(getContext(), "Payment methods updated", Toast.LENGTH_SHORT).show();
+            } else {
+                // Handle case where no methods were selected
+                Toast.makeText(getContext(), "No payment methods selected", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
 
     @Override
     public void onStart() {
@@ -285,7 +299,8 @@ public class AddPostDialog extends DialogFragment {
             return;
         }
 
-        if (selectedPaymentMethods.isEmpty()) {
+        // Check if any payment method is selected
+        if (!paymentMethods.containsValue(true)) {
             Toast.makeText(getContext(), "Please select at least one payment method", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -320,6 +335,7 @@ public class AddPostDialog extends DialogFragment {
         }
     }
 
+
     private void savePostDetails(String postId, String userId, String title, String description, String price, List<String> tags, String imageUrl) {
         Map<String, Object> postDetails = new HashMap<>();
         postDetails.put("userId", userId);
@@ -330,6 +346,7 @@ public class AddPostDialog extends DialogFragment {
         postDetails.put("paymentMethods", selectedPaymentMethods);
         postDetails.put("category", tabContext);
         postDetails.put("timestamp", System.currentTimeMillis());
+        postDetails.put("paymentMethods", paymentMethods);
         if (imageUrl != null) {
             postDetails.put("imageUrl", imageUrl);
         }
