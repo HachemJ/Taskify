@@ -45,6 +45,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         usersReference = database.getReference("users");
+        passwordResetRequests = database.getReference("passwordResetRequests"); // Initialize here
 
         // Set RatingBar value based on reviewScoreTv
         try {
@@ -95,7 +96,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void handlePasswordReset() {
         String email = emailField.getText().toString().trim();

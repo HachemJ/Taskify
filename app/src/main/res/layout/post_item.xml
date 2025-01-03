@@ -93,12 +93,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/usernameTextView"
+                android:id="@+id/fullNameTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Username"
+                android:text="Full Name"
                 android:textSize="16sp"
                 android:layout_marginStart="4dp"
                 android:textColor="@android:color/darker_gray"
@@ -168,7 +168,7 @@
                     android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="@id/timeTextView"
                     app:layout_constraintTop_toTopOf="@id/timeTextView"
-                    app:layout_constraintStart_toEndOf="@id/usernameTextView"
+                    app:layout_constraintStart_toEndOf="@id/fullNameTextView"
                     app:layout_constraintEnd_toStartOf="@id/timeTextView"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

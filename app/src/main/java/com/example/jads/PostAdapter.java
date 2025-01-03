@@ -71,32 +71,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.tagTest2.setVisibility(View.GONE);
         }
 
-        // Set the card color based on category
-        if ("selling".equalsIgnoreCase(category)) {
-            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
-            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
-        } else if ("looking".equalsIgnoreCase(category)) {
-            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
-            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
-        } else {
-            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
-            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
-        }
-
         // Display category
         holder.categoryTextView.setText(category);
 
         // Display price
-        if (price != null && !price.isEmpty()) {
-            holder.priceTextView.setText("$" + price);
-        } else {
-            holder.priceTextView.setText("Price not specified");
-        }
+        holder.priceTextView.setText(price != null ? "$" + price : "Price not specified");
 
-        // Limit description to 100 characters
+        // Display description
         String truncatedDescription = description.length() > 100 ? description.substring(0, 100) + "..." : description;
         holder.descriptionTextView.setText(truncatedDescription);
 
@@ -120,29 +101,58 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.imageView.setImageResource(R.drawable.placeholder_image);
         }
 
-        // Fetch and set the username
+        // Fetch and set the full name (firstName + lastName)
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(posterUserId);
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String username = snapshot.child("username").getValue(String.class);
-                holder.usernameTextView.setText(username != null ? username : "Unknown User");
+                if (snapshot.exists()) {
+                    String firstName = snapshot.child("firstName").getValue(String.class);
+                    String lastName = snapshot.child("lastName").getValue(String.class);
+
+                    String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+                    holder.fullNameTextView.setText(fullName.trim().isEmpty() ? "Unknown Name" : fullName.trim());
+                } else {
+                    holder.fullNameTextView.setText("Unknown Name");
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                holder.usernameTextView.setText("Unknown User");
+                holder.fullNameTextView.setText("Unknown Name");
             }
         });
+
+        // Set card background color based on category
+        if ("selling".equalsIgnoreCase(category)) {
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+        } else if ("looking".equalsIgnoreCase(category)) {
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
+        } else {
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
+        }
 
         // Learn More button functionality
         holder.learnMoreButton.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
-            if (postId == null || postId.isEmpty()) {
-                return; // Skip further processing for this item
-            }
             intent.putExtra("postId", post.getPostId());
             intent.putExtra("posterUserId", posterUserId);
+            intent.putExtra("postTitle", title);
+            intent.putExtra("price", price);
+            intent.putExtra("description", description);
+            intent.putExtra("category", category);
+
+            if (tags != null && !tags.isEmpty()) {
+                intent.putExtra("tag1", tags.size() > 0 ? tags.get(0) : "No Tag");
+                intent.putExtra("tag2", tags.size() > 1 ? tags.get(1) : "No Tag");
+            }
+
             v.getContext().startActivity(intent);
         });
     }
@@ -183,7 +193,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         };
     }
 
-    // Method to update the list of posts dynamically
     public void updatePosts(List<Post> newPostList) {
         this.postList.clear();
         this.postList.addAll(newPostList);
@@ -192,8 +201,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-
-        TextView titleTextView, usernameTextView, descriptionTextView, timeTextView, tagTest1, tagTest2, priceTextView, categoryTextView;
+        TextView titleTextView, fullNameTextView, descriptionTextView, timeTextView, tagTest1, tagTest2, priceTextView, categoryTextView;
         Button learnMoreButton;
         ImageView imageView;
         androidx.cardview.widget.CardView cardView;
@@ -202,7 +210,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
 
             titleTextView = itemView.findViewById(R.id.titleTextView);
-            usernameTextView = itemView.findViewById(R.id.usernameTextView);
+            fullNameTextView = itemView.findViewById(R.id.fullNameTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             timeTextView = itemView.findViewById(R.id.timeTextView);
             tagTest1 = itemView.findViewById(R.id.tagTest1);

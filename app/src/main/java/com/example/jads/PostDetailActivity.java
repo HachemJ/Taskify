@@ -3,13 +3,17 @@ package com.example.jads;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,61 +22,137 @@ import java.util.Map;
 
 public class PostDetailActivity extends AppCompatActivity {
 
-    private TextView postTitle;
-    private Button chatButton;
-    private Button deletePostButton; // New delete button
+    private TextView postTitleTextView, priceTextView, reviewScoreTextView, reviewCountTextView, descriptionTextView, tagTest1, tagTest2;
+    private ImageView profileImageView, imageView;
+    private Button chatButton, deletePostButton;
+    private RatingBar ratingBar;
 
     private String currentUserId;
     private String posterUserId;
     private String postId;
+    private String postTitle;
+    private String postPrice;
+    private String postDescription;
+    private String tag1;
+    private String tag2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
 
-        // Initialize views
-        postTitle = findViewById(R.id.titleTextView);
-        chatButton = findViewById(R.id.chatButton);
-        deletePostButton = findViewById(R.id.deletePostButton); // Initialize delete button
+        initializeViews();
 
-        // Get intent extras
+        // Retrieve data passed from PostAdapter
+        retrieveIntentData();
+
+        // Display post details
+        displayPostDetails();
+
+        // Fetch and display poster user details
+        fetchPosterDetails();
+
+        // Set up delete post button visibility and logic
+        setupDeleteButton();
+
+        // Set up chat button logic
+        setupChatButton();
+    }
+
+    private void initializeViews() {
+        postTitleTextView = findViewById(R.id.titleTextView);
+        priceTextView = findViewById(R.id.priceTv);
+        reviewScoreTextView = findViewById(R.id.reviewScoreTv);
+        reviewCountTextView = findViewById(R.id.reviewCountTv);
+        descriptionTextView = findViewById(R.id.descriptionTextView);
+        tagTest1 = findViewById(R.id.tagTest1);
+        tagTest2 = findViewById(R.id.tagTest2);
+        profileImageView = findViewById(R.id.profileImageView);
+        imageView = findViewById(R.id.imageView);
+        chatButton = findViewById(R.id.chatButton);
+        deletePostButton = findViewById(R.id.deletePostButton);
+        ratingBar = findViewById(R.id.ratingBar);
+    }
+
+    private void retrieveIntentData() {
         postId = getIntent().getStringExtra("postId");
         posterUserId = getIntent().getStringExtra("posterUserId");
+        postTitle = getIntent().getStringExtra("postTitle");
+        postPrice = getIntent().getStringExtra("price");
+        postDescription = getIntent().getStringExtra("description");
+        tag1 = getIntent().getStringExtra("tag1");
+        tag2 = getIntent().getStringExtra("tag2");
 
-        // Log the received postId and posterUserId for debugging
-        android.util.Log.d("PostDetailActivity", "Received Post ID: " + postId);
-        android.util.Log.d("PostDetailActivity", "Received Poster User ID: " + posterUserId);
-
-        // Get current user ID
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null
-                ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+        currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null
+                ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid()
                 : null;
+    }
 
-        // Log the currentUserId for debugging
-        android.util.Log.d("PostDetailActivity", "Current User ID: " + currentUserId);
+    private void displayPostDetails() {
+        postTitleTextView.setText(postTitle != null ? postTitle : "Title unavailable");
+        priceTextView.setText(postPrice != null ? "$" + postPrice : "Price not specified");
+        descriptionTextView.setText(postDescription != null ? postDescription : "Description not available");
+        tagTest1.setText(tag1 != null ? tag1 : "No Tag");
+        tagTest2.setText(tag2 != null ? tag2 : "No Tag");
+    }
 
-        // Set the post title (this can be dynamic based on the post data)
-        if (postId != null) {
-            postTitle.setText("Detailed view for Post ID: " + postId);
-        } else {
-            android.util.Log.e("PostDetailActivity", "Post ID is missing.");
-            postTitle.setText("Post details not available.");
+    private void fetchPosterDetails() {
+        if (posterUserId == null) {
+            Toast.makeText(this, "Poster details unavailable.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        // Show delete button only if the current user owns the post
-        if (currentUserId != null && currentUserId.equals(posterUserId)) {
-            deletePostButton.setVisibility(Button.VISIBLE); // Show the button
-        } else {
-            deletePostButton.setVisibility(Button.GONE); // Hide the button
-        }
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(posterUserId);
 
-        // Delete post logic
-        deletePostButton.setOnClickListener(v -> {
-            showDeleteConfirmationDialog();
+        userRef.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Fetch full name (firstName + lastName)
+                    String firstName = snapshot.child("firstName").getValue(String.class);
+                    String lastName = snapshot.child("lastName").getValue(String.class);
+                    String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+
+                    TextView fullNameTextView = findViewById(R.id.FullNameTv);
+                    fullNameTextView.setText(fullName.trim().isEmpty() ? "Unknown Name" : fullName.trim());
+
+                    // Fetch review score and number of ratings
+                    Double reviewScore = snapshot.child("reviewScore").getValue(Double.class);
+                    Long reviewCount = snapshot.child("nbOfRatings").getValue(Long.class);
+
+                    reviewScoreTextView.setText(reviewScore != null ? String.format("%.1f", reviewScore) : "N/A");
+                    reviewCountTextView.setText(reviewCount != null ? String.valueOf(reviewCount) : "0");
+                    ratingBar.setRating(reviewScore != null ? reviewScore.floatValue() : 0.0f);
+
+                    // Fetch profile image
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                        Glide.with(PostDetailActivity.this).load(profileImageUrl).into(profileImageView);
+                    } else {
+                        profileImageView.setImageResource(R.drawable.placeholder_image);
+                    }
+                } else {
+                    Toast.makeText(PostDetailActivity.this, "Poster details not found.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(PostDetailActivity.this, "Failed to fetch user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
+}
 
-        // Chat button logic
+    private void setupDeleteButton() {
+        if (currentUserId != null && currentUserId.equals(posterUserId)) {
+            deletePostButton.setVisibility(Button.VISIBLE);
+            deletePostButton.setOnClickListener(v -> showDeleteConfirmationDialog());
+        } else {
+            deletePostButton.setVisibility(Button.GONE);
+        }
+    }
+
+    private void setupChatButton() {
         chatButton.setOnClickListener(v -> {
             if (currentUserId == null) {
                 Toast.makeText(this, "You need to log in to start a chat.", Toast.LENGTH_SHORT).show();
@@ -86,6 +166,15 @@ public class PostDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void showDeleteConfirmationDialog() {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Delete Post")
+                .setMessage("Are you sure you want to delete this post? This action cannot be undone.")
+                .setPositiveButton("Yes", (dialog, which) -> deletePost())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
 
     private void deletePost() {
         if (postId == null) {
@@ -93,14 +182,12 @@ public class PostDetailActivity extends AppCompatActivity {
             return;
         }
 
-        // Reference to the post in Firebase
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("posts").child(postId);
 
-        // Remove the post
         postRef.removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Post deleted successfully.", Toast.LENGTH_SHORT).show();
-                finish(); // Close the activity after deletion
+                finish();
             } else {
                 Toast.makeText(this, "Failed to delete the post.", Toast.LENGTH_SHORT).show();
             }
@@ -113,29 +200,20 @@ public class PostDetailActivity extends AppCompatActivity {
             return;
         }
 
-        // Disable the chat button to prevent multiple clicks
         chatButton.setEnabled(false);
 
-        // Generate chat ID
         String chatId = currentUserId.compareTo(otherUserId) < 0
                 ? currentUserId + "_" + otherUserId
                 : otherUserId + "_" + currentUserId;
 
-        // Reference to the chat in Firebase
         DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
 
-        // Prepare chat data
         Map<String, Object> chatData = new HashMap<>();
-        Map<String, Boolean> participants = new HashMap<>();
-        participants.put(currentUserId, true);
-        participants.put(otherUserId, true);
-        chatData.put("participants", participants);
+        chatData.put("participants", Map.of(currentUserId, true, otherUserId, true));
 
-        // Add the chat to Firebase
         chatRef.updateChildren(chatData).addOnCompleteListener(task -> {
-            chatButton.setEnabled(true); // Re-enable the button
+            chatButton.setEnabled(true);
             if (task.isSuccessful()) {
-                // Open the ChatActivity
                 Intent intent = new Intent(PostDetailActivity.this, ChatActivity.class);
                 intent.putExtra("chatId", chatId);
                 intent.putExtra("otherUserId", otherUserId);
@@ -145,20 +223,4 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
     }
-    private void showDeleteConfirmationDialog() {
-        new android.app.AlertDialog.Builder(this)
-                .setTitle("Delete Post")
-                .setMessage("Are you sure you want to delete this post? This action cannot be undone.")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    // Proceed with deletion
-                    deletePost();
-                })
-                .setNegativeButton("No", (dialog, which) -> {
-                    // Close the dialog without deleting
-                    dialog.dismiss();
-                })
-                .create()
-                .show();
-    }
-
 }

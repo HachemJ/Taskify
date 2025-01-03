@@ -110,7 +110,7 @@
     <View
         android:id="@+id/postTitleUnderline"
         android:layout_width="0dp"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:background="@android:color/black"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +124,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="10"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco aaaaaaa.."
+        android:text="Description"
+        android:fontFamily="@font/exo2_semibold"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -174,7 +175,8 @@
         android:layout_height="wrap_content"
         android:textSize="76sp"
         android:textColor="@color/black"
-        android:text="$20"
+        android:layout_marginEnd="6dp"
+        android:text="$0"
         android:gravity="center"
         android:includeFontPadding="false"
         app:layout_constraintTop_toTopOf="@id/tagTest1"
@@ -189,21 +191,20 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Chat with Poster"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <!-- Delete Post Button -->
     <Button
         android:id="@+id/deletePostButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete Post"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@color/dark_red"
-        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:text="Delete post"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chatButton" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
