@@ -82,29 +82,39 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Main Image -->
-    <ImageView
-        android:id="@+id/imageView"
+    <!-- Main Image with Frame -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imageCard"
         android:layout_width="0dp"
-        android:layout_height="216dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder_image"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profileSection" />
+        app:layout_constraintTop_toBottomOf="@id/profileSection">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="216dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder_image" />
+    </androidx.cardview.widget.CardView>
 
     <!-- Title -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:layout_marginTop="8dp"
         android:text="Title"
         android:textColor="@color/black"
         android:textSize="42sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/imageView"
-        app:layout_constraintTop_toBottomOf="@id/imageView" />
+        app:layout_constraintStart_toStartOf="@id/imageCard"
+        app:layout_constraintTop_toBottomOf="@id/imageCard" />
 
     <!-- Underline -->
     <View
@@ -112,6 +122,7 @@
         android:layout_width="0dp"
         android:layout_height="3dp"
         android:background="@android:color/black"
+        android:layout_margin="16dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -128,6 +139,7 @@
         android:fontFamily="@font/exo2_semibold"
         android:textColor="@color/black"
         android:textSize="24sp"
+        android:layout_margin="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/postTitleUnderline" />
@@ -140,8 +152,7 @@
         android:background="@drawable/tag_background"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
+        android:layout_margin="16dp"
         android:text="Tag 1"
         android:gravity="center"
         android:textColor="@color/medium_gray"
@@ -149,7 +160,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/priceTv"
         app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
-
 
     <!-- Second Tag -->
     <TextView
@@ -159,20 +169,22 @@
         android:background="@drawable/tag_background"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        android:layout_margin="16dp"
         android:layout_marginTop="10dp"
         android:text="Tag 2"
         android:gravity="center"
         android:textColor="@color/medium_gray"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@id/tagTest1"
-        app:layout_constraintEnd_toEndOf="@id/tagTest1"
-        app:layout_constraintBottom_toBottomOf="@id/priceTv" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/priceTv"
+        app:layout_constraintTop_toBottomOf="@id/tagTest1" />
 
     <!-- Price -->
     <TextView
         android:id="@+id/priceTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:textSize="76sp"
         android:textColor="@color/black"
         android:layout_marginEnd="6dp"
@@ -180,27 +192,29 @@
         android:gravity="center"
         android:includeFontPadding="false"
         app:layout_constraintTop_toTopOf="@id/tagTest1"
+        app:layout_constraintBottom_toBottomOf="@id/tagTest2"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Chat Button -->
     <Button
         android:id="@+id/chatButton"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="60dp"
+        android:layout_margin="16dp"
         android:layout_marginTop="75dp"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Chat with Poster"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <!-- Delete Post Button -->
     <Button
         android:id="@+id/deletePostButton"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="60dp"
+        android:layout_margin="16dp"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Delete post"
@@ -208,11 +222,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Delete Post Button -->
+    <!-- Pay Button -->
     <Button
         android:id="@+id/payButton"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="60dp"
+        android:layout_margin="16dp"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Pay now"

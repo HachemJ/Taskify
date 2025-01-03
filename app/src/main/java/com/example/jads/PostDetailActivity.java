@@ -52,6 +52,9 @@ public class PostDetailActivity extends AppCompatActivity {
         // Display post details
         displayPostDetails();
 
+        // Fetch and display the post image
+        fetchPostImage();
+
         // Fetch and display poster user details
         fetchPosterDetails();
 
@@ -95,6 +98,32 @@ public class PostDetailActivity extends AppCompatActivity {
         descriptionTextView.setText(postDescription != null ? postDescription : "Description not available");
         tagTest1.setText(tag1 != null ? tag1 : "No Tag");
         tagTest2.setText(tag2 != null ? tag2 : "No Tag");
+    }
+
+    private void fetchPostImage() {
+        if (postId == null) {
+            Toast.makeText(this, "Post ID is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        DatabaseReference postImageRef = FirebaseDatabase.getInstance().getReference("posts").child(postId).child("imageUrl");
+
+        postImageRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String imageUrl = snapshot.getValue(String.class);
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+                    Glide.with(PostDetailActivity.this).load(imageUrl).into(imageView);
+                } else {
+                    imageView.setImageResource(R.drawable.placeholder_image); // Use your placeholder image resource
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(PostDetailActivity.this, "Failed to fetch post image: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void fetchPosterDetails() {
@@ -152,7 +181,7 @@ public class PostDetailActivity extends AppCompatActivity {
             chatButton.setVisibility(Button.GONE);
 
             payButton.setVisibility(Button.VISIBLE);
-            payButton.setText("Select Payment(s) Methods");
+            payButton.setText("Select Payment Method(s)");
             payButton.setOnClickListener(v -> {
                 // Redirect to Account Fragment (currently not implemented, use a placeholder)
                 Intent intent = new Intent(PostDetailActivity.this, AccountFragment.class); // Replace with actual target later
