@@ -7,7 +7,6 @@ public class Post {
     private String postId;
     private String description;
     private String userId;
-    private String username;
     private Long timestamp;// Add this field
     private String imageUrl;
     private List<String> tags; // Tags as a list
@@ -42,13 +41,6 @@ public class Post {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
     public Long getTimestamp() {
         return timestamp;
     }

@@ -4,16 +4,16 @@ import java.util.Map;
 public class Chat {
     private String chatId;
     private String otherUserId; // ID of the user this chat is with
-    private String otherUserName; // First name + Last name
+    private String otherUserFullName; // First name + Last name
     private Map<String, Boolean> participants; // Map of participant user IDs
 
     public Chat() {
     }
 
-    public Chat(String chatId, String otherUserId, String otherUserName, Map<String, Boolean> participants) {
+    public Chat(String chatId, String otherUserId, String otherfullName, Map<String, Boolean> participants) {
         this.chatId = chatId;
         this.otherUserId = otherUserId;
-        this.otherUserName = otherUserName;
+        this.otherUserFullName = otherfullName;
         this.participants = participants;
     }
 
@@ -33,12 +33,12 @@ public class Chat {
         this.otherUserId = otherUserId;
     }
 
-    public String getOtherUserName() {
-        return otherUserName;
+    public String getOtherUserFullName() {
+        return otherUserFullName;
     }
 
     public void setOtherUserName(String otherUserName) {
-        this.otherUserName = otherUserName;
+        this.otherUserFullName = otherUserName;
     }
 
     public Map<String, Boolean> getParticipants() {

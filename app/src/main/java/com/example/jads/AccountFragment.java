@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AccountFragment extends Fragment {
 
-    private TextView userNameTextView;
+    private TextView fullNameTextView;
     private DatabaseReference reference;
     private FirebaseAuth auth;
 
@@ -33,7 +33,7 @@ public class AccountFragment extends Fragment {
         View view = inflater.inflate(R.layout.account_fragment, container, false);
 
         // Initialize views
-        userNameTextView = view.findViewById(R.id.user_name);
+        fullNameTextView = view.findViewById(R.id.fullNameTv);
         LinearLayout logoutButton = view.findViewById(R.id.logoutButton); // Reference to the Log Out button layout
         LinearLayout viewProfileLayout = view.findViewById(R.id.viewProfileLayout); // Reference to the clickable LinearLayout
 
@@ -57,14 +57,16 @@ public class AccountFragment extends Fragment {
                         String firstName = snapshot.child("firstName").getValue(String.class);
                         String lastName = snapshot.child("lastName").getValue(String.class);
                         if (firstName != null && lastName != null) {
-                            userNameTextView.setText(firstName + " " + lastName);
-                        } else {
-                            userNameTextView.setText("User");
-                            Toast.makeText(getContext(), "First or last name not found", Toast.LENGTH_SHORT).show();
+                            fullNameTextView.setText(firstName + " " + lastName);
                         }
-                    } else {
-                        userNameTextView.setText("Guest User");
-                        Toast.makeText(getContext(), "User data not found", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            fullNameTextView.setText("User");
+//                            Toast.makeText(getContext(), "First or last name not found", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } else {
+//                        fullNameTextView.setText("Guest User");
+//                        Toast.makeText(getContext(), "User data not found", Toast.LENGTH_SHORT).show();
+//                    }
                     }
                 }
 
@@ -74,7 +76,7 @@ public class AccountFragment extends Fragment {
                 }
             });
         } else {
-            userNameTextView.setText("Guest User");
+            fullNameTextView.setText("Guest User");
             Toast.makeText(getContext(), "No user is logged in", Toast.LENGTH_SHORT).show();
         }
 

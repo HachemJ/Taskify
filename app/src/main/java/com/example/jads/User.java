@@ -2,7 +2,7 @@ package com.example.jads;
 
 public class User {
 
-    String firstName, lastName, email, username, password, ratingScore, nbOfRatings, profileUrl, phoneNumber;
+    String firstName, lastName, email, password, ratingScore, nbOfRatings, profileUrl, phoneNumber;
 
     public String getRatingScore() {
         return ratingScore;
@@ -59,14 +59,6 @@ public class User {
         this.email = email;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -75,11 +67,10 @@ public class User {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String email, String username, String password, String ratingScore, String nbOfRatings, String profileUrl, String phoneNumber) {
+    public User(String firstName, String lastName, String email, String password, String ratingScore, String nbOfRatings, String profileUrl, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.username = username;
         this.password = password;
         this.ratingScore = ratingScore;
         this.nbOfRatings = nbOfRatings;

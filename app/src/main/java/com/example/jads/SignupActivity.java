@@ -19,11 +19,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+
+import java.util.concurrent.TimeUnit;
 
 public class SignupActivity extends AppCompatActivity {
 
-    EditText signupFirstName, signupLastName, signupEmail, signupPassword, signupUsername;
+    EditText signupFirstName, signupLastName, signupEmail, signupPassword;
     Button signupButton;
     FirebaseAuth auth;
     FirebaseDatabase database;
@@ -46,7 +47,6 @@ public class SignupActivity extends AppCompatActivity {
         signupLastName = findViewById(R.id.lastnameEt);
         signupEmail = findViewById(R.id.emailaddressEt);
         signupPassword = findViewById(R.id.passwordEt);
-        signupUsername = findViewById(R.id.usernameEt);
         signupButton = findViewById(R.id.signupButton);
 
         // Initialize Firebase Auth and Realtime Database references
@@ -60,35 +60,26 @@ public class SignupActivity extends AppCompatActivity {
             String lastName = signupLastName.getText().toString().trim();
             String email = signupEmail.getText().toString().trim();
             String password = signupPassword.getText().toString().trim();
-            String username = signupUsername.getText().toString().trim();
 
             // Validate inputs
             if (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName) || TextUtils.isEmpty(email)
-                    || TextUtils.isEmpty(password) || TextUtils.isEmpty(username)) {
+                    || TextUtils.isEmpty(password)) {
                 Toast.makeText(SignupActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Check for unique username
-            Query usernameQuery = usersReference.orderByChild("username").equalTo(username);
-            usernameQuery.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult().exists()) {
-                    Toast.makeText(SignupActivity.this, "Username is already taken. Please choose another one.", Toast.LENGTH_SHORT).show();
+            // Check for unique email
+            usersReference.orderByChild("email").equalTo(email).get().addOnCompleteListener(emailTask -> {
+                if (emailTask.isSuccessful() && emailTask.getResult().exists()) {
+                    Toast.makeText(SignupActivity.this, "Email is already registered. Please use another email.", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Check for unique email
-                    usersReference.orderByChild("email").equalTo(email).get().addOnCompleteListener(emailTask -> {
-                        if (emailTask.isSuccessful() && emailTask.getResult().exists()) {
-                            Toast.makeText(SignupActivity.this, "Email is already registered. Please use another email.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            createUser(firstName, lastName, email, password, username);
-                        }
-                    });
+                    createUser(firstName, lastName, email, password);
                 }
             });
         });
     }
 
-    private void createUser(String firstName, String lastName, String email, String password, String username) {
+    private void createUser(String firstName, String lastName, String email, String password) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -103,7 +94,7 @@ public class SignupActivity extends AppCompatActivity {
                                             Toast.makeText(SignupActivity.this, "Verification email sent. Please verify your email.", Toast.LENGTH_SHORT).show();
 
                                             // Save user data to "unverified_users" node
-                                            User user = new User(firstName, lastName, email, username, null, null, null, null, null);
+                                            User user = new User(firstName, lastName, email, null, null, null, null, null);
                                             unverifiedUsersReference.child(userId).setValue(user)
                                                     .addOnCompleteListener(databaseTask -> {
                                                         if (databaseTask.isSuccessful()) {
@@ -136,7 +127,7 @@ public class SignupActivity extends AppCompatActivity {
 
         // Schedule the work to run after 2 minutes
         OneTimeWorkRequest deleteWorkRequest = new OneTimeWorkRequest.Builder(DeleteUnverifiedAccountWorker.class)
-                .setInitialDelay(2, java.util.concurrent.TimeUnit.MINUTES)
+                .setInitialDelay(2, TimeUnit.MINUTES)
                 .setInputData(inputData)
                 .build();
 

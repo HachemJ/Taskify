@@ -40,10 +40,10 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/FullNameTv"
+                android:id="@+id/fullNameTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jad El Hachem"
+                android:text="Full Name"
                 android:layout_marginTop="65dp"
                 android:textAlignment="center"
                 android:textStyle="bold"
@@ -58,11 +58,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
-                app:layout_constraintTop_toBottomOf="@id/FullNameTv"
-                app:layout_constraintStart_toStartOf="@id/FullNameTv"
-                app:layout_constraintEnd_toEndOf="@id/FullNameTv">
+                app:layout_constraintTop_toBottomOf="@id/fullNameTv"
+                app:layout_constraintStart_toStartOf="@id/fullNameTv"
+                app:layout_constraintEnd_toEndOf="@id/fullNameTv">
 
 
                 <RatingBar
@@ -102,12 +102,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Orders"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="80dp"
                 android:textAlignment="center"
                 android:textSize="16dp"
-                app:layout_constraintStart_toStartOf="@id/FullNameTv"
-                app:layout_constraintEnd_toStartOf="@id/FullNameTv"
-                app:layout_constraintTop_toBottomOf="@id/FullNameTv" />
+                app:layout_constraintStart_toStartOf="@id/fullNameTv"
+                app:layout_constraintEnd_toStartOf="@id/fullNameTv"
+                app:layout_constraintTop_toBottomOf="@id/fullNameTv" />
 
             <TextView
                 android:id="@+id/orderNumberTv"
@@ -127,12 +127,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Satisfaction Rate"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="80dp"
                 android:textAlignment="center"
                 android:textSize="16dp"
-                app:layout_constraintStart_toEndOf="@id/FullNameTv"
-                app:layout_constraintEnd_toEndOf="@id/FullNameTv"
-                app:layout_constraintTop_toBottomOf="@id/FullNameTv" />
+                app:layout_constraintStart_toEndOf="@id/fullNameTv"
+                app:layout_constraintEnd_toEndOf="@id/fullNameTv"
+                app:layout_constraintTop_toBottomOf="@id/fullNameTv" />
 
             <TextView
                 android:id="@+id/satisfactionRatePercentageTv"
@@ -214,30 +214,33 @@
                 app:layout_constraintStart_toEndOf="@id/firstnameEt"
                 app:layout_constraintTop_toBottomOf="@+id/lastnameTv" />
 
-            <!-- Username -->
+            <!-- Email Address -->
             <TextView
-                android:id="@+id/usernameTv"
+                android:id="@+id/emailAddressTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
-                android:text="Username"
+                android:text="Email Address"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/firstnameEt" />
 
             <EditText
-                android:id="@+id/usernameEt"
+                android:id="@+id/emailAddressEt"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/rounded_et"
+                android:textColor="@color/dark_gray"
+                android:backgroundTint="@color/light_gray"
+                android:enabled="false"
                 android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/usernameTv" />
+                app:layout_constraintTop_toBottomOf="@+id/emailAddressTv" />
 
             <!-- Phone number -->
             <TextView
@@ -250,7 +253,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/emailaddressEt" />
+                app:layout_constraintTop_toBottomOf="@id/emailAddressEt" />
 
             <EditText
                 android:id="@+id/phoneNumberEt"
@@ -267,34 +270,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/phoneNumberTv" />
 
-            <!-- Email -->
-            <TextView
-                android:id="@+id/emailaddressTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:text="Email Address"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/usernameEt" />
 
-            <EditText
-                android:id="@+id/emailaddressEt"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="jadstest1722@gmail.com"
-                android:background="@drawable/rounded_et"
-                android:backgroundTint="@color/light_gray"
-                android:enabled="false"
-                android:padding="8dp"
-                android:textColor="@color/dark_gray"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/emailaddressTv" />
 
             <!-- Join Now Button -->
             <Button

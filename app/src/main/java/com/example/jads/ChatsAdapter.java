@@ -36,8 +36,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
         Chat chat = chatList.get(position);
 
         // Display the name of the other user
-        String otherUserName = chat.getOtherUserName();
-        holder.usernameTextView.setText(otherUserName);
+        String otherUserName = chat.getOtherUserFullName();
+        holder.fullNameTextView.setText(otherUserName);
 
         // Open ChatActivity when a chat is clicked
         holder.itemView.setOnClickListener(v -> {
@@ -55,11 +55,11 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
     }
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
-        TextView usernameTextView;
+        TextView fullNameTextView;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
-            usernameTextView = itemView.findViewById(R.id.usernameTextView);
+            fullNameTextView = itemView.findViewById(R.id.fullNameTv);
         }
     }
 }

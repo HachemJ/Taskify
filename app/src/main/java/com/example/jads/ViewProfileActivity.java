@@ -1,6 +1,7 @@
 package com.example.jads;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -22,54 +23,61 @@ import java.util.HashMap;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
-    FirebaseAuth auth;
-    FirebaseDatabase database;
-    DatabaseReference usersReference, passwordResetRequests;
+    // Firebase references
+    private FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private DatabaseReference usersReference, passwordResetRequests;
 
-    EditText emailField;
+    // UI elements
+    private EditText emailField, firstNameField, lastNameField;
+    private TextView fullNameTv, reviewScoreTv;
+    private RatingBar ratingBar;
+    private Button resetPasswordButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-        // Initialize views
-        TextView reviewScoreTv = findViewById(R.id.reviewScoreTv);
-        RatingBar ratingBar = findViewById(R.id.ratingBar);
-        emailField = findViewById(R.id.emailaddressEt);
+        // Initialize UI elements
+        fullNameTv = findViewById(R.id.fullNameTv);
+        emailField = findViewById(R.id.emailAddressEt);
+        firstNameField = findViewById(R.id.firstnameEt);
+        lastNameField = findViewById(R.id.lastnameEt);
+        reviewScoreTv = findViewById(R.id.reviewScoreTv);
+        ratingBar = findViewById(R.id.ratingBar);
+        resetPasswordButton = findViewById(R.id.resetPasswordButton);
 
-        EditText firstNameField = findViewById(R.id.firstnameEt);
-        EditText lastNameField = findViewById(R.id.lastnameEt);
-        EditText usernameField = findViewById(R.id.usernameEt);
-
-        // Firebase initialization
+        // Initialize Firebase references
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         usersReference = database.getReference("users");
         passwordResetRequests = database.getReference("password_reset_requests");
 
-        // Set RatingBar value based on reviewScoreTv
+        // Set RatingBar value dynamically
         try {
             float rating = Float.parseFloat(reviewScoreTv.getText().toString());
-            ratingBar.setRating(rating); // Set the rating dynamically
+            ratingBar.setRating(rating);
         } catch (NumberFormatException e) {
             ratingBar.setRating(0); // Default to 0 if parsing fails
-            e.printStackTrace();
         }
 
         // Fetch user data from Firebase
-        fetchUserData(firstNameField, lastNameField, usernameField);
+        fetchUserData();
 
-        findViewById(R.id.resetPasswordButton).setOnClickListener(v -> handlePasswordReset());
+        // Handle password reset
+        resetPasswordButton.setOnClickListener(v -> handlePasswordReset());
     }
 
-    private void fetchUserData(EditText firstNameField, EditText lastNameField, EditText usernameField) {
-        String currentUserId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
+    private void fetchUserData() {
+        FirebaseUser currentUser = auth.getCurrentUser();
 
-        if (currentUserId == null) {
+        if (currentUser == null) {
             Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String currentUserId = currentUser.getUid();
 
         usersReference.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -78,14 +86,16 @@ public class ViewProfileActivity extends AppCompatActivity {
                     // Fetch the data from Firebase
                     String firstName = snapshot.child("firstName").getValue(String.class);
                     String lastName = snapshot.child("lastName").getValue(String.class);
-                    String username = snapshot.child("username").getValue(String.class);
                     String email = snapshot.child("email").getValue(String.class);
 
-                    // Populate the fields
-                    firstNameField.setText(firstName != null ? firstName : "N/A");
-                    lastNameField.setText(lastName != null ? lastName : "N/A");
-                    usernameField.setText(username != null ? username : "N/A");
-                    emailField.setText(email != null ? email : "N/A");
+                    // Populate fields
+                    firstNameField.setText(firstName != null ? firstName : "");
+                    lastNameField.setText(lastName != null ? lastName : "");
+                    emailField.setText(email != null ? email : "");
+
+                    // Update fullName TextView
+                    String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+                    fullNameTv.setText(fullName.trim().isEmpty() ? "N/A" : fullName.trim());
                 } else {
                     Toast.makeText(ViewProfileActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
                 }

@@ -141,25 +141,25 @@ public class ChatsActivity extends AppCompatActivity {
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                String otherUserName = "Unknown User";
+                String otherUserFullName = "Unknown User";
 
                 if (userSnapshot.exists()) {
                     String firstName = userSnapshot.child("firstName").getValue(String.class);
                     String lastName = userSnapshot.child("lastName").getValue(String.class);
 
                     if (firstName != null && lastName != null) {
-                        otherUserName = firstName + " " + lastName;
+                        otherUserFullName = firstName + " " + lastName;
                     }
                 }
 
-                Log.d(TAG, "Fetched user details for user ID: " + otherUserId + ", Name: " + otherUserName);
+                Log.d(TAG, "Fetched user details for user ID: " + otherUserId + ", Name: " + otherUserFullName);
 
                 // Cast participants object to Map<String, Boolean>
                 @SuppressWarnings("unchecked")
                 Map<String, Boolean> participantsMap = (Map<String, Boolean>) participants;
 
                 // Add chat to the list after user data is fetched
-                chatList.add(new Chat(chatId, otherUserId, otherUserName, participantsMap));
+                chatList.add(new Chat(chatId, otherUserId, otherUserFullName, participantsMap));
                 chatsAdapter.notifyDataSetChanged(); // Notify adapter after adding
             }
 

@@ -1,7 +1,5 @@
 package com.example.jads;
 
-import static com.google.firebase.database.ServerValue.TIMESTAMP;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,7 +20,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +34,7 @@ import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText usernameField, passwordField;
+    EditText emailAddressField, passwordField;
     Button loginButton;
     FirebaseAuth auth;
     FirebaseDatabase database;
@@ -94,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPasswordText.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
 
         // Initialize fields and buttons
-        usernameField = findViewById(R.id.username);
+        emailAddressField = findViewById(R.id.emailAddressEt);
         passwordField = findViewById(R.id.passwordEt);
         loginButton = findViewById(R.id.loginButton);
 
@@ -105,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordResetRequests = database.getReference("password_reset_requests");
 
         loginButton.setOnClickListener(v -> {
-            String email = usernameField.getText().toString().trim();
+            String email = emailAddressField.getText().toString().trim();
             String password = passwordField.getText().toString().trim();
 
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
@@ -148,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handlePasswordReset() {
-        String email = usernameField.getText().toString().trim();
+        String email = emailAddressField.getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "Please enter your email to reset password", Toast.LENGTH_SHORT).show();
