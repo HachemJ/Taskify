@@ -9,13 +9,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +27,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private TextView postTitleTextView, priceTextView, reviewScoreTextView, reviewCountTextView, descriptionTextView, tagTest1, tagTest2;
     private ImageView profileImageView, imageView;
-    private Button chatButton, deletePostButton;
+    private Button chatButton, deletePostButton, payButton;
     private RatingBar ratingBar;
 
     private String currentUserId;
@@ -52,11 +55,8 @@ public class PostDetailActivity extends AppCompatActivity {
         // Fetch and display poster user details
         fetchPosterDetails();
 
-        // Set up delete post button visibility and logic
-        setupDeleteButton();
-
-        // Set up chat button logic
-        setupChatButton();
+        // Set up buttons
+        setupButtons();
     }
 
     private void initializeViews() {
@@ -71,6 +71,7 @@ public class PostDetailActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         chatButton = findViewById(R.id.chatButton);
         deletePostButton = findViewById(R.id.deletePostButton);
+        payButton = findViewById(R.id.payButton);
         ratingBar = findViewById(R.id.ratingBar);
     }
 
@@ -83,8 +84,8 @@ public class PostDetailActivity extends AppCompatActivity {
         tag1 = getIntent().getStringExtra("tag1");
         tag2 = getIntent().getStringExtra("tag2");
 
-        currentUserId = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null
-                ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid()
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid()
                 : null;
     }
 
@@ -104,7 +105,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(posterUserId);
 
-        userRef.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -141,35 +142,43 @@ public class PostDetailActivity extends AppCompatActivity {
                 Toast.makeText(PostDetailActivity.this, "Failed to fetch user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-}
+    }
 
-    private void setupDeleteButton() {
+    private void setupButtons() {
         if (currentUserId != null && currentUserId.equals(posterUserId)) {
+            // User's own post
             deletePostButton.setVisibility(Button.VISIBLE);
             deletePostButton.setOnClickListener(v -> showDeleteConfirmationDialog());
+            chatButton.setVisibility(Button.GONE);
+
+            payButton.setVisibility(Button.VISIBLE);
+            payButton.setText("Select Payment(s) Methods");
+            payButton.setOnClickListener(v -> {
+                // Redirect to Account Fragment (currently not implemented, use a placeholder)
+                Intent intent = new Intent(PostDetailActivity.this, AccountFragment.class); // Replace with actual target later
+                startActivity(intent);
+            });
         } else {
+            // Another user's post
+            chatButton.setVisibility(Button.VISIBLE);
             deletePostButton.setVisibility(Button.GONE);
+
+            payButton.setVisibility(Button.VISIBLE);
+            payButton.setText("Pay Now");
+            payButton.setOnClickListener(v -> {
+                // Redirect to ViewProfile (currently a placeholder)
+                Intent intent = new Intent(PostDetailActivity.this, ViewProfileActivity.class); // Replace with actual target later
+                startActivity(intent);
+            });
+
+            chatButton.setOnClickListener(v -> startChat());
         }
     }
 
-    private void setupChatButton() {
-        chatButton.setOnClickListener(v -> {
-            if (currentUserId == null) {
-                Toast.makeText(this, "You need to log in to start a chat.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (posterUserId == null) {
-                Toast.makeText(this, "Unable to identify the poster.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            createOrInitializeChat(currentUserId, posterUserId);
-        });
-    }
-
     private void showDeleteConfirmationDialog() {
-        new android.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Delete Post")
-                .setMessage("Are you sure you want to delete this post? This action cannot be undone.")
+                .setMessage("Are you sure you want to delete this post?")
                 .setPositiveButton("Yes", (dialog, which) -> deletePost())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .create()
@@ -194,29 +203,29 @@ public class PostDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void createOrInitializeChat(String currentUserId, String otherUserId) {
-        if (currentUserId.equals(otherUserId)) {
-            Toast.makeText(this, "You cannot chat with yourself.", Toast.LENGTH_SHORT).show();
+    private void startChat() {
+        if (currentUserId == null || posterUserId == null || currentUserId.equals(posterUserId)) {
+            Toast.makeText(this, "Unable to start chat.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         chatButton.setEnabled(false);
 
-        String chatId = currentUserId.compareTo(otherUserId) < 0
-                ? currentUserId + "_" + otherUserId
-                : otherUserId + "_" + currentUserId;
+        String chatId = currentUserId.compareTo(posterUserId) < 0
+                ? currentUserId + "_" + posterUserId
+                : posterUserId + "_" + currentUserId;
 
         DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
 
         Map<String, Object> chatData = new HashMap<>();
-        chatData.put("participants", Map.of(currentUserId, true, otherUserId, true));
+        chatData.put("participants", Map.of(currentUserId, true, posterUserId, true));
 
         chatRef.updateChildren(chatData).addOnCompleteListener(task -> {
             chatButton.setEnabled(true);
             if (task.isSuccessful()) {
                 Intent intent = new Intent(PostDetailActivity.this, ChatActivity.class);
                 intent.putExtra("chatId", chatId);
-                intent.putExtra("otherUserId", otherUserId);
+                intent.putExtra("otherUserId", posterUserId);
                 startActivity(intent);
             } else {
                 Toast.makeText(PostDetailActivity.this, "Failed to initialize chat.", Toast.LENGTH_SHORT).show();
