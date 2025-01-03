@@ -10,6 +10,8 @@ public class Post {
     private Long timestamp;// Add this field
     private String imageUrl;
     private List<String> tags; // Tags as a list
+
+    private List<String> paymentMethods; // Tags as a list
     private String category; // Category as a string
     private String price; // Price as a double
 

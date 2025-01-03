@@ -256,7 +256,7 @@
                 android:id="@+id/paymentMethodsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Choose Payment Methods(s)"
+                android:text="Choose Payment Method(s)"
                 android:backgroundTint="@color/blue"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"

@@ -49,8 +49,10 @@ public class AddPostDialog extends DialogFragment {
     private Slider priceSlider;
     private LinearLayout tagContainer;
     private static final int IMAGE_PICK_CODE = 100;
+    private static final int PAYMENT_METHODS_REQUEST_CODE = 101;
 
-    private final List<String> predefinedTags = new ArrayList<>();
+    private final List<String> Tags = new ArrayList<>();
+    private final List<String> selectedPaymentMethods = new ArrayList<>();
 
     private FirebaseAuth auth;
     private DatabaseReference postsReference;
@@ -95,6 +97,92 @@ public class AddPostDialog extends DialogFragment {
         });
 
         // Apply dynamic styling based on tab context
+        applyStylingBasedOnTabContext();
+
+        // Slider Label Formatter with Dollar Sign
+        priceSlider.setLabelFormatter(value -> "$" + (int) value);
+
+        // Apply custom InputFilter to enforce values between 0 and 100
+        priceEditText.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
+
+        // Sync Slider -> EditText
+        syncSliderWithEditText();
+
+        // Add tag functionality
+        addTagButton.setOnClickListener(v -> {
+            String tagText = newTagEditText.getText().toString().trim();
+
+            if (!tagText.isEmpty() && !Tags.contains(tagText)) {
+                if (Tags.size() < 2) { // Allow only up to 2 tags
+                    Tags.add(tagText);
+                    addTagToContainer(tagText);
+                    newTagEditText.setText("");
+                } else {
+                    Toast.makeText(getContext(), "You can only add up to 2 tags.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // Save post functionality
+        saveButton.setOnClickListener(v -> {
+            if (isAdded()) { // Ensure the fragment is attached to the activity
+                savePost();
+            } else {
+                Toast.makeText(getContext(), "Fragment not attached. Try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add image functionality
+        addImageButton.setOnClickListener(v -> {
+            if (isAdded()) { // Ensure the fragment is attached to the activity
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, IMAGE_PICK_CODE);
+            } else {
+                Toast.makeText(getContext(), "Fragment not attached. Try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Payment method functionality
+        paymentMethodButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), PaymentMethodsActivity.class);
+            startActivityForResult(intent, PAYMENT_METHODS_REQUEST_CODE);
+        });
+
+        return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_PICK_CODE && resultCode == getActivity().RESULT_OK && data != null) {
+            selectedImageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
+                postImageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == PAYMENT_METHODS_REQUEST_CODE && resultCode == getActivity().RESULT_OK && data != null) {
+            selectedPaymentMethods.clear();
+            selectedPaymentMethods.addAll(data.getStringArrayListExtra("selectedPaymentMethods"));
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            ViewGroup.LayoutParams layoutParams = getDialog().getWindow().getAttributes();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.9);
+            getDialog().getWindow().setAttributes((WindowManager.LayoutParams) layoutParams);
+            getDialog().getWindow().setGravity(Gravity.CENTER);
+            getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+    }
+
+    private void applyStylingBasedOnTabContext() {
         if ("Selling".equalsIgnoreCase(tabContext)) {
             dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.dark_blue));
             saveButton.setBackgroundColor(getResources().getColor(R.color.black));
@@ -116,14 +204,9 @@ public class AddPostDialog extends DialogFragment {
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
         }
+    }
 
-        // Slider Label Formatter with Dollar Sign
-        priceSlider.setLabelFormatter(value -> "$" + (int) value);
-
-        // Apply custom InputFilter to enforce values between 0 and 100
-        priceEditText.setFilters(new InputFilter[]{new InputFilterMinMax(0, 100)});
-
-        // Sync Slider -> EditText
+    private void syncSliderWithEditText() {
         priceSlider.addOnChangeListener((slider, value, fromUser) -> {
             int intValue = (int) value;
             if (!priceEditText.getText().toString().equals(String.valueOf(intValue))) {
@@ -131,7 +214,6 @@ public class AddPostDialog extends DialogFragment {
             }
         });
 
-        // Sync EditText -> Slider
         priceEditText.addTextChangedListener(new TextWatcher() {
             boolean editing = false;
 
@@ -160,67 +242,6 @@ public class AddPostDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
-        addTagButton.setOnClickListener(v -> {
-            String tagText = newTagEditText.getText().toString().trim();
-
-            if (!tagText.isEmpty() && !predefinedTags.contains(tagText)) {
-                if (predefinedTags.size() < 2) { // Allow only up to 2 tags
-                    predefinedTags.add(tagText);
-                    addTagToContainer(tagText);
-                    newTagEditText.setText("");
-                } else {
-                    Toast.makeText(getContext(), "You can only add up to 2 tags.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        saveButton.setOnClickListener(v -> {
-            if (isAdded()) { // Ensure the fragment is attached to the activity
-                savePost();
-            } else {
-                Toast.makeText(getContext(), "Fragment not attached. Try again later.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        addImageButton.setOnClickListener(v -> {
-            if (isAdded()) { // Ensure the fragment is attached to the activity
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, IMAGE_PICK_CODE);
-            } else {
-                Toast.makeText(getContext(), "Fragment not attached. Try again later.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_PICK_CODE && resultCode == getActivity().RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
-                postImageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            ViewGroup.LayoutParams layoutParams = getDialog().getWindow().getAttributes();
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            layoutParams.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.9);
-            getDialog().getWindow().setAttributes((WindowManager.LayoutParams) layoutParams);
-            getDialog().getWindow().setGravity(Gravity.CENTER);
-            getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
     }
 
     private void addTagToContainer(String tagText) {
@@ -247,7 +268,7 @@ public class AddPostDialog extends DialogFragment {
         }
 
         closeButton.setOnClickListener(v -> {
-            predefinedTags.remove(tagText);
+            Tags.remove(tagText);
             tagContainer.removeView(tagLayout);
         });
 
@@ -264,11 +285,16 @@ public class AddPostDialog extends DialogFragment {
             return;
         }
 
+        if (selectedPaymentMethods.isEmpty()) {
+            Toast.makeText(getContext(), "Please select at least one payment method", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String userId = currentUser.getUid();
         String title = titleEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
         String price = priceEditText.getText().toString().trim();
-        List<String> tags = new ArrayList<>(predefinedTags);
+        List<String> tags = new ArrayList<>(Tags);
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(price)) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -301,6 +327,7 @@ public class AddPostDialog extends DialogFragment {
         postDetails.put("description", description);
         postDetails.put("price", price);
         postDetails.put("tags", tags);
+        postDetails.put("paymentMethods", selectedPaymentMethods);
         postDetails.put("category", tabContext);
         postDetails.put("timestamp", System.currentTimeMillis());
         if (imageUrl != null) {
