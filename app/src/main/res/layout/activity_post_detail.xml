@@ -107,7 +107,7 @@
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+
         android:layout_marginTop="8dp"
         android:text="Title"
         android:textColor="@color/black"
@@ -218,6 +218,8 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Delete post"
+        android:textSize="12dp"
+        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -231,6 +233,8 @@
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:text="Pay now"
+        android:textSize="12dp"
+        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

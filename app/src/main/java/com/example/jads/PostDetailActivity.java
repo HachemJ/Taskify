@@ -183,7 +183,7 @@ public class PostDetailActivity extends AppCompatActivity {
             chatButton.setVisibility(Button.GONE);
 
             payButton.setVisibility(Button.VISIBLE);
-            payButton.setText("Select Payment Method(s)");
+            payButton.setText("Modify Payment Method(s)");
             payButton.setOnClickListener(v -> {
                 // Redirect to PaymentMethodsActivity with postId and "isSameUser" flag as true
                 Intent intent = new Intent(PostDetailActivity.this, PaymentMethodsActivity.class);

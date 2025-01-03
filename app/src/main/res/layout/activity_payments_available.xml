@@ -12,7 +12,7 @@
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose your payment method(s) (BUYER)"
+        android:text="Choose your payment method(s)"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"

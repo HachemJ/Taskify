@@ -59,7 +59,7 @@
                 android:id="@+id/cardCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pay with Cash"
+                android:text="Accept Cash"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:buttonTint="@color/black"
@@ -111,7 +111,7 @@
                 android:id="@+id/paypalCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pay with Wish Money"
+                android:text="Accept Whish Money"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:buttonTint="@color/black"/>
