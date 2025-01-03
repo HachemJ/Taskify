@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +46,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         usersReference = database.getReference("users");
-        passwordResetRequests = database.getReference("passwordResetRequests"); // Initialize here
+        passwordResetRequests = database.getReference("password_reset_requests");
 
         // Set RatingBar value based on reviewScoreTv
         try {
@@ -99,13 +100,15 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void handlePasswordReset() {
         String email = emailField.getText().toString().trim();
+
         if (email.isEmpty()) {
             Toast.makeText(this, "Please enter your email.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (usersReference == null || auth == null) {
-            Toast.makeText(this, "Firebase services are not initialized. Please try again later.", Toast.LENGTH_SHORT).show();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -128,18 +131,18 @@ public class ViewProfileActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                // Log the reset request with the email
+                                // Log the reset request
                                 HashMap<String, Object> resetLog = new HashMap<>();
                                 resetLog.put("timestamp", ServerValue.TIMESTAMP);
                                 resetLog.put("email", email);
                                 passwordResetRequests.child(userId).setValue(resetLog);
 
-                                // Send the password reset email
-                                auth.sendPasswordResetEmail(email).addOnCompleteListener(emailTask -> {
-                                    if (emailTask.isSuccessful()) {
+                                // Send password reset email
+                                auth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
                                         Toast.makeText(ViewProfileActivity.this, "Password reset email sent.", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(ViewProfileActivity.this, "Failed to send reset email: " + emailTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ViewProfileActivity.this, "Failed to send reset email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -153,13 +156,13 @@ public class ViewProfileActivity extends AppCompatActivity {
                         Toast.makeText(ViewProfileActivity.this, "Failed to retrieve user ID.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(ViewProfileActivity.this, "Error: User not found.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewProfileActivity.this, "Email not found.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ViewProfileActivity.this, "Error checking user: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewProfileActivity.this, "Error checking email: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
