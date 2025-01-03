@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,16 +47,23 @@ public class LookingFragment extends Fragment {
         makeBothPartsBoldAndSize(descriptionTextView);
 
         openAddPostDialogButton.setOnClickListener(v -> {
-            if (isAdded()) { // Ensure the fragment is attached
-                AddPostDialog addPostDialog = new AddPostDialog();
-                Bundle args = new Bundle();
-                args.putString("tabContext", "Looking"); // Pass "Looking" context
-                addPostDialog.setArguments(args);
-                addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
-            } else {
-                android.util.Log.w("LookingFragment", "Fragment not attached. Cannot open AddPostDialog.");
+            try {
+                if (requireActivity().getSupportFragmentManager().findFragmentByTag("AddPostDialog") == null) {
+                    AddPostDialog addPostDialog = new AddPostDialog();
+                    Bundle args = new Bundle();
+                    args.putString("tabContext", "Looking"); // Pass "Looking" context
+                    addPostDialog.setArguments(args);
+                    addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
+                } else {
+                    android.util.Log.w("LookingFragment", "AddPostDialog is already open.");
+                }
+            } catch (IllegalStateException e) {
+                android.util.Log.e("LookingFragment", "Error showing AddPostDialog", e);
+                Toast.makeText(requireContext(), "Cannot open Add Post dialog. Try again later.", Toast.LENGTH_SHORT).show();
             }
         });
+
+
 
         // RecyclerView setup
         recyclerView = view.findViewById(R.id.recyclerView);
