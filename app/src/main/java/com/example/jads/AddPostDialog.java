@@ -44,7 +44,7 @@ import java.util.Map;
 public class AddPostDialog extends DialogFragment {
 
     private EditText titleEditText, descriptionEditText, priceEditText, newTagEditText;
-    private Button saveButton, addImageButton, addTagButton;
+    private Button saveButton, addImageButton, addTagButton, paymentMethodButton;
     private ImageView postImageView;
     private Slider priceSlider;
     private LinearLayout tagContainer;
@@ -85,6 +85,7 @@ public class AddPostDialog extends DialogFragment {
         priceEditText = view.findViewById(R.id.editTextNumber);
         newTagEditText = view.findViewById(R.id.newTagEditText);
         addTagButton = view.findViewById(R.id.addTagButton);
+        paymentMethodButton = view.findViewById(R.id.paymentMethodsButton);
         tagContainer = view.findViewById(R.id.tagContainer);
 
         titleEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(44)});
@@ -99,6 +100,7 @@ public class AddPostDialog extends DialogFragment {
             saveButton.setBackgroundColor(getResources().getColor(R.color.black));
             saveButton.setTextColor(getResources().getColor(R.color.white));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.black));
+            paymentMethodButton.setBackgroundColor(getResources().getColor(R.color.black));
             addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
             descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
@@ -108,6 +110,7 @@ public class AddPostDialog extends DialogFragment {
             saveButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
             saveButton.setTextColor(getResources().getColor(R.color.white));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            paymentMethodButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
             addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
@@ -213,7 +216,7 @@ public class AddPostDialog extends DialogFragment {
         if (getDialog() != null && getDialog().getWindow() != null) {
             ViewGroup.LayoutParams layoutParams = getDialog().getWindow().getAttributes();
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            layoutParams.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.85);
+            layoutParams.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.9);
             getDialog().getWindow().setAttributes((WindowManager.LayoutParams) layoutParams);
             getDialog().getWindow().setGravity(Gravity.CENTER);
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
