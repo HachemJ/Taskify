@@ -47,6 +47,7 @@ public class LookingFragment extends Fragment {
         makeBothPartsBoldAndSize(descriptionTextView);
 
         openAddPostDialogButton.setOnClickListener(v -> {
+
             try {
                 if (requireActivity().getSupportFragmentManager().findFragmentByTag("AddPostDialog") == null) {
                     AddPostDialog addPostDialog = new AddPostDialog();

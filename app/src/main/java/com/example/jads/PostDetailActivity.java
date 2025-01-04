@@ -1,6 +1,7 @@
 package com.example.jads;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -195,6 +196,7 @@ public class PostDetailActivity extends AppCompatActivity {
             payButton.setVisibility(Button.VISIBLE);
             payButton.setText("Modify Payment Method(s)");
             payButton.setOnClickListener(v -> {
+
                 // Redirect to PaymentMethodsActivity with postId and "isSameUser" flag as true
                 Intent intent = new Intent(PostDetailActivity.this, PaymentMethodsActivity.class);
                 intent.putExtra("isSameUser", true);
@@ -210,6 +212,18 @@ public class PostDetailActivity extends AppCompatActivity {
             payButton.setText("Pay Now");
             payButton.setOnClickListener(v -> {
                 // Redirect to PaymentsAvailable activity for non-owners
+
+                //TEST NOTIFICATION
+                Log.i("Hi", "hi");
+                SendNotification sendNotification = new SendNotification();
+                String fcmToken = "f57ONjnYR4iPCc-yTKICfL:APA91bGyuHyvk4YZeEJ3uvmuWA7PdpiFP2fR2k6z-WfzGZ2POi73Ttahp-zF21uucdrGciGquIH74-g_NdpTGpD-DDLOxcefxYKZC9DtSkaEpFoGTWuTIEg";
+                sendNotification.sendPushNotification(
+                        this, // Pass the Activity context here
+                        "Test Notification",
+                        "This is a test message",
+                        fcmToken);
+
+
                 Intent intent = new Intent(PostDetailActivity.this, PaymentsAvailable.class);
                 intent.putExtra("postId", postId); // Pass the postId to retrieve payment methods
                 startActivity(intent);

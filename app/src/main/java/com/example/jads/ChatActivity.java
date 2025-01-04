@@ -3,6 +3,7 @@ package com.example.jads;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -86,7 +87,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
                 messageAdapter.updateMessages(messageList);
-                messagesRecyclerView.scrollToPosition(messageList.size() - 1); // Scroll to latest message
+                messagesRecyclerView.scrollToPosition(messageList.size() - 1); // Scroll to the latest message
             }
 
             @Override
@@ -109,6 +110,10 @@ public class ChatActivity extends AppCompatActivity {
                             Log.d(TAG, "Message sent: " + text);
                             updateUserChats(currentUserId, otherUserId, chatId);
                             updateUserChats(otherUserId, currentUserId, chatId);
+
+                            // Send notification
+                            getFCMToken(otherUserId, text);
+
                             messageEditText.setText(""); // Clear input field
                         } else {
                             Log.e(TAG, "Failed to send message: " + task.getException());
@@ -120,7 +125,7 @@ public class ChatActivity extends AppCompatActivity {
     private void updateUserChats(String userId, String otherUserId, String chatId) {
         DatabaseReference userChatsRef = FirebaseDatabase.getInstance().getReference("userChats").child(userId);
 
-        userChatsRef.child(chatId).setValue(true) // Save chat ID for the user
+        userChatsRef.child(chatId).setValue(true)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "UserChats updated for user: " + userId);
@@ -133,22 +138,32 @@ public class ChatActivity extends AppCompatActivity {
     private String generateChatId(String user1, String user2) {
         return user1.compareTo(user2) < 0 ? user1 + "_" + user2 : user2 + "_" + user1;
     }
-    private ValueEventListener messagesListener;
-    private DatabaseReference messagesRef;
 
-    private void attachMessagesListener() {
-        messagesRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("messages");
-        messagesListener = messagesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Handle message data
-            }
+    private void getFCMToken(String receiverId, String message) {
+        FirebaseDatabase.getInstance().getReference("users").child(receiverId).child("fcmToken")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String token = snapshot.getValue(String.class);
+                            if (token != null) {
+                                Log.d("FCMToken", "Token: " + token);
+                                SendNotification fcmSender = new SendNotification();
+                                fcmSender.sendPushNotification(
+                                        ChatActivity.this, currentUserId, message, "f57ONjnYR4iPCc-yTKICfL:APA91bGyuHyvk4YZeEJ3uvmuWA7PdpiFP2fR2k6z-WfzGZ2POi73Ttahp-zF21uucdrGciGquIH74-g_NdpTGpD-DDLOxcefxYKZC9DtSkaEpFoGTWuTIEg"
+                                );
+                            } else {
+                                Log.e(TAG, "FCM token is null!");
+                            }
+                        } else {
+                            Log.e(TAG, "FCM token does not exist for receiverId: " + receiverId);
+                        }
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Error querying messages: " + error.getMessage());
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e(TAG, "Failed to fetch FCM token: " + error.getMessage());
+                    }
+                });
     }
-
 }

@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("FCM Token", "Token: " + token);
 
                 // Save token to Realtime Database
-                updateTokenInDatabase(token);
+                //updateTokenInDatabase(token);
             } else {
                 Log.e("FCM Token", "Fetching FCM token failed", task.getException());
             }
