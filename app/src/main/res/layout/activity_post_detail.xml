@@ -22,10 +22,11 @@
         <!-- Profile Image -->
         <ImageView
             android:id="@+id/profileImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
             android:clickable="true"
-            android:background="@android:color/transparent"
             android:src="@drawable/ic_account" />
 
         <!-- Full Name -->
@@ -99,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="216dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_image" />
+            android:src="@drawable/ic_account" />
     </androidx.cardview.widget.CardView>
 
     <!-- Title -->

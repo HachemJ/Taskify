@@ -159,9 +159,17 @@ public class PostDetailActivity extends AppCompatActivity {
                     // Fetch profile image
                     String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
                     if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
-                        Glide.with(PostDetailActivity.this).load(profileImageUrl).into(profileImageView);
+                        // Load the profile image with Glide
+                        Glide.with(PostDetailActivity.this)
+                                .load(profileImageUrl)
+                                .circleCrop() // Crop to a circle
+                                .into(profileImageView);
+                        // Set circular background
                     } else {
-                        profileImageView.setImageResource(R.drawable.placeholder_image);
+                        // Set default image
+                        profileImageView.setImageResource(R.drawable.ic_account);
+                        // Remove circular background
+                        profileImageView.setBackground(null);
                     }
                 } else {
                     Toast.makeText(PostDetailActivity.this, "Poster details not found.", Toast.LENGTH_SHORT).show();

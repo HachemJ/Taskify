@@ -90,7 +90,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.timeTextView.setText("Unknown time");
         }
 
-        // Load image using Glide
+        // Load post image using Glide
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(imageUrl)
@@ -101,8 +101,44 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.imageView.setImageResource(R.drawable.placeholder_image);
         }
 
-        // Fetch and set the full name (firstName + lastName)
+        // Fetch and set the profile picture
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(posterUserId);
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+
+                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                        Glide.with(holder.itemView.getContext())
+                                .load(profileImageUrl)
+                                .circleCrop()
+                                .placeholder(R.drawable.ic_account) // Default icon if loading fails
+                                .error(R.drawable.ic_account)      // Default icon if there's an error
+                                .into(holder.profileImageView);
+                        holder.profileImageView.setColorFilter(null); // Remove tint// Ensure the holder has a profileImageView
+                    } else {
+                        holder.profileImageView.setImageResource(R.drawable.ic_account);
+                        holder.profileImageView.setColorFilter(holder.itemView.getContext()
+                                .getResources().getColor(R.color.white));
+
+                    }
+                } else {
+                    holder.profileImageView.setImageResource(R.drawable.ic_account);
+                    holder.profileImageView.setColorFilter(holder.itemView.getContext()
+                            .getResources().getColor(R.color.white));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                holder.profileImageView.setImageResource(R.drawable.ic_account);
+                holder.profileImageView.setColorFilter(holder.itemView.getContext()
+                        .getResources().getColor(R.color.white)); // Apply tint
+            }
+        });
+
+        // Fetch and set the full name (firstName + lastName)
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -205,6 +241,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Button learnMoreButton;
         ImageView imageView;
         androidx.cardview.widget.CardView cardView;
+        ImageView profileImageView;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -220,6 +257,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             imageView = itemView.findViewById(R.id.imageView);
             learnMoreButton = itemView.findViewById(R.id.learnMoreButton);
             cardView = itemView.findViewById(R.id.cardView);
+            profileImageView = itemView.findViewById(R.id.profileImageView);
         }
     }
 }

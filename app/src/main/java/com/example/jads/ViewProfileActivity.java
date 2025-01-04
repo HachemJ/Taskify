@@ -3,11 +3,25 @@ package com.example.jads;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.view.View;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.IOException;
+
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +47,9 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView fullNameTv, reviewScoreTv;
     private RatingBar ratingBar;
     private Button resetPasswordButton;
+    private static final int IMAGE_PICK_CODE = 1000;
+    private Uri selectedImageUri;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +70,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         usersReference = database.getReference("users");
         passwordResetRequests = database.getReference("password_reset_requests");
+        storageReference = FirebaseStorage.getInstance().getReference("profile_pictures");
 
         // Set RatingBar value dynamically
         try {
@@ -87,6 +105,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     String firstName = snapshot.child("firstName").getValue(String.class);
                     String lastName = snapshot.child("lastName").getValue(String.class);
                     String email = snapshot.child("email").getValue(String.class);
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
 
                     // Populate fields
                     firstNameField.setText(firstName != null ? firstName : "");
@@ -96,6 +115,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                     // Update fullName TextView
                     String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
                     fullNameTv.setText(fullName.trim().isEmpty() ? "N/A" : fullName.trim());
+
+                    // Load profile image
+                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                        Glide.with(ViewProfileActivity.this).load(profileImageUrl).into((ImageView) findViewById(R.id.profileImageView));
+                    }
                 } else {
                     Toast.makeText(ViewProfileActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
                 }
@@ -107,6 +131,8 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void handlePasswordReset() {
         String email = emailField.getText().toString().trim();
@@ -175,5 +201,102 @@ public class ViewProfileActivity extends AppCompatActivity {
                 Toast.makeText(ViewProfileActivity.this, "Error checking email: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+    public void uploadProfilePicture(View view) {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, IMAGE_PICK_CODE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_PICK_CODE && resultCode == RESULT_OK && data != null) {
+            selectedImageUri = data.getData();
+
+            if (selectedImageUri != null) {
+                try {
+                    // Display the selected image in the ImageView
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                    ImageView profileImageView = findViewById(R.id.profileImageView);
+                    profileImageView.setImageBitmap(bitmap);
+
+                    // Upload the image to Firebase Storage
+                    uploadImageToFirebase(selectedImageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed to load image.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+    private void uploadImageToFirebase(Uri imageUri) {
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = auth.getCurrentUser().getUid();
+        StorageReference fileRef = storageReference.child(userId + ".jpg");
+
+        fileRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    // Update the user's profile picture URL in the database
+                    usersReference.child(userId).child("profileImageUrl").setValue(uri.toString())
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ViewProfileActivity.this, "Profile picture updated successfully.", Toast.LENGTH_SHORT).show();
+
+                                    // Load the image using Glide
+                                    Glide.with(ViewProfileActivity.this).load(uri).into((ImageView) findViewById(R.id.profileImageView));
+                                } else {
+                                    Toast.makeText(ViewProfileActivity.this, "Failed to update profile picture.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }))
+                .addOnFailureListener(e -> Toast.makeText(ViewProfileActivity.this, "Failed to upload image.", Toast.LENGTH_SHORT).show());
+    }
+    public void showDeleteConfirmationDialog(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Profile")
+                .setMessage("Are you sure you want to delete your profile picture?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteProfilePicture())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+    private void deleteProfilePicture() {
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = currentUser.getUid();
+
+        // Delete the profile picture from Firebase Storage
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference("profile_pictures").child(userId + ".jpg");
+        fileRef.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Remove the profile image URL from the database
+                usersReference.child(userId).child("profileImageUrl").removeValue().addOnCompleteListener(dbTask -> {
+                    if (dbTask.isSuccessful()) {
+                        Toast.makeText(this, "Profile picture deleted successfully.", Toast.LENGTH_SHORT).show();
+
+                        // Reset the profile image to the default placeholder
+                        ImageView profileImageView = findViewById(R.id.profileImageView);
+                        profileImageView.setImageResource(R.drawable.ic_account); // Replace with your default placeholder
+                    } else {
+                        Toast.makeText(this, "Failed to update the database.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Failed to delete profile picture.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+
 }
