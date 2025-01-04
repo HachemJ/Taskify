@@ -14,6 +14,7 @@ firebaseAuth = "22.0.0"
 firebaseBom = "33.7.0" # Use Firebase BOM for consistency
 flexbox = "3.0.0"
 firebaseStorage = "21.0.1"
+firebaseMessaging = "24.1.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -29,6 +30,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 flexbox = { group = "com.google.android", name = "flexbox", version.ref = "flexbox" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

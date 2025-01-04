@@ -1,5 +1,6 @@
 package com.example.jads;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -133,22 +134,13 @@ public class ChatActivity extends AppCompatActivity {
     private String generateChatId(String user1, String user2) {
         return user1.compareTo(user2) < 0 ? user1 + "_" + user2 : user2 + "_" + user1;
     }
-    private ValueEventListener messagesListener;
-    private DatabaseReference messagesRef;
 
-    private void attachMessagesListener() {
-        messagesRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("messages");
-        messagesListener = messagesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Handle message data
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Error querying messages: " + error.getMessage());
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "Back button pressed in ChatActivity. Redirecting to MainActivity.");
+        Intent intent = new Intent(ChatActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish(); // Close ChatActivity
     }
-
 }

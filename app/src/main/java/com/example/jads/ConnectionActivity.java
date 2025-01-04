@@ -7,6 +7,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ConnectionActivity extends AppCompatActivity {
+
+    private static final String TAG = "ConnectionActivity";
 
     Button loginButton;
     TextView registerNowText;
@@ -37,6 +40,25 @@ public class ConnectionActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Handle notification redirection
+        if (getIntent().getExtras() != null) {
+            String userId = getIntent().getExtras().getString("userId");
+            String chatId = getIntent().getExtras().getString("chatId");
+            Log.d(TAG, "Notification intent received, redirecting to ChatsActivity with userId: " + userId);
+            redirectToChats(userId, chatId);
+            return; // Stop further execution
+        }
+
+        // Check if the user is already logged in
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && currentUser.isEmailVerified()) {
+            Log.d(TAG, "User already signed in, redirecting to MainActivity.");
+            startActivity(new Intent(ConnectionActivity.this, MainActivity.class));
+            finish();
+            return;
+        }
+
+        // Initialize UI components
         registerNowText = findViewById(R.id.textView);
         setUpClickableText();
 
@@ -45,18 +67,10 @@ public class ConnectionActivity extends AppCompatActivity {
             Intent intent = new Intent(ConnectionActivity.this, LoginActivity.class);
             startActivity(intent);
         });
-
-        // Check if the user is already logged in
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null && currentUser.isEmailVerified()) {
-            // User is already signed in, redirect to MainActivity
-            startActivity(new Intent(ConnectionActivity.this, MainActivity.class));
-            finish();
-        }
     }
 
     private void setUpClickableText() {
-        String fullText = "New to La Secte? Register Now >";
+        String fullText = "New to Taskify? Register Now >";
         SpannableString spannableString = new SpannableString(fullText);
         int start = fullText.indexOf("Register Now >");
         int end = start + "Register Now >".length();
@@ -70,5 +84,14 @@ public class ConnectionActivity extends AppCompatActivity {
 
         registerNowText.setText(spannableString);
         registerNowText.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+    }
+
+    private void redirectToChats(String userId, String chatId) {
+        Intent intent = new Intent(ConnectionActivity.this, ChatsActivity.class);
+        intent.putExtra("userId", userId);
+        intent.putExtra("chatId", chatId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

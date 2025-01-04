@@ -1,5 +1,6 @@
 package com.example.jads;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -59,8 +60,18 @@ public class ChatsActivity extends AppCompatActivity {
         chatsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatsRecyclerView.setAdapter(chatsAdapter);
 
-        // Load chats from Firebase
-        loadChats();
+        // Check for redirection to a specific chat
+        String chatId = getIntent().getStringExtra("chatId");
+        String otherUserId = getIntent().getStringExtra("userId");
+
+        if (chatId != null && otherUserId != null) {
+            Log.d(TAG, "Opening specific chat with chatId: " + chatId + " and otherUserId: " + otherUserId);
+            openSpecificChat(chatId, otherUserId);
+        } else {
+            // Load chats if no specific chatId is provided
+            Log.d(TAG, "No specific chatId provided. Loading chat list.");
+            loadChats();
+        }
     }
 
     private void loadChats() {
@@ -117,11 +128,6 @@ public class ChatsActivity extends AppCompatActivity {
         });
     }
 
-
-
-    /**
-     * Extract the other user's ID from the participants node
-     */
     private String getOtherUserId(DataSnapshot participantsSnapshot) {
         for (DataSnapshot participant : participantsSnapshot.getChildren()) {
             if (!participant.getKey().equals(currentUserId)) {
@@ -132,9 +138,6 @@ public class ChatsActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Fetch user details and add the chat to the list
-     */
     private void fetchUserDetailsAndAddChat(String chatId, String otherUserId, Object participants) {
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(otherUserId);
 
@@ -170,21 +173,13 @@ public class ChatsActivity extends AppCompatActivity {
             }
         });
     }
-    private ValueEventListener chatsListener;
-    private DatabaseReference chatsRef;
 
-    private void attachChatsListener() {
-        chatsRef = FirebaseDatabase.getInstance().getReference("chats");
-        chatsListener = chatsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Handle chat data
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Error querying chats: " + error.getMessage());
-            }
-        });
+    private void openSpecificChat(String chatId, String otherUserId) {
+        Intent intent = new Intent(ChatsActivity.this, ChatActivity.class);
+        intent.putExtra("chatId", chatId);
+        intent.putExtra("otherUserId", otherUserId);
+        Log.d(TAG, "Redirecting to ChatActivity with chatId: " + chatId + " and otherUserId: " + otherUserId);
+        startActivity(intent);
+        finish(); // Close ChatsActivity
     }
 }

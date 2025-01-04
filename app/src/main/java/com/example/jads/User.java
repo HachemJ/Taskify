@@ -2,7 +2,7 @@ package com.example.jads;
 
 public class User {
 
-    String firstName, lastName, email, password, ratingScore, nbOfRatings, profileUrl, phoneNumber;
+    private String firstName, lastName, email, password, ratingScore, nbOfRatings, profileUrl, phoneNumber, fcmToken;
 
     public String getRatingScore() {
         return ratingScore;
@@ -65,6 +65,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     public User(String firstName, String lastName, String email, String password, String ratingScore, String nbOfRatings, String profileUrl, String phoneNumber) {
