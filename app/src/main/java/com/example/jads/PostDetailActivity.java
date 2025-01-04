@@ -164,7 +164,9 @@ public class PostDetailActivity extends AppCompatActivity {
                                 .load(profileImageUrl)
                                 .circleCrop() // Crop to a circle
                                 .into(profileImageView);
-                        // Set circular background
+                        // Set circular background e
+
+
                     } else {
                         // Set default image
                         profileImageView.setImageResource(R.drawable.ic_account);
