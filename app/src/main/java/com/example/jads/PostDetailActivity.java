@@ -1,6 +1,9 @@
 package com.example.jads;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -47,6 +50,9 @@ public class PostDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_detail);
 
         initializeViews();
+        TextView postTitleUnderline = findViewById(R.id.postTitleUnderline);
+        postTitleUnderline.setText(Html.fromHtml("<u>Description :</u>"));
+        postTitleUnderline.setTextSize(24); // Set text size in SP
 
         // Retrieve data passed from PostAdapter
         retrieveIntentData();
@@ -98,9 +104,46 @@ public class PostDetailActivity extends AppCompatActivity {
         postTitleTextView.setText(postTitle != null ? postTitle : "Title unavailable");
         priceTextView.setText(postPrice != null ? "$" + postPrice : "Price not specified");
         descriptionTextView.setText(postDescription != null ? postDescription : "Description not available");
-        tagTest1.setText(tag1 != null ? tag1 : "No Tag");
-        tagTest2.setText(tag2 != null ? tag2 : "No Tag");
+
+        // Reference "Tags :" TextView
+        TextView tagsTitleTextView = findViewById(R.id.tagsTitleTextView);
+        tagsTitleTextView.setText(Html.fromHtml("<u><b>Tags :</b></u>"));
+        tagsTitleTextView.setTextSize(24);
+        Log.d("TagsDebug", "Tag1: " + tag1 + ", Tag2: " + tag2);
+
+        // Check if tags exist
+        boolean hasTags = false;
+
+        // Handle tag 1
+        if (tag1 != null && !tag1.trim().isEmpty() && !tag1.equalsIgnoreCase("No Tag")) {
+            tagTest1.setText(tag1);
+            tagTest1.setVisibility(View.VISIBLE);
+            hasTags = true;
+        } else {
+            tagTest1.setVisibility(View.GONE);
+        }
+
+        // Handle tag 2
+        if (tag2 != null && !tag2.trim().isEmpty() && !tag2.equalsIgnoreCase("No Tag")) {
+            tagTest2.setText(tag2);
+            tagTest2.setVisibility(View.VISIBLE);
+            hasTags = true;
+        } else {
+            tagTest2.setVisibility(View.GONE); // Explicitly hide the second tag if it's empty or "No Tag"
+        }
+
+        // Show or hide "Tags :" title based on tags presence
+        if (hasTags) {
+            tagsTitleTextView.setVisibility(View.VISIBLE);
+        } else {
+            tagsTitleTextView.setVisibility(View.GONE);
+        }
     }
+
+
+
+
+
 
     private void fetchPostImage() {
         if (postId == null) {
