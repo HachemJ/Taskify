@@ -1,6 +1,7 @@
 package com.example.jads;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        getFCMToken();
     }
 
     private void setupViewPager() {
@@ -146,4 +153,39 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().remove(fragment).commitNowAllowingStateLoss();
         }
     }
+
+    void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String token = task.getResult();
+                Log.d("FCM Token", "Token: " + token);
+
+                // Save token to Realtime Database
+                updateTokenInDatabase(token);
+            } else {
+                Log.e("FCM Token", "Fetching FCM token failed", task.getException());
+            }
+        });
+    }
+
+    void updateTokenInDatabase(String token) {
+        // Get the currently logged-in user's ID from Firebase Authentication
+        String userId = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                : null;
+
+        if (userId == null) {
+            Log.e("Database", "User is not logged in. Cannot update token.");
+            return; // Exit if no user is logged in
+        }
+
+        // Reference to the user's node in Realtime Database
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+        // Update the FCM token field in the user's node
+        databaseReference.child("fcmToken").setValue(token)
+                .addOnSuccessListener(aVoid -> Log.d("Database", "Token updated successfully for user: " + userId))
+                .addOnFailureListener(e -> Log.e("Database", "Failed to update token for user: " + userId, e));
+    }
+
 }
