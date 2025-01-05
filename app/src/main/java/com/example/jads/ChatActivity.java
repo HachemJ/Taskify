@@ -17,10 +17,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -107,11 +110,19 @@ public class ChatActivity extends AppCompatActivity {
     private void sendMessage(String text) {
         String messageId = chatReference.child("messages").push().getKey();
         if (messageId != null) {
-            Message message = new Message(currentUserId, text, System.currentTimeMillis());
+            // Create a Message object without timestamp
+            Message message = new Message(currentUserId, text, 0);
+
+            // Convert Message object to a Map
+            Map<String, Object> messageMap = new HashMap<>();
+            messageMap.put("senderId", message.getSenderId());
+            messageMap.put("text", message.getText());
+            messageMap.put("timestamp", ServerValue.TIMESTAMP); // Use Firebase's ServerValue.TIMESTAMP
+
             Log.d(TAG, "Generated Message ID: " + messageId);
 
             // Save message to Firebase
-            chatReference.child("messages").child(messageId).setValue(message)
+            chatReference.child("messages").child(messageId).setValue(messageMap)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Message successfully saved to Firebase.");
@@ -130,6 +141,7 @@ public class ChatActivity extends AppCompatActivity {
             Log.e(TAG, "Failed to generate Message ID.");
         }
     }
+
 
     private void updateUserChats(String userId, String otherUserId, String chatId) {
         Log.d(TAG, "Updating user chats for user: " + userId);

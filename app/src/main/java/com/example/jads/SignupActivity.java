@@ -127,7 +127,7 @@ public class SignupActivity extends AppCompatActivity {
 
         // Schedule the work to run after 2 minutes
         OneTimeWorkRequest deleteWorkRequest = new OneTimeWorkRequest.Builder(DeleteUnverifiedAccountWorker.class)
-                .setInitialDelay(2, TimeUnit.MINUTES)
+                .setInitialDelay(30, TimeUnit.MINUTES)
                 .setInputData(inputData)
                 .build();
 

@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -345,7 +346,7 @@ public class AddPostDialog extends DialogFragment {
         postDetails.put("tags", tags);
         postDetails.put("paymentMethods", selectedPaymentMethods);
         postDetails.put("category", tabContext);
-        postDetails.put("timestamp", System.currentTimeMillis());
+        postDetails.put("timestamp", ServerValue.TIMESTAMP);
         postDetails.put("paymentMethods", paymentMethods);
         if (imageUrl != null) {
             postDetails.put("imageUrl", imageUrl);
