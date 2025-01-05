@@ -3,7 +3,6 @@ package com.example.jads;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -52,7 +51,9 @@ public class ChatActivity extends AppCompatActivity {
         otherUserId = getIntent().getStringExtra("otherUserId");
         chatId = generateChatId(currentUserId, otherUserId);
 
-        Log.d(TAG, "Chat ID: " + chatId);
+        Log.d(TAG, "Current User ID: " + currentUserId);
+        Log.d(TAG, "Other User ID: " + otherUserId);
+        Log.d(TAG, "Generated Chat ID: " + chatId);
 
         // Initialize Firebase reference
         chatReference = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
@@ -70,12 +71,16 @@ public class ChatActivity extends AppCompatActivity {
         sendButton.setOnClickListener(v -> {
             String messageText = messageEditText.getText().toString().trim();
             if (!TextUtils.isEmpty(messageText)) {
+                Log.d(TAG, "Sending message: " + messageText);
                 sendMessage(messageText);
+            } else {
+                Log.d(TAG, "Message text is empty.");
             }
         });
     }
 
     private void loadMessages() {
+        Log.d(TAG, "Loading messages...");
         chatReference.child("messages").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -86,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
                         messageList.add(message);
                     }
                 }
+                Log.d(TAG, "Loaded " + messageList.size() + " messages.");
                 messageAdapter.updateMessages(messageList);
                 messagesRecyclerView.scrollToPosition(messageList.size() - 1); // Scroll to the latest message
             }
@@ -102,58 +108,107 @@ public class ChatActivity extends AppCompatActivity {
         String messageId = chatReference.child("messages").push().getKey();
         if (messageId != null) {
             Message message = new Message(currentUserId, text, System.currentTimeMillis());
+            Log.d(TAG, "Generated Message ID: " + messageId);
 
             // Save message to Firebase
             chatReference.child("messages").child(messageId).setValue(message)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "Message sent: " + text);
+                            Log.d(TAG, "Message successfully saved to Firebase.");
                             updateUserChats(currentUserId, otherUserId, chatId);
                             updateUserChats(otherUserId, currentUserId, chatId);
 
-                            // Send notification
-                            getFCMToken(otherUserId, text);
+                            // Send notification to the other user (otherUserId)
+                            sendNotificationToOtherUser(otherUserId, currentUserId, text);
 
                             messageEditText.setText(""); // Clear input field
                         } else {
                             Log.e(TAG, "Failed to send message: " + task.getException());
                         }
                     });
+        } else {
+            Log.e(TAG, "Failed to generate Message ID.");
         }
     }
 
     private void updateUserChats(String userId, String otherUserId, String chatId) {
+        Log.d(TAG, "Updating user chats for user: " + userId);
         DatabaseReference userChatsRef = FirebaseDatabase.getInstance().getReference("userChats").child(userId);
 
         userChatsRef.child(chatId).setValue(true)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "UserChats updated for user: " + userId);
+                        Log.d(TAG, "User chats successfully updated for user: " + userId);
                     } else {
-                        Log.e(TAG, "Failed to update UserChats for user: " + userId, task.getException());
+                        Log.e(TAG, "Failed to update user chats for user: " + userId, task.getException());
                     }
                 });
     }
 
     private String generateChatId(String user1, String user2) {
+        Log.d(TAG, "Generating Chat ID for users: " + user1 + ", " + user2);
         return user1.compareTo(user2) < 0 ? user1 + "_" + user2 : user2 + "_" + user1;
     }
 
-    private void getFCMToken(String receiverId, String message) {
+    private void sendNotificationToOtherUser(String receiverId, String senderId, String message) {
+        Log.d(TAG, "Fetching sender data for senderId: " + senderId);
+
+        // Fetch sender's details
+        FirebaseDatabase.getInstance().getReference("users").child(senderId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot senderSnapshot) {
+                        if (senderSnapshot.exists()) {
+                            // Fetch first and last name
+                            String firstName = senderSnapshot.child("firstName").getValue(String.class);
+                            String lastName = senderSnapshot.child("lastName").getValue(String.class);
+
+                            // Log first and last name
+                            Log.d(TAG, "Sender First Name: " + firstName);
+                            Log.d(TAG, "Sender Last Name: " + lastName);
+
+                            // Construct sender name
+                            String senderName = ((firstName != null ? firstName : "Unknown") + " " +
+                                    (lastName != null ? lastName : "")).trim();
+                            Log.d(TAG, "Constructed Sender Name: " + senderName);
+
+                            // Fetch receiver's FCM token
+                            fetchReceiverTokenAndSendNotification(receiverId, senderName, message);
+                        } else {
+                            Log.e(TAG, "Sender data does not exist for senderId: " + senderId);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e(TAG, "Failed to fetch sender's name: " + error.getMessage());
+                    }
+                });
+    }
+
+    private void fetchReceiverTokenAndSendNotification(String receiverId, String senderName, String message) {
+        Log.d(TAG, "Fetching FCM token for receiverId: " + receiverId);
+
         FirebaseDatabase.getInstance().getReference("users").child(receiverId).child("fcmToken")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            String token = snapshot.getValue(String.class);
+                    public void onDataChange(@NonNull DataSnapshot tokenSnapshot) {
+                        if (tokenSnapshot.exists()) {
+                            String token = tokenSnapshot.getValue(String.class);
                             if (token != null) {
-                                Log.d("FCMToken", "Token: " + token);
+                                Log.d(TAG, "Fetched FCM Token for receiver: " + receiverId + ", Token: " + token);
+
+                                // Send notification
                                 SendNotification fcmSender = new SendNotification();
                                 fcmSender.sendPushNotification(
-                                        ChatActivity.this, currentUserId, message, "f57ONjnYR4iPCc-yTKICfL:APA91bGyuHyvk4YZeEJ3uvmuWA7PdpiFP2fR2k6z-WfzGZ2POi73Ttahp-zF21uucdrGciGquIH74-g_NdpTGpD-DDLOxcefxYKZC9DtSkaEpFoGTWuTIEg"
+                                        ChatActivity.this,
+                                        "New Message from " + senderName, // Sender's full name
+                                        message,
+                                        token
                                 );
+                                Log.d(TAG, "Notification sent with title: New Message from " + senderName);
                             } else {
-                                Log.e(TAG, "FCM token is null!");
+                                Log.e(TAG, "FCM token is null for receiver: " + receiverId);
                             }
                         } else {
                             Log.e(TAG, "FCM token does not exist for receiverId: " + receiverId);
@@ -166,4 +221,5 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }
