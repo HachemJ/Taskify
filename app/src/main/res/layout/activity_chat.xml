@@ -2,8 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/chatHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="@color/black">
+
+        <!-- Profile Picture -->
+        <ImageView
+            android:id="@+id/otherUserProfileImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/baseline_person_24"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Other User's Name -->
+        <TextView
+            android:id="@+id/otherUserNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
 
     <!-- RecyclerView for messages -->
     <androidx.recyclerview.widget.RecyclerView
@@ -11,13 +41,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:clipToPadding="false"
         android:paddingBottom="8dp" />
 
     <!-- Message input field and send button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/messageEditText"
@@ -34,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Send"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="@color/black"
             android:textColor="@android:color/white" />
     </LinearLayout>
 

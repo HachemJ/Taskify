@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -18,6 +19,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMService";
     private static final String CHANNEL_ID = "TEST_CHANNEL";
+
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+        Log.d(TAG, "Refreshed FCM token: " + token);
+
+        // Send token to server
+        sendTokenToServer(token);
+    }
+
+    private void sendTokenToServer(String token) {
+        // Example: Update token on the server for the current user
+        Log.d(TAG, "Token sent to server: " + token);
+    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {

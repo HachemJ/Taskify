@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -39,14 +44,35 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
         String otherUserName = chat.getOtherUserFullName();
         holder.fullNameTextView.setText(otherUserName);
 
+        String otherUserId = chat.getOtherUserId(currentUserId);
+
+        // Fetch and display profile picture
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(otherUserId);
+        userRef.child("profileImageUrl").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().getValue() != null) {
+                String profileImageUrl = task.getResult().getValue(String.class);
+
+                // Use Glide to load the profile image if it exists
+                Glide.with(context)
+                        .load(profileImageUrl)
+                        .circleCrop() // Crop into a circle
+                        .placeholder(R.drawable.baseline_person_24) // Fallback placeholder
+                        .into(holder.chatUserIcon);
+            } else {
+                // Set default drawable if no profile image exists
+                holder.chatUserIcon.setImageResource(R.drawable.baseline_person_24);
+            }
+        });
+
         // Open ChatActivity when a chat is clicked
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("chatId", chat.getChatId());
-            intent.putExtra("otherUserId", chat.getOtherUserId(currentUserId));
+            intent.putExtra("otherUserId", otherUserId);
             context.startActivity(intent);
         });
     }
+
 
 
     @Override
@@ -56,10 +82,13 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         TextView fullNameTextView;
+        ImageView chatUserIcon;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             fullNameTextView = itemView.findViewById(R.id.fullNameTv);
+            chatUserIcon = itemView.findViewById(R.id.chatUserIcon); // Add this line
         }
     }
+
 }

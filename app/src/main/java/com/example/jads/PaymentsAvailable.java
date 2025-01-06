@@ -77,11 +77,17 @@ public class PaymentsAvailable extends AppCompatActivity {
      */
     private void setupListeners() {
         cardCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                paypalCheckBox.setChecked(false); // Deselect PayPal if Card is selected
+            }
             toggleDetails(cardDetailsTextView, isChecked);
             updateContinueButtonState();
         });
 
         paypalCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                cardCheckBox.setChecked(false); // Deselect Card if PayPal is selected
+            }
             toggleDetails(paypalDetailsTextView, isChecked);
             updateContinueButtonState();
         });
@@ -93,6 +99,7 @@ public class PaymentsAvailable extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Updates the state of the "Continue" button based on the selected payment methods.

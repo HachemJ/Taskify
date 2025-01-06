@@ -14,6 +14,11 @@
     <color name="purple_500">#6200EE</color>
     <color name="gold">#FFD700</color>
     <color name="dark_red">#8B0000</color>
+    <color name="light_background">#F7F8FA</color>
+    <color name="primary_color">#6200EE</color>
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#666666</color>
+    <color name="placeholder_background">#E0E0E0</color>
 
     <!-- New Colors for BottomNavigationView -->
     <color name="bottom_nav_active">#B0BEC5</color>

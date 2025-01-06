@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -31,6 +33,13 @@ public class SendNotification {
                         "{\"message\":{\"token\":\"%s\",\"notification\":{\"title\":\"%s\",\"body\":\"%s\"}}}",
                         fcmToken, notificationTitle, notificationBody
                 );
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                String token = task.getResult();
+                                Log.d("FCM Token", token);
+                            }
+                        });
                 Log.d(TAG, "JSON Payload: " + jsonPayload);
 
                 // Generate access token

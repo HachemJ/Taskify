@@ -3,8 +3,11 @@ package com.example.jads;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +42,9 @@ public class ChatActivity extends AppCompatActivity {
     private String currentUserId, otherUserId, chatId;
 
     private DatabaseReference chatReference;
+    private ImageView otherUserProfileImage;
+    private TextView otherUserNameTv;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,18 @@ public class ChatActivity extends AppCompatActivity {
         messagesRecyclerView = findViewById(R.id.messagesRecyclerView);
         messageEditText = findViewById(R.id.messageEditText);
         sendButton = findViewById(R.id.sendButton);
+        otherUserProfileImage = findViewById(R.id.otherUserProfileImage);
+        otherUserNameTv = findViewById(R.id.otherUserNameTv);
+
+        // Initialize layout manager
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        messagesRecyclerView.setLayoutManager(layoutManager);
+
+        // Initialize Firebase reference and adapter
+        messageList = new ArrayList<>();
+        messageAdapter = new MessageAdapter(messageList, currentUserId);
+        messagesRecyclerView.setAdapter(messageAdapter);
 
         // Get data from intent
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -61,6 +80,8 @@ public class ChatActivity extends AppCompatActivity {
         // Initialize Firebase reference
         chatReference = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
 
+        fetchOtherUserDetails();
+
         // Initialize message list and adapter
         messageList = new ArrayList<>();
         messageAdapter = new MessageAdapter(messageList, currentUserId);
@@ -69,6 +90,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // Load messages
         loadMessages();
+        handleKeyboardVisibility(); // Add this line here
 
         // Send button click listener
         sendButton.setOnClickListener(v -> {
@@ -76,6 +98,8 @@ public class ChatActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(messageText)) {
                 Log.d(TAG, "Sending message: " + messageText);
                 sendMessage(messageText);
+                sendButton.setEnabled(false);
+                new android.os.Handler().postDelayed(() -> sendButton.setEnabled(true), 5000);
             } else {
                 Log.d(TAG, "Message text is empty.");
             }
@@ -95,8 +119,13 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
                 Log.d(TAG, "Loaded " + messageList.size() + " messages.");
+
+                // Update adapter and scroll to the latest message
                 messageAdapter.updateMessages(messageList);
-                messagesRecyclerView.scrollToPosition(messageList.size() - 1); // Scroll to the latest message
+                messageAdapter.notifyDataSetChanged();
+
+                // Scroll to bottom only after layout is completed
+                messagesRecyclerView.post(() -> scrollToBottom());
             }
 
             @Override
@@ -106,6 +135,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void sendMessage(String text) {
         String messageId = chatReference.child("messages").push().getKey();
@@ -133,6 +164,7 @@ public class ChatActivity extends AppCompatActivity {
                             sendNotificationToOtherUser(otherUserId, currentUserId, text);
 
                             messageEditText.setText(""); // Clear input field
+                            scrollToBottom(); // Scroll to the latest message
                         } else {
                             Log.e(TAG, "Failed to send message: " + task.getException());
                         }
@@ -233,5 +265,59 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void fetchOtherUserDetails() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(otherUserId);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String firstName = snapshot.child("firstName").getValue(String.class);
+                    String lastName = snapshot.child("lastName").getValue(String.class);
+                    String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+                    otherUserNameTv.setText(fullName.trim().isEmpty() ? "Unknown User" : fullName.trim());
+
+                    String profileImageUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                        // Load profile picture with Glide
+                        Glide.with(ChatActivity.this)
+                                .load(profileImageUrl)
+                                .circleCrop()
+                                .placeholder(R.drawable.baseline_person_24)
+                                .into(otherUserProfileImage);
+                    } else {
+                        // Default profile picture
+                        otherUserProfileImage.setImageResource(R.drawable.baseline_person_24);
+                        otherUserProfileImage.setColorFilter(getResources().getColor(android.R.color.white)); // Apply white tint
+                    }
+                } else {
+                    otherUserNameTv.setText("Unknown User");
+                    otherUserProfileImage.setImageResource(R.drawable.baseline_person_24);
+                    otherUserProfileImage.setColorFilter(getResources().getColor(android.R.color.white)); // Apply white tint
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ChatActivity.this, "Failed to fetch user details: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void scrollToBottom() {
+        if (messageList.size() > 0) {
+            messagesRecyclerView.post(() -> {
+                messagesRecyclerView.smoothScrollToPosition(messageList.size() );
+            });
+        }
+    }
+    private void handleKeyboardVisibility() {
+        messagesRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            // Scroll to the bottom when the keyboard appears
+            scrollToBottom();
+        });
+    }
+
 
 }

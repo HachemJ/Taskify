@@ -42,6 +42,7 @@
             android:exported="false" />
         <activity
             android:name=".ChatsActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".PostDetailActivity"
