@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 if (tab.getPosition() == 0) {
                     getWindow().setStatusBarColor(getColor(R.color.black));
                 } else {
-                    getWindow().setStatusBarColor(getColor(R.color.dark_blue));
+                    getWindow().setStatusBarColor(getColor(R.color.gray));
                 }
             }
 

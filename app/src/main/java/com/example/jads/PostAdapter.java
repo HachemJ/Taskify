@@ -161,17 +161,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Set card background color based on category
         if ("selling".equalsIgnoreCase(category)) {
-            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.gray));
             holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
             holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.timeTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.descriptionTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.fullNameTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.titleTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.priceTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
         } else if ("looking".equalsIgnoreCase(category)) {
             holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
-            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.dark_blue));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.gray));
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+            holder.timeTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+            holder.descriptionTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+            holder.fullNameTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+            holder.titleTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
+            holder.priceTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.white));
         } else {
-            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
-            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
-            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.darkest_gray));
+            holder.cardView.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.gray));
+            holder.learnMoreButton.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.categoryTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.timeTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.descriptionTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.fullNameTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.titleTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
+            holder.priceTextView.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.black));
         }
 
         // Learn More button functionality

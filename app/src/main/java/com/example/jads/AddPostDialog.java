@@ -199,7 +199,7 @@ public class AddPostDialog extends DialogFragment {
 
     private void applyStylingBasedOnTabContext() {
         if ("Selling".equalsIgnoreCase(tabContext)) {
-            dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.dark_blue));
+            dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.gray));
             saveButton.setBackgroundColor(getResources().getColor(R.color.black));
             saveButton.setTextColor(getResources().getColor(R.color.white));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.black));
@@ -210,14 +210,14 @@ public class AddPostDialog extends DialogFragment {
             priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
         } else { // Default to "Looking"
             dialogCardView.setCardBackgroundColor(getResources().getColor(R.color.black));
-            saveButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
+            saveButton.setBackgroundColor(getResources().getColor(R.color.gray));
             saveButton.setTextColor(getResources().getColor(R.color.white));
-            addTagButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
-            paymentMethodButton.setBackgroundColor(getResources().getColor(R.color.dark_blue));
-            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
-            descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
-            priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
-            priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
+            addTagButton.setBackgroundColor(getResources().getColor(R.color.gray));
+            paymentMethodButton.setBackgroundColor(getResources().getColor(R.color.dark_gray));
+            addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
+            descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
+            priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
+            priceSlider.setThumbTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
         }
     }
 
@@ -279,7 +279,7 @@ public class AddPostDialog extends DialogFragment {
         if ("Selling".equalsIgnoreCase(tabContext)) {
             closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));
         } else if ("Looking".equalsIgnoreCase(tabContext)) {
-            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.dark_blue)));
+            closeButton.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
         }
 
         closeButton.setOnClickListener(v -> {
