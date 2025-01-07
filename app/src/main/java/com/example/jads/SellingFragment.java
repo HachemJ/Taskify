@@ -16,6 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,13 +35,16 @@ public class SellingFragment extends Fragment {
     private List<Post> postList;
     private DatabaseReference postsReference;
     private String currentUserId;
-
+    private AdView adView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_selling, container, false);
-
+        // Find AdView and load an ad
+        adView = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         Button openAddPostDialogButton = view.findViewById(R.id.openAddPostDialogButton);
         TextView descriptionTextView = view.findViewById(R.id.sellingDescriptionTv);
 

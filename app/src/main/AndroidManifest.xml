@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:name=".MyApplication"
@@ -13,6 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jads"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7273261076275603~8763630651" />
         <activity
             android:name=".PaymentsAvailable"
             android:exported="false" />

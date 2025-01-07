@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -17,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigationView;
+    private AdView adView1;
+    private AdView adView2;
+    private AdView adView3;
 
     private Fragment accountFragment;
     private Fragment searchFragment;
@@ -35,11 +41,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MobileAds.initialize(this, initializationStatus -> {});
+
         // Initialize Views
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Initialize AdViews
+        adView1 = findViewById(R.id.adView1);
+        adView2 = findViewById(R.id.adView2);
+        adView3 = findViewById(R.id.adView3);
 
+        // Load ads for all AdViews
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView1.loadAd(adRequest);
+        adView2.loadAd(adRequest);
+        adView3.loadAd(adRequest);
         // Setup ViewPager with Fragments
         setupViewPager();
 
@@ -50,12 +67,15 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_home) {
                 showHome();
+                updateAdViews(item.getItemId());
                 return true;
             } else if (item.getItemId() == R.id.nav_account) {
                 showAccountFragment();
+                updateAdViews(item.getItemId());
                 return true;
             } else if (item.getItemId() == R.id.nav_search) {
                 showSearchFragment();
+                updateAdViews(item.getItemId());
                 return true;
             }
             return false;
@@ -167,6 +187,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void updateAdViews(int navId) {
+        // Hide all AdViews
+        adView1.setVisibility(View.GONE);
+        adView2.setVisibility(View.GONE);
+        adView3.setVisibility(View.GONE);
+
+        // Create a new AdRequest
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        // Show the appropriate AdView based on navigation selection
+        if (navId == R.id.nav_home) {
+            adView1.setVisibility(View.VISIBLE);
+            adView1.loadAd(adRequest); // Reload ad
+            Log.d("AdView", "Loading ad for Home Page (AdView1)");
+        } else if (navId == R.id.nav_account) {
+            adView2.setVisibility(View.VISIBLE);
+            adView2.loadAd(adRequest); // Reload ad
+            Log.d("AdView", "Loading ad for Account Page (AdView2)");
+        } else if (navId == R.id.nav_search) {
+            adView3.setVisibility(View.VISIBLE);
+            adView3.loadAd(adRequest); // Reload ad
+            Log.d("AdView", "Loading ad for Search Page (AdView3)");
+        }
+    }
+
+
 
     void updateTokenInDatabase(String token) {
         // Get the currently logged-in user's ID from Firebase Authentication
