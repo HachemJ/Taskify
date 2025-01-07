@@ -12,8 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -64,6 +67,27 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
             }
         });
 
+        // Check for unread messages
+        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chat.getChatId());
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Long lastMessageTimestamp = snapshot.child("lastMessageTimestamp").getValue(Long.class);
+                Long lastReadTimestamp = snapshot.child("lastRead").child(currentUserId).getValue(Long.class);
+
+                if (lastMessageTimestamp != null && (lastReadTimestamp == null || lastMessageTimestamp > lastReadTimestamp)) {
+                    holder.newMessageDot.setVisibility(View.VISIBLE); // Show the dot
+                } else {
+                    holder.newMessageDot.setVisibility(View.GONE); // Hide the dot
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                holder.newMessageDot.setVisibility(View.GONE); // Hide the dot in case of error
+            }
+        });
+
         // Open ChatActivity when a chat is clicked
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
@@ -83,11 +107,13 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         TextView fullNameTextView;
         ImageView chatUserIcon;
+        ImageView newMessageDot;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             fullNameTextView = itemView.findViewById(R.id.fullNameTv);
-            chatUserIcon = itemView.findViewById(R.id.chatUserIcon); // Add this line
+            chatUserIcon = itemView.findViewById(R.id.chatUserIcon);
+            newMessageDot = itemView.findViewById(R.id.newMessageDot);// Add this line
         }
     }
 

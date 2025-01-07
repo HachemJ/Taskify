@@ -30,6 +30,16 @@
             android:textStyle="bold"
             android:ellipsize="end"
             android:singleLine="true" />
+        <ImageView
+            android:id="@+id/newMessageDot"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="200dp"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/circle_dot"
+            android:contentDescription="New message indicator" />
     </LinearLayout>
 
     <!-- Divider Line -->

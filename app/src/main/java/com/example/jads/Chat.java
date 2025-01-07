@@ -5,7 +5,8 @@ public class Chat {
     private String chatId;
     private String otherUserId; // ID of the user this chat is with
     private String otherUserFullName; // First name + Last name
-    private Map<String, Boolean> participants; // Map of participant user IDs
+    private Map<String, Boolean> participants;
+    private boolean hasUnreadMessages;// Map of participant user IDs
 
     public Chat() {
     }
@@ -48,6 +49,16 @@ public class Chat {
     public void setParticipants(Map<String, Boolean> participants) {
         this.participants = participants;
     }
+
+
+    public boolean isHasUnreadMessages() {
+        return hasUnreadMessages;
+    }
+
+    public void setHasUnreadMessages(boolean hasUnreadMessages) {
+        this.hasUnreadMessages = hasUnreadMessages;
+    }
+
 
     /**
      * Get the ID of the other participant in the chat.

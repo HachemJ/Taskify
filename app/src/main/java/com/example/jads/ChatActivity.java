@@ -91,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
         // Load messages
         loadMessages();
         handleKeyboardVisibility(); // Add this line here
+        markMessagesAsRead();
 
         // Send button click listener
         sendButton.setOnClickListener(v -> {
@@ -160,6 +161,12 @@ public class ChatActivity extends AppCompatActivity {
                             updateUserChats(currentUserId, otherUserId, chatId);
                             updateUserChats(otherUserId, currentUserId, chatId);
 
+                            // Update lastMessageTimestamp inside the specific chatId
+                            chatReference.child("lastMessageTimestamp").setValue(ServerValue.TIMESTAMP);
+
+                            // Update the last read timestamp for the current user
+                            chatReference.child("lastRead").child(currentUserId).setValue(ServerValue.TIMESTAMP);
+
                             // Send notification to the other user (otherUserId)
                             sendNotificationToOtherUser(otherUserId, currentUserId, text);
 
@@ -173,6 +180,8 @@ public class ChatActivity extends AppCompatActivity {
             Log.e(TAG, "Failed to generate Message ID.");
         }
     }
+
+
 
 
     private void updateUserChats(String userId, String otherUserId, String chatId) {
@@ -318,6 +327,18 @@ public class ChatActivity extends AppCompatActivity {
             scrollToBottom();
         });
     }
+    private void markMessagesAsRead() {
+        // Update the lastRead timestamp for the current user
+        chatReference.child("lastRead").child(currentUserId).setValue(ServerValue.TIMESTAMP)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Messages marked as read for user: " + currentUserId);
+                    } else {
+                        Log.e(TAG, "Failed to update lastRead timestamp: " + task.getException());
+                    }
+                });
+    }
+
 
 
 }

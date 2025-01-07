@@ -82,6 +82,7 @@ public class ChatsActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.d(TAG, "No chats found for user.");
+                    chatsAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -154,13 +155,26 @@ public class ChatsActivity extends AppCompatActivity {
 
                 Log.d(TAG, "Fetched user details for user ID: " + otherUserId + ", Name: " + otherUserFullName);
 
-                // Cast participants object to Map<String, Boolean>
-                @SuppressWarnings("unchecked")
-                Map<String, Boolean> participantsMap = (Map<String, Boolean>) participants;
+                // Check if chat already exists in the list
+                boolean chatExists = false;
+                for (Chat chat : chatList) {
+                    if (chat.getChatId().equals(chatId)) {
+                        chatExists = true;
+                        break;
+                    }
+                }
 
-                // Add chat to the list after user data is fetched
-                chatList.add(new Chat(chatId, otherUserId, otherUserFullName, participantsMap));
-                chatsAdapter.notifyDataSetChanged(); // Notify adapter after adding
+                if (!chatExists) {
+                    // Cast participants object to Map<String, Boolean>
+                    @SuppressWarnings("unchecked")
+                    Map<String, Boolean> participantsMap = (Map<String, Boolean>) participants;
+
+                    // Add chat to the list after user data is fetched
+                    chatList.add(new Chat(chatId, otherUserId, otherUserFullName, participantsMap));
+                    chatsAdapter.notifyDataSetChanged(); // Notify adapter after adding
+                } else {
+                    Log.d(TAG, "Chat with ID " + chatId + " already exists in the list.");
+                }
             }
 
             @Override
@@ -170,6 +184,7 @@ public class ChatsActivity extends AppCompatActivity {
             }
         });
     }
+
     private ValueEventListener chatsListener;
     private DatabaseReference chatsRef;
 
@@ -187,4 +202,73 @@ public class ChatsActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        for (Chat chat : chatList) {
+            refreshChatList(chat.getChatId());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        detachChatsListener(); // Detach listeners to prevent duplicate updates
+    }
+
+    private void detachChatsListener() {
+        // Detach `chatsRef` listener if it exists
+        if (chatsListener != null && chatsRef != null) {
+            chatsRef.removeEventListener(chatsListener);
+        }
+
+        // Detach `userChatsRef` listener if it exists
+        DatabaseReference userChatsRef = FirebaseDatabase.getInstance().getReference("userChats").child(currentUserId);
+        if (chatsListener != null) {
+            userChatsRef.removeEventListener(chatsListener);
+        }
+    }
+    private void refreshChatList(String chatId) {
+        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
+
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot chatSnapshot) {
+                if (chatSnapshot.exists()) {
+                    Long lastMessageTimestamp = chatSnapshot.child("lastMessageTimestamp").getValue(Long.class);
+                    Long lastRead = chatSnapshot.child("lastRead").child(currentUserId).getValue(Long.class);
+
+                    // Handle null values for timestamps
+                    if (lastMessageTimestamp == null) {
+                        lastMessageTimestamp = 0L; // Default to 0 if null
+                    }
+                    if (lastRead == null) {
+                        lastRead = 0L; // Default to 0 if null
+                    }
+
+                    boolean hasUnreadMessages = lastMessageTimestamp > lastRead;
+
+                    // Find the corresponding chat in the list and update the UI
+                    for (Chat chat : chatList) {
+                        if (chat.getChatId().equals(chatId)) {
+                            chat.setHasUnreadMessages(hasUnreadMessages); // Update unread status
+                            break;
+                        }
+                    }
+                    chatsAdapter.notifyDataSetChanged(); // Notify adapter to refresh UI
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error refreshing chat list: " + error.getMessage());
+            }
+        });
+    }
+
+
+
+
+
+
 }
