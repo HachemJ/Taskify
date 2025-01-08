@@ -56,7 +56,7 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
     private void setUpClickableText() {
-        String fullText = "New to La Secte? Register Now >";
+        String fullText = "New to Taskify? Register Now >";
         SpannableString spannableString = new SpannableString(fullText);
         int start = fullText.indexOf("Register Now >");
         int end = start + "Register Now >".length();
