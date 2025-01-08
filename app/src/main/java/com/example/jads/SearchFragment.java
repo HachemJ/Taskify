@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SearchFragment extends Fragment {
@@ -84,6 +85,7 @@ public class SearchFragment extends Fragment {
                         postList.add(post);
                     }
                 }
+                Collections.shuffle(postList);
                 // Update adapter to reflect the complete post list
                 postAdapter = new PostAdapter(postList);
                 recyclerView.setAdapter(postAdapter);
