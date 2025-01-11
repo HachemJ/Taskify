@@ -2,7 +2,16 @@ package com.example.jads;
 
 public class User {
 
-    String firstName, lastName, email, password, ratingScore, nbOfRatings, profileUrl, phoneNumber;
+    private String firstName, lastName, email, password, ratingScore, nbOfRatings, profileUrl, phoneNumber, role;
+
+    // Getter and Setter for role
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public String getRatingScore() {
         return ratingScore;
@@ -35,6 +44,7 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
     public String getFirstName() {
         return firstName;
     }
@@ -67,7 +77,8 @@ public class User {
         this.password = password;
     }
 
-    public User(String firstName, String lastName, String email, String password, String ratingScore, String nbOfRatings, String profileUrl, String phoneNumber) {
+    // Constructor with role
+    public User(String firstName, String lastName, String email, String password, String ratingScore, String nbOfRatings, String profileUrl, String phoneNumber, String role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -76,8 +87,10 @@ public class User {
         this.nbOfRatings = nbOfRatings;
         this.profileUrl = profileUrl;
         this.phoneNumber = phoneNumber;
+        this.role = role;
     }
 
+    // Default constructor
     public User() {
     }
 }

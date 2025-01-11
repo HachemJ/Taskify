@@ -94,7 +94,7 @@ public class SignupActivity extends AppCompatActivity {
                                             Toast.makeText(SignupActivity.this, "Verification email sent. Please verify your email.", Toast.LENGTH_SHORT).show();
 
                                             // Save user data to "unverified_users" node
-                                            User user = new User(firstName, lastName, email, null, null, null, null, null);
+                                            User user = new User(firstName, lastName, email, null, null, null, null, null, "user");
                                             unverifiedUsersReference.child(userId).setValue(user)
                                                     .addOnCompleteListener(databaseTask -> {
                                                         if (databaseTask.isSuccessful()) {

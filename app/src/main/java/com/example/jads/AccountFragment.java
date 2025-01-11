@@ -36,6 +36,7 @@ public class AccountFragment extends Fragment {
         fullNameTextView = view.findViewById(R.id.fullNameTv);
         LinearLayout logoutButton = view.findViewById(R.id.logoutButton); // Reference to the Log Out button layout
         LinearLayout viewProfileLayout = view.findViewById(R.id.viewProfileLayout); // Reference to the clickable LinearLayout
+        LinearLayout faqLayout = view.findViewById(R.id.faqLayout);
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
@@ -86,6 +87,12 @@ public class AccountFragment extends Fragment {
         // Set up the View Profile button (clickable LinearLayout)
         viewProfileLayout.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ViewProfileActivity.class);
+            startActivity(intent);
+        });
+
+        // Set up the FAQ button (clickable LinearLayout)
+        faqLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), FAQActivity.class);
             startActivity(intent);
         });
 
