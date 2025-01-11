@@ -3,6 +3,7 @@ package com.example.jads;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private AdView adView1;
     private AdView adView2;
     private AdView adView3;
+    private boolean isGuest;
 
     private Fragment accountFragment;
     private Fragment searchFragment;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         MobileAds.initialize(this, initializationStatus -> {});
+        isGuest = getIntent().getBooleanExtra("isGuest", false); // Retrieve isGuest flag
 
         // Initialize Views
         tabLayout = findViewById(R.id.tab_layout);
@@ -70,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
                 updateAdViews(item.getItemId());
                 return true;
             } else if (item.getItemId() == R.id.nav_account) {
+                if (isGuest) {
+                    // Display toast and do not load AccountFragment
+                    Toast.makeText(this, "You are in guest mode. Access to Account is restricted.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 showAccountFragment();
                 updateAdViews(item.getItemId());
                 return true;
@@ -145,6 +153,17 @@ public class MainActivity extends AppCompatActivity {
         // Hide ViewPager
         tabLayout.setVisibility(View.GONE);
         viewPager.setVisibility(View.GONE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // Create SearchFragment and pass the isGuest flag
+        SearchFragment searchFragment = new SearchFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("isGuest", getIntent().getBooleanExtra("isGuest", false));
+        searchFragment.setArguments(args);
+
+        transaction.replace(R.id.content_frame, searchFragment, "SearchFragment");
+        transaction.commitNowAllowingStateLoss();
 
         // Show Search Fragment
         loadFragment(new SearchFragment(), "SearchFragment");

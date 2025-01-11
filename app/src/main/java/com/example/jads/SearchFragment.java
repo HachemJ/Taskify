@@ -2,6 +2,7 @@ package com.example.jads;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class SearchFragment extends Fragment {
     private PostAdapter postAdapter;
     private List<Post> postList;
     private DatabaseReference postsReference;
+    private boolean isGuest;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -53,7 +55,9 @@ public class SearchFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postList = new ArrayList<>();
-        postAdapter = new PostAdapter(postList);
+        isGuest = getArguments() != null && getArguments().getBoolean("isGuest", false);
+        Log.d("SearchFragment", "isGuest retrieved: " + isGuest);
+        postAdapter = new PostAdapter(postList, isGuest);
         recyclerView.setAdapter(postAdapter);
 
         postsReference = FirebaseDatabase.getInstance().getReference("posts");
@@ -64,8 +68,13 @@ public class SearchFragment extends Fragment {
         // Initialize and set up the "Open Chats" button
         Button openChatsButton = view.findViewById(R.id.openChatsButton);
         openChatsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ChatsActivity.class);
-            startActivity(intent);
+            if (isGuest) {
+                // Display a toast if the user is a guest
+                Toast.makeText(requireContext(), "You are in guest mode. Chat access is restricted.", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(getContext(), ChatsActivity.class);
+                startActivity(intent);
+            }
         });
 
         return view;
@@ -87,7 +96,8 @@ public class SearchFragment extends Fragment {
                 }
                 Collections.shuffle(postList);
                 // Update adapter to reflect the complete post list
-                postAdapter = new PostAdapter(postList);
+                isGuest = getArguments() != null && getArguments().getBoolean("isGuest", false);
+                postAdapter = new PostAdapter(postList,isGuest);
                 recyclerView.setAdapter(postAdapter);
                 postAdapter.notifyDataSetChanged();
             }

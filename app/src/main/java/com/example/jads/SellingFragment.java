@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ public class SellingFragment extends Fragment {
     private DatabaseReference postsReference;
     private String currentUserId;
     private AdView adView;
+    private boolean isGuest;
 
     @Nullable
     @Override
@@ -49,31 +51,38 @@ public class SellingFragment extends Fragment {
         TextView descriptionTextView = view.findViewById(R.id.sellingDescriptionTv);
 
         makeBothPartsBoldAndSize(descriptionTextView);
+        boolean isGuest = requireActivity().getIntent().getBooleanExtra("isGuest", false);
 
         openAddPostDialogButton.setOnClickListener(v -> {
-            if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
-                AddPostDialog addPostDialog = new AddPostDialog();
-                Bundle args = new Bundle();
-                args.putString("tabContext", "Selling"); // Pass "Selling" context
-                addPostDialog.setArguments(args);
-                addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
+            if (isGuest) {
+                // Display a toast if the user is a guest
+                Toast.makeText(requireContext(), "You are in guest mode. Adding posts is restricted.", Toast.LENGTH_SHORT).show();
             } else {
-                // Log or handle cases where the fragment is not properly attached
-                android.util.Log.e("SellingFragment", "Fragment not attached to an activity");
+                if (isAdded() && getActivity() != null && !getActivity().isFinishing()) {
+                    AddPostDialog addPostDialog = new AddPostDialog();
+                    Bundle args = new Bundle();
+                    args.putString("tabContext", "Selling"); // Pass "Selling" context
+                    addPostDialog.setArguments(args);
+                    addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
+                } else {
+                    // Log or handle cases where the fragment is not properly attached
+                    android.util.Log.e("SellingFragment", "Fragment not attached to an activity");
+                }
             }
         });
+
 
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Initialize Firebase references
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        postsReference = FirebaseDatabase.getInstance().getReference("posts");
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            postsReference = FirebaseDatabase.getInstance().getReference("posts");}
 
         // Initialize PostAdapter
         postList = new ArrayList<>();
-        postAdapter = new PostAdapter(postList);
+        postAdapter = new PostAdapter(postList,isGuest);
         recyclerView.setAdapter(postAdapter);
 
         // Fetch posts created by the user in the "Selling" category
@@ -107,6 +116,11 @@ public class SellingFragment extends Fragment {
         textView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
     }
     private void fetchUserSellingPosts() {
+        // Check if the user is logged in
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            // Guest mode: Do nothing
+            return;
+        }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DatabaseReference postsReference = FirebaseDatabase.getInstance().getReference("posts");
@@ -123,7 +137,7 @@ public class SellingFragment extends Fragment {
                 }
 
                 // Update RecyclerView with the filtered posts
-                PostAdapter adapter = new PostAdapter(userSellingPosts);
+                PostAdapter adapter = new PostAdapter(userSellingPosts,isGuest);
                 recyclerView.setAdapter(adapter);
             }
 
