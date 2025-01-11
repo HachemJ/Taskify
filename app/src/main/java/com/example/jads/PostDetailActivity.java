@@ -255,6 +255,8 @@ public class PostDetailActivity extends AppCompatActivity {
                 // Redirect to PaymentsAvailable activity for non-owners
                 Intent intent = new Intent(PostDetailActivity.this, PaymentsAvailable.class);
                 intent.putExtra("postId", postId); // Pass the postId to retrieve payment methods
+                intent.putExtra("posterUserId", posterUserId); // Pass the posterUserId to identify the post owner
+                intent.putExtra("postTitle", postTitle);
                 startActivity(intent);
             });
 

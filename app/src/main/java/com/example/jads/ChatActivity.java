@@ -79,6 +79,11 @@ public class ChatActivity extends AppCompatActivity {
 
         // Initialize Firebase reference
         chatReference = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
+        // Check for an automated message passed from PaymentsAvailable
+        String automatedMessage = getIntent().getStringExtra("automatedMessage");
+        if (automatedMessage != null) {
+            sendMessage(automatedMessage); // Use existing sendMessage logic
+        }
 
         fetchOtherUserDetails();
 
@@ -338,7 +343,4 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-
 }

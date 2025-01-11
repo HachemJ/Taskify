@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,10 +76,9 @@ public class ChatsActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     for (DataSnapshot chatSnapshot : snapshot.getChildren()) {
                         String chatId = chatSnapshot.getKey(); // Get the chatId from userChats
-                        Log.d(TAG, "Chat found: " + chatId);
-
-                        // Fetch chat details from chats node
-                        fetchChatDetails(chatId);
+                        if (chatId != null) {
+                            fetchChatDetails(chatId);
+                        }
                     }
                 } else {
                     Log.d(TAG, "No chats found for user.");
@@ -94,20 +94,21 @@ public class ChatsActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchChatDetails(String chatId) {
-        DatabaseReference chatsRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
 
-        chatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void fetchChatDetails(String chatId) {
+        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
+
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot chatSnapshot) {
-                if (chatSnapshot.exists() && chatSnapshot.child("participants").hasChild(currentUserId)) {
-                    String otherUserId = getOtherUserId(chatSnapshot.child("participants"));
-
-                    if (otherUserId != null) {
-                        fetchUserDetailsAndAddChat(chatSnapshot.getKey(), otherUserId, chatSnapshot.child("participants").getValue());
-                    }
+                if (!chatSnapshot.exists() || !chatSnapshot.child("participants").hasChild(currentUserId)) {
+                    // Initialize the chat if it doesn't exist or the current user is not a participant
+                    initializeChat(chatId);
                 } else {
-                    Log.d(TAG, "Chat does not exist or user is not a participant.");
+                    String otherUserId = getOtherUserId(chatSnapshot.child("participants"));
+                    if (otherUserId != null) {
+                        fetchUserDetailsAndAddChat(chatId, otherUserId, chatSnapshot.child("participants").getValue());
+                    }
                 }
             }
 
@@ -117,6 +118,7 @@ public class ChatsActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 
@@ -239,23 +241,21 @@ public class ChatsActivity extends AppCompatActivity {
                     Long lastRead = chatSnapshot.child("lastRead").child(currentUserId).getValue(Long.class);
 
                     // Handle null values for timestamps
-                    if (lastMessageTimestamp == null) {
-                        lastMessageTimestamp = 0L; // Default to 0 if null
-                    }
-                    if (lastRead == null) {
-                        lastRead = 0L; // Default to 0 if null
-                    }
+                    lastMessageTimestamp = (lastMessageTimestamp != null) ? lastMessageTimestamp : 0L;
+                    lastRead = (lastRead != null) ? lastRead : 0L;
 
                     boolean hasUnreadMessages = lastMessageTimestamp > lastRead;
 
-                    // Find the corresponding chat in the list and update the UI
+                    // Update the corresponding chat in the list
                     for (Chat chat : chatList) {
                         if (chat.getChatId().equals(chatId)) {
-                            chat.setHasUnreadMessages(hasUnreadMessages); // Update unread status
+                            chat.setHasUnreadMessages(hasUnreadMessages);
                             break;
                         }
                     }
-                    chatsAdapter.notifyDataSetChanged(); // Notify adapter to refresh UI
+                    chatsAdapter.notifyDataSetChanged();
+                } else {
+                    initializeChat(chatId); // Initialize the chat if it doesn't exist
                 }
             }
 
@@ -265,6 +265,41 @@ public class ChatsActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void initializeChat(String chatId) {
+        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
+
+        // Find the other user's ID
+        String otherUserId = getOtherUserIdFromChatId(chatId);
+        if (otherUserId == null) {
+            Log.e(TAG, "Failed to determine other user ID from chatId: " + chatId);
+            return;
+        }
+
+        // Set up chat participants
+        Map<String, Object> chatData = new HashMap<>();
+        chatData.put("participants", Map.of(currentUserId, true, otherUserId, true));
+
+        chatRef.updateChildren(chatData).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d(TAG, "Chat initialized successfully for chatId: " + chatId);
+                fetchUserDetailsAndAddChat(chatId, otherUserId, chatData.get("participants"));
+            } else {
+                Log.e(TAG, "Failed to initialize chat for chatId: " + chatId, task.getException());
+            }
+        });
+    }
+
+    private String getOtherUserIdFromChatId(String chatId) {
+        // Extract the other user's ID based on the chatId format
+        String[] userIds = chatId.split("_");
+        if (userIds.length != 2) {
+            return null;
+        }
+        return userIds[0].equals(currentUserId) ? userIds[1] : userIds[0];
+    }
+
 
 
 
