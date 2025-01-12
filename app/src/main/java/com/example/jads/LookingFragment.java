@@ -52,33 +52,35 @@ public class LookingFragment extends Fragment {
         TextView descriptionTextView = view.findViewById(R.id.lookingDescriptionTv);
 
         makeBothPartsBoldAndSize(descriptionTextView);
+        boolean isGuest = requireActivity().getIntent().getBooleanExtra("isGuest", false);
 
         openAddPostDialogButton.setOnClickListener(v -> {
-
-            try {
-                if (requireActivity().getSupportFragmentManager().findFragmentByTag("AddPostDialog") == null) {
-                    AddPostDialog addPostDialog = new AddPostDialog();
-                    Bundle args = new Bundle();
-                    args.putString("tabContext", "Looking"); // Pass "Looking" context
-                    addPostDialog.setArguments(args);
-                    addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
-                } else {
-                    android.util.Log.w("LookingFragment", "AddPostDialog is already open.");
+            if (isGuest) {
+                // Display a toast if the user is a guest
+                Toast.makeText(requireContext(), "You are in guest mode. Adding posts is restricted.", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    if (requireActivity().getSupportFragmentManager().findFragmentByTag("AddPostDialog") == null) {
+                        AddPostDialog addPostDialog = new AddPostDialog();
+                        Bundle args = new Bundle();
+                        args.putString("tabContext", "Looking"); // Pass "Looking" context
+                        addPostDialog.setArguments(args);
+                        addPostDialog.show(requireActivity().getSupportFragmentManager(), "AddPostDialog");
+                    } else {
+                        android.util.Log.w("LookingFragment", "AddPostDialog is already open.");
+                    }
+                } catch (IllegalStateException e) {
+                    android.util.Log.e("LookingFragment", "Error showing AddPostDialog", e);
+                    Toast.makeText(requireContext(), "Cannot open Add Post dialog. Try again later.", Toast.LENGTH_SHORT).show();
                 }
-            } catch (IllegalStateException e) {
-                android.util.Log.e("LookingFragment", "Error showing AddPostDialog", e);
-                Toast.makeText(requireContext(), "Cannot open Add Post dialog. Try again later.", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
         // RecyclerView setup
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postList = new ArrayList<>();
-        postAdapter = new PostAdapter(postList);
+        postAdapter = new PostAdapter(postList,isGuest);
         recyclerView.setAdapter(postAdapter);
 
         // Fetch posts
@@ -88,6 +90,11 @@ public class LookingFragment extends Fragment {
     }
 
     private void fetchLookingPosts() {
+        // Check if the user is logged in
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            // Guest mode: Do nothing
+            return;
+        }
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DatabaseReference postsReference = FirebaseDatabase.getInstance().getReference("posts");

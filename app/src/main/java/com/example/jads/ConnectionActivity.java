@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ConnectionActivity extends AppCompatActivity {
 
-    Button loginButton;
+    Button loginButton, guestButton;
     TextView registerNowText;
 
     @Override
@@ -39,6 +39,8 @@ public class ConnectionActivity extends AppCompatActivity {
 
         registerNowText = findViewById(R.id.textView);
         setUpClickableText();
+        TextView guestTextView = findViewById(R.id.guestTextView); // Reference new TextView
+        setUpGuestClickableText(guestTextView);
 
         loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
@@ -70,5 +72,24 @@ public class ConnectionActivity extends AppCompatActivity {
 
         registerNowText.setText(spannableString);
         registerNowText.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+    }
+    private void setUpGuestClickableText(TextView guestTextView) {
+        String fullText = "Enter as a guest";
+        SpannableString spannableString = new SpannableString(fullText);
+        int start = fullText.indexOf("guest");
+        int end = start + "guest".length();
+        spannableString.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Intent intent = new Intent(ConnectionActivity.this, MainActivity.class);
+                intent.putExtra("isGuest", true); // Pass a flag indicating guest mode
+                startActivity(intent);
+                finish(); // Close ConnectionActivity
+            }
+        }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        guestTextView.setText(spannableString);
+        guestTextView.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
     }
 }

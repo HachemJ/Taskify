@@ -1,12 +1,14 @@
 package com.example.jads;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,10 +27,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private final List<Post> postList; // Original list
     private List<Post> filteredPostList; // Filtered list for dynamic searching
+    // Filtered list for dynamic searching
+    private final boolean isGuest;
 
-    public PostAdapter(List<Post> postList) {
+    public PostAdapter(List<Post> postList, boolean isGuest) {
         this.postList = postList;
         this.filteredPostList = new ArrayList<>(postList); // Initialize with all posts
+        this.isGuest = isGuest;
+        Log.d("PostAdapter", "isGuest initialized: " + isGuest);
     }
 
     @NonNull
@@ -41,6 +47,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = filteredPostList.get(position);
+        Log.d("PostAdapter", "onBindViewHolder - isGuest: " + isGuest);
 
         // Safely handle null values
         String title = post.getTitle() != null ? post.getTitle() : "No Title";
@@ -52,6 +59,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String category = post.getCategory() != null ? post.getCategory() : "Uncategorized";
         String price = post.getPrice(); // Price remains a string
         String postId = post.getPostId(); // Ensure postId is retrieved here
+
 
         holder.titleTextView.setText(title);
 
@@ -191,21 +199,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Learn More button functionality
         holder.learnMoreButton.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
-            intent.putExtra("postId", post.getPostId());
-            intent.putExtra("posterUserId", posterUserId);
-            intent.putExtra("postTitle", title);
-            intent.putExtra("price", price);
-            intent.putExtra("description", description);
-            intent.putExtra("category", category);
+            if (isGuest) {
+                // Show a toast if the user is a guest
+                Toast.makeText(v.getContext(),
+                        "You are in guest mode. Viewing post details is restricted.",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Allow logged-in users to access post details
+                Intent intent = new Intent(v.getContext(), PostDetailActivity.class);
+                intent.putExtra("postId", post.getPostId());
+                intent.putExtra("posterUserId", post.getUserId());
+                intent.putExtra("postTitle", post.getTitle());
+                intent.putExtra("price", post.getPrice());
+                intent.putExtra("description", post.getDescription());
+                intent.putExtra("category", post.getCategory());
 
-            if (tags != null && !tags.isEmpty()) {
-                intent.putExtra("tag1", tags.size() > 0 ? tags.get(0) : "No Tag");
-                intent.putExtra("tag2", tags.size() > 1 ? tags.get(1) : "No Tag");
+                if (post.getTags() != null && !post.getTags().isEmpty()) {
+                    intent.putExtra("tag1", post.getTags().size() > 0 ? post.getTags().get(0) : "No Tag");
+                    intent.putExtra("tag2", post.getTags().size() > 1 ? post.getTags().get(1) : "No Tag");
+                }
+
+                v.getContext().startActivity(intent);
             }
-
-            v.getContext().startActivity(intent);
         });
+
     }
 
     @Override
