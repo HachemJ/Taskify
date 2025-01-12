@@ -213,7 +213,7 @@ public class AddPostDialog extends DialogFragment {
             saveButton.setBackgroundColor(getResources().getColor(R.color.gray));
             saveButton.setTextColor(getResources().getColor(R.color.white));
             addTagButton.setBackgroundColor(getResources().getColor(R.color.gray));
-            paymentMethodButton.setBackgroundColor(getResources().getColor(R.color.dark_gray));
+            paymentMethodButton.setBackgroundColor(getResources().getColor(R.color.gray));
             addImageButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
             descriptionEditText.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));
             priceSlider.setTrackActiveTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray)));

@@ -19,7 +19,7 @@
         android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/cardContainer"
-         />
+        />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardContainer"
@@ -76,6 +76,20 @@
                 app:layout_constraintEnd_toEndOf="@+id/loginButton"
                 app:layout_constraintStart_toStartOf="@+id/loginButton"
                 app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+            <TextView
+                android:id="@+id/guestTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:text="Enter as a guest"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

@@ -1,329 +1,271 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_gray"
-    tools:context=".ViewProfileActivity">
+    tools:context=".ViewProfileActivity"
+    android:fillViewport="true">
 
-    <FrameLayout
-        android:id="@+id/profileContainer"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="-75dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="90dp"
-        android:elevation="10dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <!-- Profile Image -->
-        <ImageView
-            android:id="@+id/profileImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/circular_background"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_account"
-            android:elevation="10dp"
-            android:clipToOutline="true" />
+        <!-- Profile Container -->
+        <FrameLayout
+            android:id="@+id/profileContainer"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="-75dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="90dp"
+            android:elevation="10dp">
 
-        <!-- Edit Icon Overlay -->
-        <ImageView
-            android:id="@+id/editIcon"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="0dp"
-            android:src="@drawable/ic_edit"
-            android:padding="6dp"
-            android:contentDescription="Edit Profile Picture"
-            android:elevation="15dp"
-            android:layout_gravity="bottom|end"
-            android:onClick="uploadProfilePicture"/>
-        <ImageView
-            android:id="@+id/deleteIcon"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="0dp"
-            android:src="@drawable/ic_delete"
-            android:padding="6dp"
-            android:contentDescription="Delete Profile Picture"
-            android:elevation="15dp"
-            android:layout_gravity="bottom|start"
-            android:onClick="showDeleteConfirmationDialog" />
-    </FrameLayout>
+            <ImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/circular_background"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_account"
+                android:elevation="10dp"
+                android:clipToOutline="true" />
 
-    <!-- Card Container -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardContainer"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="200dp"
-        app:cardCornerRadius="40dp"
-        app:cardElevation="5dp"
-        android:elevation="1dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            <ImageView
+                android:id="@+id/editIcon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_edit"
+                android:padding="6dp"
+                android:contentDescription="Edit Profile Picture"
+                android:elevation="15dp"
+                android:layout_gravity="bottom|end"
+                android:onClick="uploadProfilePicture" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/deleteIcon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_delete"
+                android:padding="6dp"
+                android:contentDescription="Delete Profile Picture"
+                android:elevation="15dp"
+                android:layout_gravity="bottom|start"
+                android:onClick="showDeleteConfirmationDialog" />
+        </FrameLayout>
 
-            <TextView
-                android:id="@+id/fullNameTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
-                android:text="Full Name"
-                android:textAlignment="center"
-                android:textSize="32dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <!-- Card Container -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="5dp"
+            android:elevation="1dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/main_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                app:layout_constraintTop_toBottomOf="@id/fullNameTv"
-                app:layout_constraintStart_toStartOf="@id/fullNameTv"
-                app:layout_constraintEnd_toEndOf="@id/fullNameTv">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:progressTint="@color/gold"
-                    />
-
-
-                <!-- Review Score -->
                 <TextView
-                    android:id="@+id/reviewScoreTv"
+                    android:id="@+id/fullNameTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="0"
-                    android:textColor="@color/black"
+                    android:layout_marginTop="40dp"
+                    android:text="Full Name"
+                    android:textAlignment="center"
+                    android:textSize="32dp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/main_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/fullNameTv"
+                    app:layout_constraintStart_toStartOf="@id/fullNameTv"
+                    app:layout_constraintEnd_toEndOf="@id/fullNameTv">
+
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:progressTint="@color/gold" />
+
+                    <TextView
+                        android:id="@+id/reviewScoreTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/reviewCountTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="0"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- View Profile Title -->
+                <TextView
+                    android:id="@+id/viewProfiletext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginStart="30dp"
+                    android:text="View Profile"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/fullNameTv" />
+
+                <!-- First Name -->
+                <TextView
+                    android:id="@+id/firstnameTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:text="First Name"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/viewProfiletext" />
 
-                <!-- Review Count -->
+                <EditText
+                    android:id="@+id/firstnameEt"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/rounded_et"
+                    android:backgroundTint="@color/light_gray"
+                    android:enabled="false"
+                    android:padding="8dp"
+                    android:textColor="@color/dark_gray"
+                    app:layout_constraintEnd_toStartOf="@id/lastnameEt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/firstnameTv" />
+
+                <!-- Last Name -->
                 <TextView
-                    android:id="@+id/reviewCountTv"
+                    android:id="@+id/lastnameTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="0"
-                    android:textColor="@color/gray"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Last Name"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/firstnameEt"
+                    app:layout_constraintTop_toBottomOf="@+id/viewProfiletext" />
 
+                <EditText
+                    android:id="@+id/lastnameEt"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/rounded_et"
+                    android:backgroundTint="@color/light_gray"
+                    android:enabled="false"
+                    android:padding="8dp"
+                    android:textColor="@color/dark_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/firstnameEt"
+                    app:layout_constraintTop_toBottomOf="@+id/lastnameTv" />
 
-            <TextView
-                android:id="@+id/orderTitleTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Orders"
-                android:layout_marginTop="80dp"
-                android:textAlignment="center"
-                android:textSize="16dp"
-                app:layout_constraintStart_toStartOf="@id/fullNameTv"
-                app:layout_constraintEnd_toStartOf="@id/fullNameTv"
-                app:layout_constraintTop_toBottomOf="@id/fullNameTv" />
+                <!-- Email Address -->
+                <TextView
+                    android:id="@+id/emailAddressTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Email Address"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/firstnameEt" />
 
-            <TextView
-                android:id="@+id/orderNumberTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="97"
-                android:textAlignment="center"
-                android:textSize="26dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/orderTitleTv"
-                app:layout_constraintEnd_toEndOf="@+id/orderTitleTv"
-                app:layout_constraintBottom_toTopOf="@+id/orderTitleTv" />
+                <EditText
+                    android:id="@+id/emailAddressEt"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/rounded_et"
+                    android:textColor="@color/dark_gray"
+                    android:backgroundTint="@color/light_gray"
+                    android:enabled="false"
+                    android:padding="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/emailAddressTv" />
 
-            <!-- Orders -->
-            <TextView
-                android:id="@+id/satisfactionRateTitleTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Satisfaction Rate"
-                android:layout_marginTop="80dp"
-                android:textAlignment="center"
-                android:textSize="16dp"
-                app:layout_constraintStart_toEndOf="@id/fullNameTv"
-                app:layout_constraintEnd_toEndOf="@id/fullNameTv"
-                app:layout_constraintTop_toBottomOf="@id/fullNameTv" />
+                <!-- Phone Number -->
+                <TextView
+                    android:id="@+id/phoneNumberTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Phone Number"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/emailAddressEt" />
 
-            <TextView
-                android:id="@+id/satisfactionRatePercentageTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="95%"
-                android:textAlignment="center"
-                android:textSize="26dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/satisfactionRateTitleTv"
-                app:layout_constraintEnd_toEndOf="@id/satisfactionRateTitleTv"
-                app:layout_constraintBottom_toTopOf="@id/satisfactionRateTitleTv" />
+                <EditText
+                    android:id="@+id/phoneNumberEt"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:enabled="false"
+                    android:textColor="@color/dark_gray"
+                    android:backgroundTint="@color/light_gray"
+                    android:background="@drawable/rounded_et"
+                    android:padding="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/phoneNumberTv" />
 
-            <!-- Title -->
-            <TextView
-                android:id="@+id/editProfileText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginStart="30dp"
-                android:text="Edit Profile"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/orderTitleTv" />
-
-            <!-- First Name -->
-            <TextView
-                android:id="@+id/firstnameTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:text="First Name"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editProfileText" />
-
-            <EditText
-                android:id="@+id/firstnameEt"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/rounded_et"
-                android:backgroundTint="@color/light_gray"
-                android:enabled="false"
-                android:padding="8dp"
-                android:textColor="@color/dark_gray"
-                app:layout_constraintEnd_toStartOf="@id/lastnameEt"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/firstnameTv" />
-
-            <!-- Last Name -->
-            <TextView
-                android:id="@+id/lastnameTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="Last Name"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/firstnameEt"
-                app:layout_constraintTop_toBottomOf="@+id/editProfileText" />
-
-            <EditText
-                android:id="@+id/lastnameEt"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/rounded_et"
-                android:backgroundTint="@color/light_gray"
-                android:enabled="false"
-                android:padding="8dp"
-                android:textColor="@color/dark_gray"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/firstnameEt"
-                app:layout_constraintTop_toBottomOf="@+id/lastnameTv" />
-
-            <!-- Email Address -->
-            <TextView
-                android:id="@+id/emailAddressTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:text="Email Address"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/firstnameEt" />
-
-            <EditText
-                android:id="@+id/emailAddressEt"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/rounded_et"
-                android:textColor="@color/dark_gray"
-                android:backgroundTint="@color/light_gray"
-                android:enabled="false"
-                android:padding="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/emailAddressTv" />
-
-            <!-- Phone number -->
-            <TextView
-                android:id="@+id/phoneNumberTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:text="Phone Number"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/emailAddressEt" />
-
-            <EditText
-                android:id="@+id/phoneNumberEt"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:enabled="false"
-                android:textColor="@color/dark_gray"
-                android:backgroundTint="@color/light_gray"
-                android:background="@drawable/rounded_et"
-                android:padding="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/phoneNumberTv" />
-
-
-
-            <!-- Join Now Button -->
-            <Button
-                android:id="@+id/resetPasswordButton"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
-                android:backgroundTint="@color/black"
-                android:text="Reset Password 🔒"
-                android:textColor="@color/white"
-                app:cornerRadius="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/phoneNumberEt" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Reset Password Button -->
+                <Button
+                    android:id="@+id/resetPasswordButton"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:backgroundTint="@color/black"
+                    android:text="Reset Password 🔒"
+                    android:textColor="@color/white"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/phoneNumberEt" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
