@@ -20,6 +20,7 @@
     <color name="text_secondary">#666666</color>
     <color name="placeholder_background">#E0E0E0</color>
 
+
     <!-- New Colors for BottomNavigationView -->
     <color name="bottom_nav_active">#B0BEC5</color>
     <color name="bottom_nav_inactive">#B0BEC5</color>
