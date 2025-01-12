@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class PostDetailActivity extends AppCompatActivity {
 
-    private TextView postTitleTextView, priceTextView, reviewScoreTextView, reviewCountTextView, descriptionTextView, tagTest1, tagTest2;
+    private TextView postTitleTextView, priceTitleTextView, priceTextView, reviewScoreTextView, reviewCountTextView, descriptionTextView, tagTest1, tagTest2;
     private ImageView profileImageView, imageView;
     private Button chatButton, deletePostButton, payButton;
     private RatingBar ratingBar;
@@ -73,6 +73,7 @@ public class PostDetailActivity extends AppCompatActivity {
     private void initializeViews() {
         postTitleTextView = findViewById(R.id.titleTextView);
         priceTextView = findViewById(R.id.priceTv);
+        priceTitleTextView = findViewById(R.id.priceTitleTextView);
         reviewScoreTextView = findViewById(R.id.reviewScoreTv);
         reviewCountTextView = findViewById(R.id.reviewCountTv);
         descriptionTextView = findViewById(R.id.descriptionTextView);
@@ -110,6 +111,10 @@ public class PostDetailActivity extends AppCompatActivity {
         tagsTitleTextView.setText(Html.fromHtml("<u><b>Tags :</b></u>"));
         tagsTitleTextView.setTextSize(24);
         Log.d("TagsDebug", "Tag1: " + tag1 + ", Tag2: " + tag2);
+
+        // Reference "Price :" TextView
+        priceTitleTextView.setText(Html.fromHtml("<u><b>Price :</b></u>"));
+        priceTitleTextView.setTextSize(24);
 
         // Check if tags exist
         boolean hasTags = false;

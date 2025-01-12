@@ -312,6 +312,12 @@ public class AddPostDialog extends DialogFragment {
         String price = priceEditText.getText().toString().trim();
         List<String> tags = new ArrayList<>(Tags);
 
+        // Check if any tags have been added
+        if (tags.isEmpty()) {
+            Toast.makeText(getContext(), "Please add at least one tag before saving", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(price)) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
@@ -335,6 +341,7 @@ public class AddPostDialog extends DialogFragment {
             }
         }
     }
+
 
 
     private void savePostDetails(String postId, String userId, String title, String description, String price, List<String> tags, String imageUrl) {

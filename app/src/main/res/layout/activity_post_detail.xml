@@ -161,7 +161,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/postTitleUnderline" />
 
-        <!-- Remaining Elements Stay the Same -->
         <TextView
             android:id="@+id/tagsTitleTextView"
             android:layout_width="wrap_content"
@@ -169,10 +168,23 @@
             android:layout_margin="16dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
+            android:text="Tags :"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+
+        <TextView
+            android:id="@+id/priceTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:text="Price :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
 
         <TextView
@@ -187,7 +199,6 @@
             android:gravity="center"
             android:textColor="@color/medium_gray"
             android:textSize="20sp"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tagsTitleTextView" />
 
@@ -199,51 +210,40 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:layout_margin="16dp"
-            android:layout_marginTop="10dp"
             android:text="Tag 2"
             android:gravity="center"
             android:textColor="@color/medium_gray"
             android:textSize="20sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tagTest1" />
+            app:layout_constraintStart_toEndOf="@id/tagTest1"
+            app:layout_constraintTop_toTopOf="@id/tagTest1"
+            app:layout_constraintBottom_toBottomOf="@id/tagTest1"/>
 
         <!-- Price -->
         <TextView
             android:id="@+id/priceTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="680dp"
-            android:layout_marginEnd="28dp"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="$0"
             android:textColor="@color/black"
-            android:textSize="76sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/buttonsSeparator"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/priceTv"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:textSize="36sp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="@id/priceTitleTextView"
+            app:layout_constraintTop_toBottomOf="@id/priceTitleTextView"
+            app:layout_constraintBottom_toBottomOf="@id/tagTest2"/>
 
         <Button
             android:id="@+id/chatButton"
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_margin="16dp"
-            android:layout_marginTop="75dp"
             android:backgroundTint="@color/black"
             android:textColor="@color/white"
             android:text="Chat with Poster"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/payButton"
+            app:layout_constraintBottom_toBottomOf="@id/payButton" />
 
         <Button
             android:id="@+id/deletePostButton"
@@ -255,9 +255,9 @@
             android:text="Delete post"
             android:textSize="12dp"
             android:textStyle="bold"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/payButton"
+            app:layout_constraintBottom_toBottomOf="@id/payButton" />
 
         <Button
             android:id="@+id/payButton"
@@ -270,7 +270,7 @@
             android:textSize="12dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/priceTv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
