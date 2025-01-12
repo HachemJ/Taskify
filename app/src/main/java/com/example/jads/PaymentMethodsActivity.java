@@ -21,9 +21,9 @@ import java.util.Map;
 
 public class PaymentMethodsActivity extends AppCompatActivity {
 
-    private CheckBox cardCheckBox, paypalCheckBox;
-    private LinearLayout cardOptionLayout, paypalOptionLayout;
-    private TextView cardDetailsTextView, paypalDetailsTextView;
+    private CheckBox cardCheckBox, whishCheckBox;
+    private LinearLayout cardOptionLayout, whishOptionLayout;
+    private TextView cardDetailsTextView, whishDetailsTextView;
 
     // Flag to determine if the current user is the poster of the post
     private boolean isSameUser;
@@ -38,7 +38,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         String postId = getIntent().getStringExtra("postId"); // Retrieve postId for updating the database
         initializeViews();
         setupListeners();
-        updateUIBasedOnUser();
 
         if (postId != null && !postId.isEmpty()) {
             fetchPaymentMethods(postId); // Fetch and pre-select payment methods
@@ -67,7 +66,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void handleContinueButtonClick(String postId) {
         // Collect selected payment methods
         boolean cashSelected = cardCheckBox.isChecked();
-        boolean whishSelected = paypalCheckBox.isChecked();
+        boolean whishSelected = whishCheckBox.isChecked();
 
         // If postId is provided, check for changes and update payment methods in the database
         if (postId != null && !postId.isEmpty()) {
@@ -126,19 +125,19 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void initializeViews() {
         // Initialize CheckBoxes
         cardCheckBox = findViewById(R.id.cardCheckBox);
-        paypalCheckBox = findViewById(R.id.paypalCheckBox);
+        whishCheckBox = findViewById(R.id.whishCheckBox);
 
         // Initialize option layouts
         cardOptionLayout = findViewById(R.id.cardOptionLayout);
-        paypalOptionLayout = findViewById(R.id.paypalOptionLayout);
+        whishOptionLayout = findViewById(R.id.whishOptionLayout);
 
         // Initialize details TextViews
         cardDetailsTextView = findViewById(R.id.cashDetailsTextView);
-        paypalDetailsTextView = findViewById(R.id.paypalDetailsTextView);
+        whishDetailsTextView = findViewById(R.id.whishDetailsTextView);
 
         // Hide details sections initially
         cardDetailsTextView.setVisibility(View.GONE);
-        paypalDetailsTextView.setVisibility(View.GONE);
+        whishDetailsTextView.setVisibility(View.GONE);
     }
     private void fetchPaymentMethods(String postId) {
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("posts").child(postId).child("paymentMethods");
@@ -153,17 +152,17 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
                 // Update checkboxes
                 cardCheckBox.setChecked(cashAvailable);
-                paypalCheckBox.setChecked(whishAvailable);
+                whishCheckBox.setChecked(whishAvailable);
             } else {
                 // Default to unchecked
                 cardCheckBox.setChecked(false);
-                paypalCheckBox.setChecked(false);
+                whishCheckBox.setChecked(false);
             }
         }).addOnFailureListener(e -> {
             Toast.makeText(this, "Failed to fetch payment methods", Toast.LENGTH_SHORT).show();
             // Default to unchecked
             cardCheckBox.setChecked(false);
-            paypalCheckBox.setChecked(false);
+            whishCheckBox.setChecked(false);
         });
     }
 
@@ -173,7 +172,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
      */
     private void setupListeners() {
         cardCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> toggleDetails(cardDetailsTextView, isChecked));
-        paypalCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> toggleDetails(paypalDetailsTextView, isChecked));
+        whishCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> toggleDetails(whishDetailsTextView, isChecked));
     }
 
     /**
@@ -184,43 +183,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
      */
     private void toggleDetails(TextView detailsTextView, boolean isChecked) {
         detailsTextView.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-    }
-
-    /**
-     * Updates the UI based on whether the current user is the poster of the post.
-     */
-    private void updateUIBasedOnUser() {
-        if (isSameUser) {
-            setAcceptMode();
-        } else {
-            setPayMode();
-        }
-    }
-
-    /**
-     * Configures the UI for "Accept" mode (when the user is the poster).
-     */
-    private void setAcceptMode() {
-        // Update CheckBox labels
-        cardCheckBox.setText("Accept Cash");
-        paypalCheckBox.setText("Accept Whish Money");
-
-        // Update details content
-        cardDetailsTextView.setText("Accepting cash allows the buyer to pay at delivery.");
-        paypalDetailsTextView.setText("Accepting Whish Money allows secure payments through the platform.");
-    }
-
-    /**
-     * Configures the UI for "Pay" mode (when the user is not the poster).
-     */
-    private void setPayMode() {
-        // Update CheckBox labels
-        cardCheckBox.setText("Pay with Cash");
-        paypalCheckBox.setText("Pay with Whish Money");
-
-        // Update details content
-        cardDetailsTextView.setText("Paying with cash allows you to pay at delivery.");
-        paypalDetailsTextView.setText("Paying with Whish Money connects to your Whish account for secure payment.");
     }
 
 }

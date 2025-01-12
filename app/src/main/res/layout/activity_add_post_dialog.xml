@@ -119,7 +119,7 @@
                         android:textColorHint="@color/gray"
                         android:textSize="16sp"
                         android:gravity="top"
-                        android:minLines="8"
+                        android:lines="8"
                         android:inputType="textMultiLine"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

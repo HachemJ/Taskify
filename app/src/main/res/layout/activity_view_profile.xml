@@ -66,6 +66,7 @@
             app:cardCornerRadius="40dp"
             app:cardElevation="5dp"
             android:elevation="1dp"
+            android:backgroundTint="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">

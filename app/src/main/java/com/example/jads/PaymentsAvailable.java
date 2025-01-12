@@ -26,9 +26,9 @@ import java.util.Map;
 
 public class PaymentsAvailable extends AppCompatActivity {
 
-    private CheckBox cardCheckBox, paypalCheckBox;
-    private LinearLayout cardOptionLayout, paypalOptionLayout;
-    private TextView cardDetailsTextView, paypalDetailsTextView;
+    private CheckBox cardCheckBox, whishCheckBox;
+    private LinearLayout cardOptionLayout, whishOptionLayout;
+    private TextView cardDetailsTextView, whishDetailsTextView;
     private Button continueButton;
     private String currentUserId;
     private String postTitle;
@@ -68,22 +68,22 @@ public class PaymentsAvailable extends AppCompatActivity {
     private void initializeViews() {
         // Initialize CheckBoxes
         cardCheckBox = findViewById(R.id.cardCheckBox);
-        paypalCheckBox = findViewById(R.id.paypalCheckBox);
+        whishCheckBox = findViewById(R.id.whishCheckBox);
 
         // Initialize option layouts
         cardOptionLayout = findViewById(R.id.cardOptionLayout);
-        paypalOptionLayout = findViewById(R.id.paypalOptionLayout);
+        whishOptionLayout = findViewById(R.id.whishOptionLayout);
 
         // Initialize details TextViews
         cardDetailsTextView = findViewById(R.id.cashDetailsTextView);
-        paypalDetailsTextView = findViewById(R.id.paypalDetailsTextView);
+        whishDetailsTextView = findViewById(R.id.whishDetailsTextView);
 
         // Initialize the Continue button
         continueButton = findViewById(R.id.continueButton);
 
         // Hide details sections initially
         cardDetailsTextView.setVisibility(View.GONE);
-        paypalDetailsTextView.setVisibility(View.GONE);
+        whishDetailsTextView.setVisibility(View.GONE);
 
         // Initially, disable the continue button
         setContinueButtonEnabled(false);
@@ -95,17 +95,17 @@ public class PaymentsAvailable extends AppCompatActivity {
     private void setupListeners() {
         cardCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                paypalCheckBox.setChecked(false); // Deselect PayPal if Card is selected
+                whishCheckBox.setChecked(false); // Deselect whish if Card is selected
             }
             toggleDetails(cardDetailsTextView, isChecked);
             updateContinueButtonState();
         });
 
-        paypalCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        whishCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                cardCheckBox.setChecked(false); // Deselect Card if PayPal is selected
+                cardCheckBox.setChecked(false); // Deselect Card if whish is selected
             }
-            toggleDetails(paypalDetailsTextView, isChecked);
+            toggleDetails(whishDetailsTextView, isChecked);
             updateContinueButtonState();
         });
 
@@ -113,7 +113,7 @@ public class PaymentsAvailable extends AppCompatActivity {
             if (cardCheckBox.isChecked()) {
                 // Show confirmation dialog for Cash option
                 showConfirmationDialog();
-            } else if (paypalCheckBox.isChecked()) {
+            } else if (whishCheckBox.isChecked()) {
                 // Proceed with other options if needed
                 Toast.makeText(this, "Coming soon !", Toast.LENGTH_SHORT).show();
             }
@@ -236,7 +236,7 @@ public class PaymentsAvailable extends AppCompatActivity {
      * Updates the state of the "Continue" button based on the selected payment methods.
      */
     private void updateContinueButtonState() {
-        boolean isAnyPaymentMethodSelected = cardCheckBox.isChecked() || paypalCheckBox.isChecked();
+        boolean isAnyPaymentMethodSelected = cardCheckBox.isChecked() || whishCheckBox.isChecked();
         setContinueButtonEnabled(isAnyPaymentMethodSelected);
     }
 
@@ -281,9 +281,9 @@ public class PaymentsAvailable extends AppCompatActivity {
                     }
 
                     if (whish != null) {
-                        paypalCheckBox.setChecked(whish);
-                        paypalCheckBox.setEnabled(whish);
-                        paypalCheckBox.setAlpha(whish ? 1.0f : 0.5f); // Grey out if unavailable
+                        whishCheckBox.setChecked(whish);
+                        whishCheckBox.setEnabled(whish);
+                        whishCheckBox.setAlpha(whish ? 1.0f : 0.5f); // Grey out if unavailable
                     }
                 } else {
                     Toast.makeText(PaymentsAvailable.this, "No payment methods available.", Toast.LENGTH_SHORT).show();
@@ -323,10 +323,10 @@ public class PaymentsAvailable extends AppCompatActivity {
      */
     private void setAcceptMode() {
         cardCheckBox.setText("Accept Cash");
-        paypalCheckBox.setText("Accept Whish Money");
+        whishCheckBox.setText("Accept Whish Money");
 
         cardDetailsTextView.setText("Accepting cash allows the buyer to pay at delivery.");
-        paypalDetailsTextView.setText("Accepting Whish Money allows secure payments through the platform.");
+        whishDetailsTextView.setText("Accepting Whish Money allows secure payments through the platform.");
     }
 
     /**
@@ -334,10 +334,10 @@ public class PaymentsAvailable extends AppCompatActivity {
      */
     private void setPayMode() {
         cardCheckBox.setText("Pay with Cash");
-        paypalCheckBox.setText("Pay with Whish Money");
+        whishCheckBox.setText("Pay with Whish Money");
 
         cardDetailsTextView.setText("Paying with cash allows you to pay at delivery.");
-        paypalDetailsTextView.setText("Paying with Whish Money connects to your Whish account for secure payment.");
+        whishDetailsTextView.setText("Paying with Whish Money connects to your Whish account for secure payment.");
     }
     private void updateUserChats(String userId, String otherUserId, String chatId) {
         DatabaseReference userChatsRef = FirebaseDatabase.getInstance().getReference("userChats").child(userId);

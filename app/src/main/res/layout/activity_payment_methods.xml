@@ -59,7 +59,7 @@
                 android:id="@+id/cardCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Accept Cash"
+                android:text="Accept cash"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:buttonTint="@color/black"
@@ -85,9 +85,9 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- PayPal Option -->
+    <!-- whish Option -->
     <LinearLayout
-        android:id="@+id/paypalOptionLayout"
+        android:id="@+id/whishOptionLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -101,17 +101,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- PayPal Option Row -->
+        <!-- whish Option Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/paypalCheckBox"
+                android:id="@+id/whishCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Accept Whish Money"
+                android:text="Accept whish money"
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:buttonTint="@color/black"/>
@@ -126,9 +126,9 @@
                 android:src="@drawable/whish_logo" />
         </LinearLayout>
 
-        <!-- PayPal Info Section -->
+        <!-- whish Info Section -->
         <TextView
-            android:id="@+id/paypalDetailsTextView"
+            android:id="@+id/whishDetailsTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Paying with Wish Money connects to your Wish account for secure payment."
@@ -148,7 +148,7 @@
         android:backgroundTint="@android:color/black"
         android:text="Continue"
         android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/paypalOptionLayout"
+        app:layout_constraintTop_toBottomOf="@id/whishOptionLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
